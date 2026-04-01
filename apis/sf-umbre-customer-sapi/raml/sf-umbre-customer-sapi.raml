@@ -1,0 +1,104 @@
+#%RAML 1.0
+title: Salesforce Umbrella Customer System API
+description: |
+  System API for retrieving and synchronizing customer data with the Salesforce Umbrella instance.
+  This API abstracts Salesforce technical complexity while preserving alignment with Salesforce
+  account concepts and structures. It exposes Salesforce customer data using readable,
+  Salesforce-aligned field names rather than the enterprise canonical customer model.
+version: v1
+mediaType:
+  - application/json
+protocols:
+  - HTTPS
+
+uses:
+  common: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses/1.0.2/lib-common-responses.raml
+  responses: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-response-traits/1.0.1/lib-response-traits.raml
+  security: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-security-traits/1.0.2/lib-security-traits.raml
+  sfCustomer: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-salesforce-customer-types/1.0.2/lib-salesforce-customer-types.raml
+
+/customers:
+  displayName: Customers
+  description: |
+    Collection of Salesforce customer accounts represented using a Salesforce-aligned customer model.
+
+  get:
+    displayName: Get customers
+    description: Retrieve customer account records from the Salesforce Umbrella instance.
+    is:
+      - security.client-id-enforced
+      - responses.standard-routing-and-runtime-errors
+    responses:
+      200:
+        description: Customer records retrieved.
+        body:
+          application/json:
+            type: GetSalesforceUmbreCustomersResponse
+
+  post:
+    displayName: Upsert customers
+    description: |
+      Create or update multiple customer account records in the Salesforce Umbrella instance.
+    is:
+      - security.client-id-enforced
+      - responses.standard-routing-and-runtime-errors
+    body:
+      application/json:
+        type: sfCustomer.SalesforceCustomerCollection
+    responses:
+      200:
+        description: Customer records processed.
+        body:
+          application/json:
+            type: UpsertSalesforceUmbreCustomersResponse
+
+/customers/{salesforceAccountId}:
+  uriParameters:
+    salesforceAccountId:
+      displayName: Salesforce Account ID
+      description: Unique identifier of the Salesforce customer account record.
+      type: string
+      example: 001bm00000J2nswAAB
+  get:
+    displayName: Get customer by ID
+    description: |
+      Retrieve a customer account record by ID from the Salesforce Umbrella instance.
+    is:
+      - security.client-id-enforced
+      - responses.standard-routing-and-runtime-errors
+    responses:
+      200:
+        description: Customer record retrieved.
+        body:
+          application/json:
+            type: GetSalesforceUmbreCustomerResponse
+      404:
+        description: Customer record not found.
+        body:
+          application/json:
+            type: common.ApiResponse
+
+types:
+  GetSalesforceUmbreCustomersResponse:
+    displayName: Get Salesforce Umbrella Customers Response
+    description: Standard API response envelope with a customer retrieval payload.
+    type: common.ApiResponse
+    properties:
+      data?:
+        type: sfCustomer.SalesforceCustomerGetData
+
+  GetSalesforceUmbreCustomerResponse:
+    displayName: Get Salesforce Umbrella Customer Response
+    description: Standard API response envelope with a single customer retrieval payload.
+    type: common.ApiResponse
+    properties:
+      data?:
+        type: sfCustomer.SalesforceCustomerSingleGetData
+
+  UpsertSalesforceUmbreCustomersResponse:
+    displayName: Upsert Salesforce Umbrella Customers Response
+    description: Standard API response envelope with a customer processing payload.
+    type: common.ApiResponse
+    properties:
+      data?:
+        type: sfCustomer.SalesforceCustomerUpsertData

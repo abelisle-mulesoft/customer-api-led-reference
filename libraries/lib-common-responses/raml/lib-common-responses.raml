@@ -1,0 +1,191 @@
+#%RAML 1.0 Library
+usage: |
+  This library defines a standard response envelope and reusable response types for use across APIs.
+
+  As part of the Customer API-led reference architecture, it standardizes response structure, error
+  handling, and observability across APIs.
+
+  APIs should use this library to ensure consistency and may extend the envelope by constraining the
+  shape of the `ApiResponse.data` property to an operation-specific payload.
+
+types:
+  ApiResponseStatus:
+    displayName: Response status
+    description: |
+      Business outcome of the request.
+
+      This value is independent of the HTTP status code and indicates whether the operation
+      completed successfully, completed with one or more non-fatal conditions, or failed.
+
+      - SUCCESS means the operation completed as expected.
+      - WARNING means the operation completed, but the client should inspect `details` for non-fatal
+        issues, skipped records, or other advisory messages.
+      - ERROR means the operation could not be completed successfully.
+    type: string
+    enum: [ SUCCESS, WARNING, ERROR ]
+    example: ERROR
+
+  Severity:
+    displayName: Detail severity
+    description: |
+      Severity assigned to an individual response detail message.
+
+      - INFO is informational only.
+      - WARNING highlights a non-fatal condition.
+      - ERROR identifies a blocking problem or failure condition.
+    type: string
+    enum: [ INFO, WARNING, ERROR ]
+    example: ERROR
+
+  ResponseDetail:
+    displayName: Response detail
+    description: |
+      Structured detail message returned by the API.
+
+      Detail messages provide additional actionable information such as validation failures, skipped
+      records, unsupported values, or other context that helps the client understand the outcome
+      without changing the top-level response message.
+    type: object
+    properties:
+      severity:
+        description: Severity assigned to this detail message.
+        type: Severity
+        required: true
+      code:
+        description: |
+          Optional catalog code that uniquely identifies this message.
+
+          Useful for documentation, troubleshooting, localization, and programmatic handling by
+          clients.
+        type: string
+        pattern: '^[A-Z][A-Z0-9._-]{2,63}$'
+        required: false
+        example: VALIDATION-001
+      message:
+        description: Human-readable explanation of the detail.
+        type: string
+        required: true
+        example: Required query parameter 'customerId' was not provided.
+      target:
+        description: |
+          Optional pointer to what the message applies to, such as a field name, parameter name,
+          array element, or business identifier.
+        type: string
+        required: false
+        example: customerId
+    examples:
+      validationError:
+        value:
+          severity: ERROR
+          code: VALIDATION-001
+          message: Required query parameter 'customerId' was not provided.
+          target: customerId
+      partialProcessingWarning:
+        value:
+          severity: WARNING
+          code: PARTIAL-001
+          message: Record was skipped because the customer is marked for deletion in SAP ECC.
+          target: records[3]
+      informationalMessage:
+        value:
+          severity: INFO
+          code: TRACE-001
+          message: Request processed using the default page size.
+          target: pageSize
+
+  ApiResponse:
+    displayName: API response
+    description: |
+      Standard response envelope returned by all APIs.
+
+      The response communicates the HTTP result, the business outcome, a concise human-readable
+      summary, optional detail messages, and optional operation-specific data.
+
+      - The `details` array is used to provide additional context for warnings and errors.
+      - The `data` property is reserved for operation-specific payloads and may be constrained by an
+        individual API specification.
+    type: object
+    properties:
+      dateTime:
+        description: Timestamp at which the API produced the response, should be expressed in UTC.
+        type: datetime
+        example: 2026-03-17T22:15:00Z
+      httpStatus:
+        description: HTTP status code returned by the API.
+        type: integer
+        minimum: 100
+        maximum: 599
+        example: 400
+      status:
+        description: |
+          Business outcome of the request.
+
+          This value complements the HTTP status code and indicates whether processing
+          succeeded, succeeded with warnings, or failed.
+        type: ApiResponseStatus
+      message:
+        description: |
+          Human-readable summary of the request outcome intended for API consumers and operational
+          troubleshooting.
+        type: string
+        example: Validation failed. See details for more information.
+      correlationId:
+        description: |
+          Optional identifier used for end-to-end tracing across API layers, logs,
+          observability tools, and backend systems.
+        type: string
+        required: false
+        example: 2f6c2b7b-8b1b-4f2d-9ef2-9c6a2a1b0d6a
+      details:
+        description: |
+          Optional list of structured detail messages that provide additional context,
+          such as validation failures, warnings, or informational notes.
+        type: array
+        required: false
+        items: ResponseDetail
+      data:
+        description: |
+          Optional operation-specific payload returned by the API.
+
+          The common response library leaves this property unconstrained so that
+          individual APIs can override it with a typed payload appropriate for a
+          specific operation.
+        type: any
+        required: false
+    examples:
+      success:
+        value:
+          dateTime: 2026-03-17T22:15:00Z
+          httpStatus: 200
+          status: SUCCESS
+          message: Request completed successfully.
+          correlationId: 8af51c4a-1c90-4f92-9d4d-2f56a61a9b8f
+          data:
+            recordCount: 2
+      warning:
+        value:
+          dateTime: 2026-03-17T22:16:00Z
+          httpStatus: 200
+          status: WARNING
+          message: Request completed with warnings.
+          correlationId: 5d5f6bc0-7093-4787-8f18-0fef4f2b94c4
+          details:
+            - severity: WARNING
+              code: PARTIAL-001
+              message: One record was skipped because it was marked inactive.
+              target: records[3]
+          data:
+            processedCount: 9
+            skippedCount: 1
+      error:
+        value:
+          dateTime: 2026-03-17T22:17:00Z
+          httpStatus: 400
+          status: ERROR
+          message: Validation failed.
+          correlationId: 2f6c2b7b-8b1b-4f2d-9ef2-9c6a2a1b0d6a
+          details:
+            - severity: ERROR
+              code: VALIDATION-001
+              message: Required property 'sapCustomerNumber' is missing.
+              target: data.sapCustomerNumber

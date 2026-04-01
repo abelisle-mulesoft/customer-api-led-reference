@@ -1,0 +1,351 @@
+#%RAML 1.0
+title: Oracle EBS Customer System API
+description: |
+  System API for retrieving and synchronizing customer data with Oracle E-Business Suite R12.
+  This API abstracts Oracle EBS technical complexity while preserving alignment with Oracle EBS
+  customer account concepts and structures. It exposes Oracle EBS customer data using readable,
+  Oracle-aligned field names rather than the enterprise canonical customer model.
+version: v1
+mediaType:
+  - application/json
+protocols:
+  - HTTPS
+
+uses:
+  common: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses/1.0.2/lib-common-responses.raml
+  responses: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-response-traits/1.0.1/lib-response-traits.raml
+  security: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-security-traits/1.0.2/lib-security-traits.raml
+
+/customers:
+  displayName: Customers
+  description: |
+    Collection of Oracle EBS customer accounts represented using an Oracle-aligned customer model.
+
+  get:
+    displayName: Get customers
+    description: Retrieve customer account records from Oracle E-Business Suite R12.
+    is:
+      - security.client-id-enforced
+      - responses.standard-routing-and-runtime-errors
+    responses:
+      200:
+        description: Customer records retrieved.
+        body:
+          application/json:
+            type: GetOracleEbsCustomersResponse
+
+  post:
+    displayName: Upsert customers
+    description: |
+      Create or update multiple customer account records in Oracle E-Business Suite R12.
+    is:
+      - security.client-id-enforced
+      - responses.standard-routing-and-runtime-errors
+    body:
+      application/json:
+        type: OracleEbsCustomerCollection
+    responses:
+      200:
+        description: Customer records processed.
+        body:
+          application/json:
+            type: UpsertOracleEbsCustomersResponse
+
+types:
+  OracleEbsCustomer:
+    displayName: Oracle EBS Customer
+    description: |
+      Oracle E-Business Suite R12-aligned representation of a customer account record exposed by
+      the System API. Field names are human-readable but remain aligned to Oracle EBS customer
+      account concepts rather than the enterprise canonical customer model.
+    type: object
+    additionalProperties: false
+    properties:
+      customerAccountNumber:
+        type: string
+        minLength: 1
+        description: Oracle EBS customer account number.
+      customerAccountName:
+        type: string
+        minLength: 1
+        description: Oracle EBS customer account name.
+      partyNumber?:
+        type: string
+        description: Oracle Trading Community Architecture party number associated with the customer account.
+      partyName?:
+        type: string
+        description: Oracle Trading Community Architecture party name associated with the customer account.
+      customerClassCode?:
+        type: string
+        description: Oracle EBS customer class code.
+      accountStatus?:
+        type: string
+        description: Oracle EBS customer account status.
+      accountType?:
+        type: string
+        description: Oracle EBS customer account type.
+      accountSiteNumber?:
+        type: string
+        description: Oracle EBS customer account site number.
+      siteUseCode?:
+        type: string
+        description: Oracle EBS site use code such as BILL_TO or SHIP_TO.
+      primaryContactName?:
+        type: string
+        description: Primary contact name associated with the customer account.
+      emailAddress?:
+        type: string
+        description: Primary email address associated with the customer account.
+      phoneNumber?:
+        type: string
+        description: Primary telephone number associated with the customer account.
+      addressLine1?:
+        type: string
+        description: Primary street address line.
+      addressLine2?:
+        type: string
+        description: Secondary street address line.
+      city?:
+        type: string
+        description: City.
+      stateOrProvince?:
+        type: string
+        description: State, province, or region.
+      postalCode?:
+        type: string
+        description: Postal code.
+      countryCode?:
+        type: string
+        description: Country code.
+      activeFlag?:
+        type: boolean
+        description: Indicates whether the Oracle EBS customer account is active.
+      createdDate?:
+        type: datetime
+        description: Timestamp when the customer account was created in Oracle EBS.
+      lastUpdatedDate?:
+        type: datetime
+        description: Timestamp when the customer account was last updated in Oracle EBS.
+    example:
+      customerAccountNumber: "10001"
+      customerAccountName: Acme Corporation
+      partyNumber: "30001"
+      partyName: Acme Corporation
+      customerClassCode: COMMERCIAL
+      accountStatus: ACTIVE
+      accountType: ORGANIZATION
+      accountSiteNumber: "50001"
+      siteUseCode: BILL_TO
+      primaryContactName: Jane Smith
+      emailAddress: ops@acme.example
+      phoneNumber: +1-206-555-0100
+      addressLine1: 100 Main Street
+      addressLine2: Suite 400
+      city: Seattle
+      stateOrProvince: WA
+      postalCode: "98101"
+      countryCode: US
+      activeFlag: true
+      createdDate: 2026-03-12T18:25:43Z
+      lastUpdatedDate: 2026-03-15T09:42:10Z
+
+  OracleEbsCustomerCollection:
+    displayName: Oracle EBS Customer Collection
+    description: Collection of Oracle EBS customer account records.
+    type: OracleEbsCustomer[]
+    minItems: 1
+    example:
+      - customerAccountNumber: "10001"
+        customerAccountName: Acme Corporation
+        partyNumber: "30001"
+        partyName: Acme Corporation
+        customerClassCode: COMMERCIAL
+        accountStatus: ACTIVE
+        accountType: ORGANIZATION
+        accountSiteNumber: "50001"
+        siteUseCode: BILL_TO
+        primaryContactName: Jane Smith
+        emailAddress: ops@acme.example
+        phoneNumber: +1-206-555-0100
+        addressLine1: 100 Main Street
+        addressLine2: Suite 400
+        city: Seattle
+        stateOrProvince: WA
+        postalCode: "98101"
+        countryCode: US
+        activeFlag: true
+        createdDate: 2026-03-12T18:25:43Z
+        lastUpdatedDate: 2026-03-15T09:42:10Z
+      - customerAccountNumber: "10002"
+        customerAccountName: Globex Corporation
+        partyNumber: "30002"
+        partyName: Globex Corporation
+        customerClassCode: COMMERCIAL
+        accountStatus: ACTIVE
+        accountType: ORGANIZATION
+        accountSiteNumber: "50002"
+        siteUseCode: SHIP_TO
+        primaryContactName: John Doe
+        emailAddress: contact@globex.example
+        phoneNumber: +1-425-555-0110
+        addressLine1: 200 Market Street
+        city: Bellevue
+        stateOrProvince: WA
+        postalCode: "98004"
+        countryCode: US
+        activeFlag: true
+        createdDate: 2026-03-10T11:15:30Z
+        lastUpdatedDate: 2026-03-16T08:00:00Z
+
+  OracleEbsCustomerGetData:
+    displayName: Oracle EBS Customer Get Data
+    description: Oracle EBS customer retrieval payload returned in the standard response envelope.
+    type: object
+    additionalProperties: false
+    properties:
+      customers:
+        type: OracleEbsCustomerCollection
+        description: Customer account records retrieved from Oracle EBS.
+      recordCount:
+        type: integer
+        minimum: 0
+        description: Number of customer account records returned.
+    example:
+      customers:
+        - customerAccountNumber: "10001"
+          customerAccountName: Acme Corporation
+          partyNumber: "30001"
+          partyName: Acme Corporation
+          customerClassCode: COMMERCIAL
+          accountStatus: ACTIVE
+          accountType: ORGANIZATION
+          accountSiteNumber: "50001"
+          siteUseCode: BILL_TO
+          primaryContactName: Jane Smith
+          emailAddress: ops@acme.example
+          phoneNumber: +1-206-555-0100
+          addressLine1: 100 Main Street
+          addressLine2: Suite 400
+          city: Seattle
+          stateOrProvince: WA
+          postalCode: "98101"
+          countryCode: US
+          activeFlag: true
+          createdDate: 2026-03-12T18:25:43Z
+          lastUpdatedDate: 2026-03-15T09:42:10Z
+      recordCount: 1
+
+  OracleEbsCustomerUpsertData:
+    displayName: Oracle EBS Customer Upsert Data
+    description: Oracle EBS customer processing summary returned in the standard response envelope.
+    type: object
+    additionalProperties: false
+    properties:
+      recordCount:
+        type: integer
+        minimum: 0
+        description: Number of customer account records received.
+      processedCount:
+        type: integer
+        minimum: 0
+        description: Number of customer account records successfully processed.
+      skippedCount?:
+        type: integer
+        minimum: 0
+        description: Number of customer account records skipped during processing.
+    example:
+      recordCount: 3
+      processedCount: 3
+      skippedCount: 0
+
+  GetOracleEbsCustomersResponse:
+    displayName: Get Oracle EBS Customers Response
+    description: Standard API response envelope with an Oracle EBS customer retrieval payload.
+    type: common.ApiResponse
+    properties:
+      data?:
+        type: OracleEbsCustomerGetData
+    examples:
+      success:
+        dateTime: 2026-03-17T16:00:00Z
+        httpStatus: 200
+        status: SUCCESS
+        message: Customer records retrieved successfully.
+        correlationId: 2f6c2b7b-8b1b-4f2d-9ef2-9c6a2a1b0d6a
+        data:
+          customers:
+            - customerAccountNumber: "10001"
+              customerAccountName: Acme Corporation
+              partyNumber: "30001"
+              partyName: Acme Corporation
+              customerClassCode: COMMERCIAL
+              accountStatus: ACTIVE
+              accountType: ORGANIZATION
+              accountSiteNumber: "50001"
+              siteUseCode: BILL_TO
+              primaryContactName: Jane Smith
+              emailAddress: ops@acme.example
+              phoneNumber: +1-206-555-0100
+              addressLine1: 100 Main Street
+              addressLine2: Suite 400
+              city: Seattle
+              stateOrProvince: WA
+              postalCode: "98101"
+              countryCode: US
+              activeFlag: true
+              createdDate: 2026-03-12T18:25:43Z
+              lastUpdatedDate: 2026-03-15T09:42:10Z
+          recordCount: 1
+      success-with-warning:
+        dateTime: 2026-03-17T22:30:00Z
+        httpStatus: 200
+        status: WARNING
+        message: Customer records retrieved with warnings.
+        correlationId: 123e4567-e89b-12d3-a456-426614174000
+        details:
+          - severity: WARNING
+            code: CUSTOMER.SKIPPED_INACTIVE
+            message: Inactive customer accounts were skipped during retrieval.
+        data:
+          customers:
+            - customerAccountNumber: "10001"
+              customerAccountName: Acme Corporation
+              partyNumber: "30001"
+              partyName: Acme Corporation
+              customerClassCode: COMMERCIAL
+              accountStatus: ACTIVE
+              accountType: ORGANIZATION
+              accountSiteNumber: "50001"
+              siteUseCode: BILL_TO
+              primaryContactName: Jane Smith
+              emailAddress: ops@acme.example
+              phoneNumber: +1-206-555-0100
+              addressLine1: 100 Main Street
+              addressLine2: Suite 400
+              city: Seattle
+              stateOrProvince: WA
+              postalCode: "98101"
+              countryCode: US
+              activeFlag: true
+              createdDate: 2026-03-12T18:25:43Z
+              lastUpdatedDate: 2026-03-15T09:42:10Z
+          recordCount: 1
+
+  UpsertOracleEbsCustomersResponse:
+    displayName: Upsert Oracle EBS Customers Response
+    description: Standard API response envelope with an Oracle EBS customer processing payload.
+    type: common.ApiResponse
+    properties:
+      data?:
+        type: OracleEbsCustomerUpsertData
+    examples:
+      success:
+        dateTime: 2026-03-17T16:05:00Z
+        httpStatus: 200
+        status: SUCCESS
+        message: Customer records processed successfully.
+        correlationId: 6d7b8b6c-7093-4787-8f18-0fef4f2b94c4
+        data:
+          recordCount: 3
+          processedCount: 3
+          skippedCount: 0

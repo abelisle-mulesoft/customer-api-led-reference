@@ -1,0 +1,110 @@
+#%RAML 1.0
+title: Salesforce Brilliant Mule Customer System API
+description: |
+  System API for retrieving and synchronizing customer data with the Salesforce Brilliant Mule
+  instance. This API abstracts Salesforce technical complexity while preserving alignment with
+  Salesforce account concepts and structures. It exposes Salesforce customer data using readable,
+  Salesforce-aligned field names rather than the enterprise canonical customer model.
+
+  In the implementation, customer data changes are detected via Salesforce Change Data Capture (CDC)
+  events, enabling near real-time synchronization. CDC consumption is an implementation detail and
+  is not exposed to clients in this API contract.
+version: v1
+mediaType:
+  - application/json
+protocols:
+  - HTTPS
+
+uses:
+  common: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses/1.0.2/lib-common-responses.raml
+  responses: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-response-traits/1.0.1/lib-response-traits.raml
+  security: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-security-traits/1.0.2/lib-security-traits.raml
+  sfCustomer: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-salesforce-customer-types/1.0.2/lib-salesforce-customer-types.raml
+
+/customers:
+  displayName: Customers
+  description: |
+    Collection of Salesforce customer accounts represented using a Salesforce-aligned customer model.
+
+  get:
+    displayName: Get customers
+    description: Retrieve customer account records from the Salesforce Brilliant Mule instance.
+    is:
+      - security.client-id-enforced
+      - responses.standard-routing-and-runtime-errors
+    responses:
+      200:
+        description: Customer records retrieved.
+        body:
+          application/json:
+            type: GetSalesforceBrilmCustomersResponse
+
+  post:
+    displayName: Upsert customers
+    description: |
+      Create or update multiple customer account records in the Salesforce Brilliant Mule instance.
+    is:
+      - security.client-id-enforced
+      - responses.standard-routing-and-runtime-errors
+    body:
+      application/json:
+        type: sfCustomer.SalesforceCustomerCollection
+    responses:
+      200:
+        description: Customer records processed.
+        body:
+          application/json:
+            type: UpsertSalesforceBrilmCustomersResponse
+
+/customers/{salesforceAccountId}:
+  uriParameters:
+    salesforceAccountId:
+      displayName: Salesforce Account ID
+      description: Unique identifier of the Salesforce customer account record.
+      type: string
+      minLength: 1
+      example: 001bm00000J2nswAAB
+  get:
+    displayName: Get customer by ID
+    description: |
+      Retrieve a customer account record by ID from the Salesforce Brilliant Mule instance.
+    is:
+      - security.client-id-enforced
+      - responses.standard-routing-and-runtime-errors
+    responses:
+      200:
+        description: Customer record retrieved.
+        body:
+          application/json:
+            type: GetSalesforceBrilmCustomerResponse
+      404:
+        description: Customer record not found.
+        body:
+          application/json:
+            type: common.ApiResponse
+
+types:
+  GetSalesforceBrilmCustomersResponse:
+    displayName: Get Salesforce Brilliant Mule Customers Response
+    description: Standard API response envelope with a customer retrieval payload.
+    type: common.ApiResponse
+    properties:
+      data?:
+        type: sfCustomer.SalesforceCustomerGetData
+
+  GetSalesforceBrilmCustomerResponse:
+    displayName: Get Salesforce Brilliant Mule Customer Response
+    description: Standard API response envelope with a single customer retrieval payload.
+    type: common.ApiResponse
+    properties:
+      data?:
+        type: sfCustomer.SalesforceCustomerSingleGetData
+
+  UpsertSalesforceBrilmCustomersResponse:
+    displayName: Upsert Salesforce Brilliant Mule Customers Response
+    description: Standard API response envelope with a customer processing payload.
+    type: common.ApiResponse
+    properties:
+      data?:
+        type: sfCustomer.SalesforceCustomerUpsertData
+

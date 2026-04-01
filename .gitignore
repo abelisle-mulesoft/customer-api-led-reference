@@ -1,0 +1,60 @@
+# --------------------------------------
+# macOS / OS noise
+# --------------------------------------
+.DS_Store
+
+# --------------------------------------
+# Editor / IDE
+# --------------------------------------
+.idea/
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+
+# --------------------------------------
+# Anypoint Studio / Eclipse
+# --------------------------------------
+.classpath
+.project
+.settings/
+.metadata/
+.recommenders/
+
+# --------------------------------------
+# Java / Maven / Mule build artifacts
+# --------------------------------------
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+
+# --------------------------------------
+# Environment / secrets
+# --------------------------------------
+.env
+.env.*
+!.env.example
+
+# --------------------------------------
+# Logs
+# --------------------------------------
+*.log
+logs/
+
+# --------------------------------------
+# Temporary files
+# --------------------------------------
+*.tmp
+*.swp
+*.swo
+*.bak
+*~
+
+# --------------------------------------
+# Private / local-only content
+# --------------------------------------
+_private/

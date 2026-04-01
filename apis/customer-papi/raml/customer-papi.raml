@@ -1,0 +1,207 @@
+#%RAML 1.0
+title: Customer Process API
+description: |
+  Process API for orchestrating and normalizing customer data across multiple system APIs into the
+  enterprise canonical customer model. It abstracts underlying system complexity by aggregating and
+  transforming system-aligned data into a unified, business-facing representation. It exposes
+  customer data using the enterprise canonical customer model, as defined in the Customer Canonical
+  Data Types Library.
+
+  This Process API also supports event-driven integration by accepting canonical customer
+  synchronization events and orchestrating downstream updates across connected systems.
+version: v1
+mediaType:
+  - application/json
+protocols:
+  - HTTPS
+
+uses:
+  customer: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-canonical-customer-types/1.0.2/lib-canonical-customer-types.raml
+  common: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses/1.0.2/lib-common-responses.raml
+  responses: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-response-traits/1.0.1/lib-response-traits.raml
+  security: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-security-traits/1.0.2/lib-security-traits.raml
+
+/customers:
+  displayName: Customers
+  description: |
+    Aggregated collection of customer records represented using the canonical Customer model.
+
+  get:
+    displayName: Get customers
+    description: |
+      Retrieves customer records from connected customer system APIs, aggregates them, and returns
+      them using the canonical Customer model.
+    is:
+      - security.client-id-enforced
+      - responses.standard-routing-and-runtime-errors
+    responses:
+      200:
+        description: Customer records retrieved.
+        body:
+          application/json:
+            type: GetCustomersResponse
+
+/customers/{customerId}:
+  displayName: Customer by ID
+  description: |
+    Customer record identified by customer unique identifier.
+
+  uriParameters:
+    customerId:
+      displayName: Customer ID
+      description: Unique identifier of the customer record.
+      type: string
+      example: CUST-10001
+
+  get:
+    displayName: Get Customer by ID
+    description: |
+      Retrieve a customer record by ID from connected customer system APIs and return the canonical
+      Customer representation.
+    is:
+      - security.client-id-enforced
+      - responses.standard-routing-and-runtime-errors
+    responses:
+      200:
+        description: Customer record retrieved.
+        body:
+          application/json:
+            type: GetCustomerResponse
+      404:
+        description: Customer record not found.
+        body:
+          application/json:
+            type: common.ApiResponse
+
+/customer-sync-events:
+  displayName: Customer Sync Events
+  description: |
+    Canonical customer synchronization events for downstream updates across connected systems.
+
+  post:
+    displayName: Process Customer Sync Event
+    description: |
+      Accepts a canonical customer synchronization event and synchronously orchestrates propagation
+      of the change across connected systems.
+    is:
+      - security.client-id-enforced
+      - responses.standard-routing-and-runtime-errors
+    body:
+      application/json:
+        type: CustomerSyncEvent
+    responses:
+      200:
+        description: Customer synchronization event processed.
+        body:
+          application/json:
+            type: ProcessCustomerSyncEventResponse
+
+types:
+  GetCustomersResponse:
+    displayName: Get Customers Response
+    description: |
+      Standard API response envelope with aggregated customer retrieval payloads.
+    type: common.ApiResponse
+    properties:
+      data?:
+        type: customer.CustomerGetData
+
+  GetCustomerResponse:
+    displayName: Get Customer Response
+    description: Standard API response envelope with a single customer retrieval payload.
+    type: common.ApiResponse
+    properties:
+      data?:
+        type: customer.CustomerSingleGetData
+
+  CustomerSyncEvent:
+    displayName: Customer Sync Event
+    description: |
+      Canonical customer synchronization event submitted to the Process API for downstream propagation.
+    type: object
+    properties:
+      eventType:
+        displayName: Event Type
+        description: Business event type associated with the customer synchronization request.
+        type: string
+        example: CUSTOMER_UPDATED
+      sourceSystem:
+        displayName: Source System
+        description: Source business system that originated the customer event.
+        type: customer.SourceSystem
+      occurredAt:
+        displayName: Occurred At
+        description: Timestamp at which the event occurred in the source domain.
+        type: datetime
+        example: 2026-03-24T17:30:00Z
+      customer:
+        displayName: Customer
+        description: Canonical customer payload associated with the event.
+        type: customer.Customer
+    example:
+      eventType: CUSTOMER_UPDATED
+      sourceSystem: SALESFORCE
+      occurredAt: 2026-03-24T17:30:00Z
+      customer:
+        id: CUST-10001
+        externalIds:
+          salesforceAccountId: 001bm00000J2nswAAB
+          sapCustomerNumber: "0001234567"
+        sourceSystems: [ SALESFORCE, SAP_ECC ]
+        name: Acme Corporation
+        customerType: BUSINESS
+        status: ACTIVE
+        contacts:
+          - role: PRIMARY
+            name: Jane Doe
+            email: jane.doe@acme.example
+            phone: +1-206-555-0112
+        addresses:
+          - addressType: BILLING
+            line1: 100 Main Street
+            city: Seattle
+            state: WA
+            postalCode: "98101"
+            country: USA
+        metadata:
+          industry: Manufacturing
+        createdDate: 2026-03-12T18:25:43Z
+        lastModifiedDate: 2026-03-16T09:42:10Z
+
+  CustomerSyncProcessData:
+    displayName: Customer Sync Process Data
+    description: Summary payload returned after processing a canonical customer synchronization event.
+    type: object
+    properties:
+      recordCount:
+        displayName: Record Count
+        description: Number of customer records included in the synchronization request.
+        type: integer
+        minimum: 0
+        example: 1
+      processedCount:
+        displayName: Processed Count
+        description: Number of customer records successfully processed.
+        type: integer
+        minimum: 0
+        example: 1
+      downstreamSystems:
+        displayName: Downstream Systems
+        description: Downstream systems targeted by the synchronization process.
+        type: customer.SourceSystem[]
+        example: [ ORACLE_EBS, SAP_ECC ]
+    example:
+      recordCount: 1
+      processedCount: 1
+      downstreamSystems: [ ORACLE_EBS, SAP_ECC ]
+
+  ProcessCustomerSyncEventResponse:
+    displayName: Process Customer Sync Event Response
+    description: |
+      Standard response envelope returned after processing a canonical customer synchronization event.
+    type: common.ApiResponse
+    properties:
+      data?:
+        displayName: Data
+        description: Processing summary for the synchronization event.
+        type: CustomerSyncProcessData

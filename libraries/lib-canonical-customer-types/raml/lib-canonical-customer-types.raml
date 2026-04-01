@@ -1,0 +1,456 @@
+#%RAML 1.0 Library
+usage: |
+  This library defines reusable canonical customer data types for use in Process APIs.
+
+  As part of the Customer API-led reference architecture, it standardizes customer data across
+  source systems such as Salesforce, Oracle EBS, and SAP ECC.
+
+  The canonical model is system-agnostic and must not expose source-system-specific field semantics.
+  System-specific identifiers should be retained in `externalIds`, and transformation logic should
+  reside in System APIs and mapping layers.
+
+  This library does not define response envelopes. APIs should use the standard response envelope
+  specified in lib-common-responses and the code values defined in guide-code-taxonomy.
+
+types:
+  CustomerType:
+    displayName: Customer Type
+    description: |
+      High-level classification of the customer in the enterprise canonical model.
+
+      - BUSINESS represents an organization, company, or legal entity.
+      - INDIVIDUAL represents a person acting as the customer.
+    type: string
+    enum: [ BUSINESS, INDIVIDUAL ]
+    example: BUSINESS
+
+  CustomerStatus:
+    displayName: Customer Status
+    description: |
+      Lifecycle status of the customer in the canonical domain.
+
+      - ACTIVE indicates the customer is active and available for normal business processing.
+      - INACTIVE indicates the customer exists but is not currently active for normal processing.
+    type: string
+    enum: [ ACTIVE, INACTIVE ]
+    example: ACTIVE
+
+  AddressType:
+    displayName: Address Type
+    description: |
+      Business purpose of an address associated with the customer.
+
+      - BILLING identifies the address used for invoicing and financial correspondence.
+      - SHIPPING identifies the address used for delivery or fulfillment.
+    type: string
+    enum: [ BILLING, SHIPPING ]
+    example: BILLING
+
+  ContactRole:
+    displayName: Contact Role
+    description: |
+      Functional role associated with a customer contact.
+
+      The values are intentionally business-oriented rather than source-system-specific.
+    type: string
+    enum: [ PRIMARY, BILLING, TECHNICAL ]
+    example: PRIMARY
+
+  SourceSystem:
+    displayName: Source System
+    description: |
+      Source business system that contributes customer data to the canonical customer record.
+
+      These values identify upstream systems and are useful for traceability,
+      troubleshooting, and orchestration.
+    type: string
+    enum: [ SALESFORCE, ORACLE_EBS, SAP_ECC ]
+    example: SAP_ECC
+
+  SourceSystemCollection:
+    displayName: Source System Collection
+    description: Collection of source systems that contribute to the canonical customer record.
+    type: SourceSystem[]
+    minItems: 1
+    example: [ SAP_ECC, SALESFORCE ]
+
+  ExternalIds:
+    displayName: External IDs
+    description: |
+      Identifiers assigned to the customer by participating source systems.
+
+      These identifiers preserve traceability back to the originating systems without leaking
+      system-specific field semantics into the rest of the canonical customer model.
+    type: object
+    additionalProperties: false
+    properties:
+      salesforceAccountId?:
+        displayName: Salesforce Account ID
+        description: Identifier of the corresponding Salesforce Account record.
+        type: string
+        example: 001bm00000J2nswAAB
+      oracleCustomerId?:
+        displayName: Oracle Customer ID
+        description: Identifier of the corresponding Oracle EBS customer record.
+        type: string
+        example: "1000002451"
+      sapCustomerNumber?:
+        displayName: SAP Customer Number
+        description: Identifier of the corresponding SAP ECC customer record.
+        type: string
+        example: "0001234567"
+    example:
+      salesforceAccountId: 001bm00000J2nswAAB
+      oracleCustomerId: "1000002451"
+      sapCustomerNumber: "0001234567"
+
+  Contact:
+    displayName: Contact
+    description: |
+      Canonical representation of a contact point associated with the customer.
+
+      Contacts are modeled separately so that multiple business contacts can be associated with a
+      single customer record.
+    type: object
+    additionalProperties: false
+    properties:
+      role:
+        displayName: Contact Role
+        description: Business role of the contact in relation to the customer.
+        type: ContactRole
+      name?:
+        displayName: Name
+        description: Full name of the contact.
+        type: string
+        example: Jane Doe
+      email?:
+        displayName: Email
+        description: Email address of the contact.
+        type: string
+        example: jane.doe@acme.example
+      phone?:
+        displayName: Phone
+        description: Telephone number of the contact.
+        type: string
+        example: +1-206-555-0112
+    example:
+      role: BILLING
+      name: Jane Doe
+      email: jane.doe@acme.example
+      phone: +1-206-555-0112
+
+  Address:
+    displayName: Address
+    description: Canonical representation of an address associated with the customer.
+    type: object
+    additionalProperties: false
+    properties:
+      addressType:
+        displayName: Address Type
+        description: Business purpose of the address.
+        type: AddressType
+      line1:
+        displayName: Address Line 1
+        description: Primary street address line.
+        type: string
+        example: 100 Main Street
+      line2?:
+        displayName: Address Line 2
+        description: Secondary street address line such as suite, unit, or floor.
+        type: string
+        example: Suite 400
+      city:
+        displayName: City
+        description: City or locality.
+        type: string
+        example: Seattle
+      state?:
+        displayName: State or Province
+        description: State, province, or region.
+        type: string
+        example: WA
+      postalCode?:
+        displayName: Postal Code
+        description: Postal or ZIP code.
+        type: string
+        example: "98101"
+      country:
+        displayName: Country
+        description: Country name or code as carried by the integration domain.
+        type: string
+        example: USA
+    example:
+      addressType: BILLING
+      line1: 100 Main Street
+      line2: Suite 400
+      city: Seattle
+      state: WA
+      postalCode: "98101"
+      country: USA
+
+  Customer:
+    displayName: Customer
+    description: |
+      Canonical representation of a customer used across Customer Process APIs.
+
+      This model abstracts customer information from participating source systems such as
+      Salesforce, Oracle EBS, and SAP ECC into a normalized business-oriented structure.
+    type: object
+    additionalProperties: false
+    properties:
+      id:
+        displayName: Customer ID
+        description: |
+          Canonical identifier for the customer within the API domain.
+
+          This value may be generated by the Process API or derived from a source system, but it
+          should remain stable for consumers of the canonical model.
+        type: string
+        example: CUST-10001
+      externalIds?:
+        displayName: External IDs
+        description: Source-system identifiers associated with the customer.
+        type: ExternalIds
+      sourceSystems?:
+        displayName: Source Systems
+        description: |
+          Source business systems that contribute to the canonical customer record in the current
+          payload.
+        type: SourceSystemCollection
+      name:
+        displayName: Customer Name
+        description: Primary display name of the customer.
+        type: string
+        example: Acme Corporation
+      customerType:
+        displayName: Customer Type
+        description: High-level classification of the customer.
+        type: CustomerType
+      status?:
+        displayName: Status
+        description: Lifecycle status of the customer in the canonical domain.
+        type: CustomerStatus
+      contacts?:
+        displayName: Contacts
+        description: Business contacts associated with the customer.
+        type: Contact[]
+        minItems: 1
+      addresses?:
+        displayName: Addresses
+        description: Addresses associated with the customer.
+        type: Address[]
+        minItems: 1
+      metadata?:
+        displayName: Metadata
+        description: |
+          Optional integration metadata or non-critical attributes that do not justify first-class
+          canonical properties.
+        type: object
+        additionalProperties: true
+      createdDate?:
+        displayName: Created Date
+        description: Timestamp when the customer record was originally created in the source domain.
+        type: datetime
+        example: 2026-03-12T18:25:43Z
+      lastModifiedDate?:
+        displayName: Last Modified Date
+        description: Timestamp when the customer record was last modified in the source domain.
+        type: datetime
+        example: 2026-03-16T09:42:10Z
+    example:
+      id: CUST-10001
+      externalIds:
+        salesforceAccountId: 001bm00000J2nswAAB
+        oracleCustomerId: "1000002451"
+        sapCustomerNumber: "0001234567"
+      sourceSystems: [ SAP_ECC, SALESFORCE ]
+      name: Acme Corporation
+      customerType: BUSINESS
+      status: ACTIVE
+      contacts:
+        - role: PRIMARY
+          name: Jane Doe
+          email: jane.doe@acme.example
+          phone: +1-206-555-0112
+        - role: BILLING
+          name: Accounts Payable
+          email: ap@acme.example
+          phone: +1-206-555-0198
+      addresses:
+        - addressType: BILLING
+          line1: 100 Main Street
+          line2: Suite 400
+          city: Seattle
+          state: WA
+          postalCode: "98101"
+          country: USA
+        - addressType: SHIPPING
+          line1: 500 Distribution Way
+          city: Kent
+          state: WA
+          postalCode: "98032"
+          country: USA
+      metadata:
+        industry: Manufacturing
+        paymentTerms: NET_30
+      createdDate: 2026-03-12T18:25:43Z
+      lastModifiedDate: 2026-03-16T09:42:10Z
+
+  CustomerCollection:
+    displayName: Customer Collection
+    description: Collection of canonical customer records.
+    type: Customer[]
+    minItems: 1
+    example:
+      - id: CUST-10001
+        externalIds:
+          salesforceAccountId: 001bm00000J2nswAAB
+          sapCustomerNumber: "0001234567"
+        sourceSystems: [ SAP_ECC, SALESFORCE ]
+        name: Acme Corporation
+        customerType: BUSINESS
+        status: ACTIVE
+        contacts:
+          - role: PRIMARY
+            name: Jane Doe
+            email: jane.doe@acme.example
+            phone: +1-206-555-0112
+        addresses:
+          - addressType: BILLING
+            line1: 100 Main Street
+            city: Seattle
+            state: WA
+            postalCode: "98101"
+            country: USA
+        metadata:
+          industry: Manufacturing
+        createdDate: 2026-03-12T18:25:43Z
+        lastModifiedDate: 2026-03-16T09:42:10Z
+      - id: CUST-10002
+        externalIds:
+          oracleCustomerId: "1000002452"
+        sourceSystems: [ ORACLE_EBS ]
+        name: Globex Corporation
+        customerType: BUSINESS
+        status: ACTIVE
+        contacts:
+          - role: TECHNICAL
+            name: John Smith
+            email: john.smith@globex.example
+            phone: +1-425-555-0133
+        addresses:
+          - addressType: SHIPPING
+            line1: 500 Market Street
+            city: Bellevue
+            state: WA
+            postalCode: "98004"
+            country: USA
+        metadata:
+          segment: Enterprise
+        createdDate: 2026-03-10T09:00:00Z
+        lastModifiedDate: 2026-03-12T16:45:00Z
+
+  CustomerGetData:
+    displayName: Customer Get Data
+    description: Canonical customer retrieval payload returned in the standard response envelope.
+    type: object
+    additionalProperties: false
+    properties:
+      customers:
+        displayName: Customers
+        description: Canonical customer records returned by the Process API.
+        type: CustomerCollection
+      recordCount:
+        displayName: Record Count
+        description: Number of customer records returned.
+        type: integer
+        minimum: 0
+        example: 2
+    example:
+      customers:
+        - id: CUST-10001
+          externalIds:
+            salesforceAccountId: 001bm00000J2nswAAB
+            sapCustomerNumber: "0001234567"
+          sourceSystems: [ SAP_ECC, SALESFORCE ]
+          name: Acme Corporation
+          customerType: BUSINESS
+          status: ACTIVE
+          contacts:
+            - role: PRIMARY
+              name: Jane Doe
+              email: jane.doe@acme.example
+              phone: +1-206-555-0112
+          addresses:
+            - addressType: BILLING
+              line1: 100 Main Street
+              city: Seattle
+              state: WA
+              postalCode: "98101"
+              country: USA
+          metadata:
+            industry: Manufacturing
+          createdDate: 2026-03-12T18:25:43Z
+          lastModifiedDate: 2026-03-16T09:42:10Z
+        - id: CUST-10002
+          externalIds:
+            oracleCustomerId: "1000002452"
+          sourceSystems: [ ORACLE_EBS ]
+          name: Globex Corporation
+          customerType: BUSINESS
+          status: ACTIVE
+          contacts:
+            - role: TECHNICAL
+              name: John Smith
+              email: john.smith@globex.example
+              phone: +1-425-555-0133
+          addresses:
+            - addressType: SHIPPING
+              line1: 500 Market Street
+              city: Bellevue
+              state: WA
+              postalCode: "98004"
+              country: USA
+          metadata:
+            segment: Enterprise
+          createdDate: 2026-03-10T09:00:00Z
+          lastModifiedDate: 2026-03-12T16:45:00Z
+      recordCount: 2
+
+  CustomerSingleGetData:
+    displayName: Customer Single Get Data
+    description: Single canonical customer retrieval payload returned in the standard response envelope.
+    type: object
+    additionalProperties: false
+    properties:
+      customer:
+        displayName: Customer
+        description: Canonical customer record returned by the Process API.
+        type: Customer
+    example:
+      customer:
+        id: CUST-10001
+        externalIds:
+          salesforceAccountId: 001bm00000J2nswAAB
+          sapCustomerNumber: "0001234567"
+        sourceSystems: [ SAP_ECC, SALESFORCE ]
+        name: Acme Corporation
+        customerType: BUSINESS
+        status: ACTIVE
+        contacts:
+          - role: PRIMARY
+            name: Jane Doe
+            email: jane.doe@acme.example
+            phone: +1-206-555-0112
+        addresses:
+          - addressType: BILLING
+            line1: 100 Main Street
+            city: Seattle
+            state: WA
+            postalCode: "98101"
+            country: USA
+        metadata:
+          industry: Manufacturing
+          paymentTerms: NET_30
+        createdDate: 2026-03-12T18:25:43Z
+        lastModifiedDate: 2026-03-16T09:42:10Z

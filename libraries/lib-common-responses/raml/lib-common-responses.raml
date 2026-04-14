@@ -1,26 +1,27 @@
 #%RAML 1.0 Library
 usage: |
-  This library defines a standard response envelope and reusable response types for use across APIs.
+  This library defines a reference response model and reusable response types for APIs in the
+  Customer API-led reference architecture.
 
-  As part of the Customer API-led reference architecture, it standardizes response structure, error
-  handling, and observability across APIs.
+  It promotes a consistent way to communicate request outcomes, structured error details, and
+  observability metadata across APIs.
 
-  APIs should use this library to ensure consistency and may extend the envelope by constraining the
-  shape of the `ApiResponse.data` property to an operation-specific payload.
+  Teams may adopt the full `ApiResponse` envelope or use selected aspects of the model, such as
+  structured error details, correlation identifiers, and standardized response messages.
 
 types:
   ApiResponseStatus:
     displayName: Response status
     description: |
-      Business outcome of the request.
+      Overall outcome of the API operation.
 
-      This value is independent of the HTTP status code and indicates whether the operation
-      completed successfully, completed with one or more non-fatal conditions, or failed.
+      This value is independent of the HTTP status code.
 
-      - SUCCESS means the operation completed as expected.
-      - WARNING means the operation completed, but the client should inspect `details` for non-fatal
-        issues, skipped records, or other advisory messages.
-      - ERROR means the operation could not be completed successfully.
+      - `SUCCESS` indicates the operation completed successfully.
+      - `WARNING` indicates the operation completed successfully, but with one or more caveats that
+        should be reviewed in the `details` array.
+      - `ERROR` indicates the operation failed. Additional context may be provided in the `details`
+        array.
     type: string
     enum: [ SUCCESS, WARNING, ERROR ]
     example: ERROR
@@ -96,13 +97,18 @@ types:
   ApiResponse:
     displayName: API response
     description: |
-      Standard response envelope returned by all APIs.
+      Reference response envelope for use in internal API portfolios.
 
-      The response communicates the HTTP result, the business outcome, a concise human-readable
-      summary, optional detail messages, and optional operation-specific data.
+      This response envelope communicates the HTTP result, the business outcome, a concise
+      human-readable summary, optional detail information, and optional operation-specific data.
 
-      - The `details` array is used to provide additional context for warnings and errors.
-      - The `data` property is reserved for operation-specific payloads and may be constrained by an
+      - The `status` property communicates the overall operation outcome.
+      - The `details` array is used to provide additional context when the operation completed with
+        caveats or failed. Typical patterns include:
+        - `SUCCESS`: usually no `details`.
+        - `WARNING`: one or more `details` explaining caveats.
+        - `ERROR`: zero or more `details` explaining the failure.
+      - The `data` property is reserved for operation-specific payloads and may be specialized by an
         individual API specification.
     type: object
     properties:
@@ -148,7 +154,7 @@ types:
           Optional operation-specific payload returned by the API.
 
           The common response library leaves this property unconstrained so that
-          individual APIs can override it with a typed payload appropriate for a
+          individual APIs can specialize it with a typed payload appropriate for a
           specific operation.
         type: any
         required: false
@@ -162,6 +168,9 @@ types:
           correlationId: 8af51c4a-1c90-4f92-9d4d-2f56a61a9b8f
           data:
             recordCount: 2
+            customers:
+              - customerAccountNumber: "10001"
+              - customerAccountNumber: "10002"
       warning:
         value:
           dateTime: 2026-03-17T22:16:00Z

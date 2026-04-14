@@ -1,6 +1,6 @@
 ## Overview
 
-The API Response Traits Library is a reusable RAML 1.0 library that defines standard response traits for use across APIs within the Customer API-led reference architecture.
+The API Response Traits Library is a reusable RAML 1.0 library that defines standard response traits for in APIs within the Customer API-led reference architecture.
 
 It centralizes method-level response definitions so APIs can consistently document common request, routing, negotiation, and runtime error conditions without duplicating response blocks.
 
@@ -8,11 +8,11 @@ It centralizes method-level response definitions so APIs can consistently docume
 
 Think of these libraries as defining: who can call the API, what happens, and how responses are structured.
 
-- **Who can call the API** → defined by the API Security Traits Library  
-- **What happens when a request is processed** → defined by the API Response Traits Library  
-- **How responses are structured** → defined by the Common Response Types Library  
+- **Who can call the API** → defined by the API Security Traits Library
+- **What happens when a request is processed** → defined by the API Response Traits Library
+- **How responses are structured** → defined by the Common Response Types Library
 
-Together, they ensure consistent access control, behavior, and response structure across all APIs.
+Together, they promote consistent access control, behavior, and response structure across APIs that adopt the shared model.
 
 ## How These Libraries Work Together
 
@@ -24,7 +24,7 @@ The API Response Traits Library defines the response behavior illustrated in the
 
 ## Design Principles
 
-- **Consistency**: Standardize error responses across all APIs using a common response model.
+- **Consistency**: Promote consistent error responses across APIs using a common response model.
 - **Reusability**: Define traits once and reuse them across System, Process, and Experience APIs.
 - **Separation of concerns**: Keep response behavior defined in reusable libraries rather than embedded in individual API specifications.
 - **Alignment with platform standards**: Ensure compatibility with the Common Response Types Library and API Manager policies.
@@ -40,15 +40,15 @@ This library defines reusable RAML traits for standard HTTP error responses, inc
 - Runtime errors (500)
 - Not implemented responses (501)
 
-Each trait uses the standard response envelope defined in the Common Response Types Library.
+Each trait is designed to work with the response model defined in the Common Response Types Library.
 
 ## Typical Usage
 
 This library is designed for use across all API layers:
 
-- **System APIs**: Ensure consistent error responses when exposing system-aligned data.
-- **Process APIs**: Standardize error handling while orchestrating and transforming data.
-- **Experience APIs**: Provide consistent and predictable error responses to consuming applications.
+- **System APIs**: use these traits to document common HTTP error scenarios consistently.
+- **Process APIs**: are strong candidates for these traits because they often orchestrate multiple systems and benefit from reusable error response definitions.
+- **Experience APIs**: may use these traits when consistency across an internal portfolio is more important than a lighter or more consumer-specific response style.
 
 ## Relationship to Other Assets
 

@@ -13,13 +13,13 @@ Before opening a support request, please review the following resources:
 - The **Home** and **How to Consume** documentation pages of this asset.
 - Your API specification to confirm the RAML library was imported correctly.
 - The examples provided in the library and supporting documentation.
-- The Common Response Types Library and Customer Canonical Data Types Library.
+- The Common Response Types Library and Customer Canonical Data Types Library, if relevant to the issue.
 
 ## Information to Include in Your Request
 
 Providing the following information will help the support team respond more quickly:
 
-- Exchange asset name and version (example: lib-canonical-customer-types -- v1.0.0).
+- Exchange asset name and version (example: lib-security-traits -- v1.0.0).
 - Name of the API that is using the library.
 - Description of the issue or question.
 - RAML snippet showing how the library is being used.
@@ -30,12 +30,13 @@ Including a minimal reproducible example greatly improves the ability to diagnos
 
 ## Intended Usage
 
-This asset provides canonical customer data types for Process APIs. Support requests should be related to:
+This asset provides reusable security traits for API specifications. Support requests should be related to:
 
 - Importing the RAML library into an API specification.
-- Using Customer and related types in API specifications.
-- Referencing collection and payload types correctly.
-- Aligning Process APIs with the canonical customer model.
+- Applying security traits to API methods correctly.
+- Aligning RAML-declared security requirements with API Manager policies.
+- Using consistent header names and authentication requirements across APIs.
+- Troubleshooting mismatches between contract-level security declarations and runtime enforcement.
 
 ## Contribution and Feedback
 

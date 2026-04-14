@@ -1,6 +1,6 @@
 ## Overview
 
-This library provides reusable security traits that can be applied to API specifications to enforce consistent authentication and authorization requirements.
+This library provides reusable security traits that can be applied to API specifications to declare consistent authentication and authorization requirements.
 
 API designers import this library into their API specifications and apply the defined traits to methods requiring security enforcement.
 
@@ -44,9 +44,9 @@ Both layers must be aligned to ensure proper enforcement.
 
 ## Typical Usage Patterns
 
-- Apply security traits consistently across all endpoints within an API.
+- Apply security traits consistently across endpoints that share the same access control requirements.
 - Use a single alias (e.g., security) across all API specifications.
-- Combine with the Common Response Types Library to standardize error responses.
+- Combine with the Common Response Types Library when a shared response model is desirable for security-related error responses.
 
 ## Recommended Best Practices
 

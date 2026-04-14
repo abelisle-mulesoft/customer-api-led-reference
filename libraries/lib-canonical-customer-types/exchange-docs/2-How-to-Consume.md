@@ -47,9 +47,9 @@ types:
         type: customer.CustomerGetData
 ```
 
-## Combine with the Standard Response Envelope
+## Combine with a Shared Response Model (Optional)
 
-This library defines data types only. APIs should use the standard response envelope from the Common Response Types Library.
+This library defines data types only. APIs may use the response model from the Common Response Types Library when a shared response structure is desirable.
 
 Example:
 

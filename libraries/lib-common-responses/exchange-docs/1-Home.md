@@ -1,6 +1,6 @@
 ## Overview
 
-The Common Response Types Library is a reusable RAML 1.0 library that defines a standard response envelope for all Brilliant Mule APIs. This library establishes uniform communication of request outcomes, detailed messages, and operation-specific payloads. Centralizing these definitions enables API designers to maintain consistent response structures across system, process, and experience APIs.
+The Common Response Types Library is a reusable RAML 1.0 library that defines a reference response model for Brilliant Mule APIs. This library establishes uniform communication of request outcomes, detailed messages, and operation-specific payloads. Centralizing these definitions enables API designers to maintain consistent response structures across system, process, and experience APIs.
 
 The library provides reusable data types that address common API design and runtime scenarios, including:
 
@@ -13,9 +13,9 @@ The library provides reusable data types that address common API design and runt
 
 Think of these libraries as defining: who can call the API, what happens, and how responses are structured.
 
-- **Who can call the API** → API Security Traits Library  
-- **What happens** → API Response Traits Library  
-- **How responses look** → Common Response Types Library  
+- **Who can call the API** → API Security Traits Library
+- **What happens** → API Response Traits Library
+- **How responses look** → Common Response Types Library
 
 Together, they ensure consistent access control, behavior, and response structure across all APIs.
 
@@ -25,7 +25,7 @@ The following diagram visualizes how these libraries work together, showing how 
 
 ![Library Relationships](resources/lib-common-responses-diagram-f48532ea-b170-4112-adbe-eff7863a26c2.png)
 
-The Common Response Types Library defines the response structure referenced in the diagram above, providing a consistent response envelope used across all APIs. Response behavior is defined by the API Response Traits Library.
+The Common Response Types Library defines the response structure referenced in the diagram above, providing a consistent response model that can be adopted across APIs. Response behavior is defined by the API Response Traits Library.
 
 ## Response Model Overview
 
@@ -66,7 +66,7 @@ This structure establishes a consistent response envelope while allowing APIs to
 
 The Common Response Types Library follows several guiding principles.
 
-**1. Consistency across APIs:** All Brilliant Mule APIs should communicate outcomes using the same response structure so that consumers can interpret responses consistently across domains and implementations.
+**1. Consistency across APIs:** APIs may adopt a consistent response structure to enable uniform interpretation across domains and implementations.
 
 **2. Separation of HTTP and business outcome:** HTTP status codes communicate transport-level results, while `ApiResponse.status` communicates the business outcome of the request independent of transport. This allows APIs to clearly express successful processing, partial success, warnings, and failures.
 
@@ -82,7 +82,7 @@ The Common Response Types Library follows several guiding principles.
 
 The RAML library defines the following reusable types.
 
-- `ApiResponse`: Represents the standard response envelope returned by APIs. The envelope includes:
+- `ApiResponse`: Represents the reference response envelope that can be used across APIs. The envelope includes:
 
   - `dateTime` -- timestamp indicating when the response was generated.
   - `httpStatus` -- HTTP status code returned by the API.
@@ -143,7 +143,7 @@ Example of an `ApiResponse`:
 
 ## Relationship to Other Assets
 
-This library defines the standard response envelope used across the Customer API-led reference architecture.
+This library defines the reference response model used within the Customer API-led reference architecture.
 
 It works in conjunction with:
 
@@ -160,11 +160,11 @@ Together, these libraries establish a consistent model where:
 
 The Common Response Types Library is typically used across APIs structured according to the API-led connectivity approach.
 
-- System APIs use the library to standardize backend-facing response structures.
+- System APIs can use the library to standardize backend-facing response structures.
 
-- Process APIs use the library to communicate orchestration outcomes, warnings, and detail conditions consistently across multi-system workflows.
+- Process APIs are the strongest candidates for the full response envelope, as they often need to communicate orchestration outcomes, warnings, and multi-system conditions.
 
-- Experience APIs use the library to provide predictable response envelopes to applications and channels while maintaining the same response semantics used elsewhere in the platform.
+- Experience APIs may adopt the full envelope when consistency across an internal portfolio is more important than a lightweight client-facing shape.
 
 ## Versioning
 

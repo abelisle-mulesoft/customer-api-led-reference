@@ -10,7 +10,7 @@ This library defines access control as part of a broader model where:
 - Response behavior is defined in the API Response Traits Library.
 - Response structure is defined in the Common Response Types Library.
 
-All APIs should apply standardized security traits defined in this library.
+APIs may apply the reusable security traits defined in this library to declare common authentication and authorization requirements consistently.
 
 ## Role in the Architecture
 
@@ -37,7 +37,7 @@ This folder contains the design-time artifacts used to define and publish the AP
 The API Security Traits Library is responsible for:
 
 - Defining reusable traits for authentication and authorization requirements.
-- Standardizing how access control is declared across APIs.
+- Promoting a consistent approach to declaring access control across APIs.
 - Promoting consistent application of security policies.
 - Reducing duplication of security definitions in API specifications.
 - Aligning API specifications with gateway-enforced security policies.
@@ -61,21 +61,23 @@ It is typically used with:
 
 ## Usage
 
-This library is intended to be imported and applied across all APIs.
+This library is intended to be imported and applied where teams want reusable, consistent security declarations in API specifications.
 
 Typical usage includes:
 
 - Applying security traits to API methods to enforce access control.
 - Declaring authentication and authorization requirements in API specifications.
-- Ensuring consistent security behavior across System, Process, and Experience APIs.
+- Promoting consistent security declarations across System, Process, and Experience APIs.
 
 ## Relationship to Other Assets
 
-This library is part of the Customer API-led Reference Architecture and works in conjunction with:
+This library focuses on access control and can be used on its own or alongside libraries that define response behavior and structure.
 
-- API Response Traits Library -- defines response behavior for both successful and error scenarios.
-- Common Response Types Library -- defines the response structure used for security-related responses.
-- System, Process, and Experience APIs -- apply these traits to enforce access control.
+It is part of the Customer API-led Reference Architecture and complements other reusable assets:
+
+- API Response Traits Library -- defines reusable response behaviors for common HTTP scenarios.
+- Common Response Types Library -- defines a shared response model that may be used for security-related responses.
+- System, Process, and Experience APIs -- may use these traits to declare authentication and authorization requirements.
 
 ## Versioning
 

@@ -49,9 +49,9 @@ types:
         type: sfCustomer.SalesforceCustomerGetData
 ```
 
-## Combine with the Standard Response Envelope
+## Combine with a Shared Response Model (Optional)
 
-This library defines data types only. APIs should use the standard response envelope from the [Common Response Types Library](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses).
+This library defines data types only. APIs may use the response model from the Common Response Types Library when a shared response structure is desirable.
 
 Example:
 

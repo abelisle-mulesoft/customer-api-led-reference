@@ -13,8 +13,9 @@ Before opening a support request, please review the following resources:
 - The **Home** and **How to Consume** documentation pages of this asset.
 - Your API specification to confirm the RAML library was imported correctly.
 - The examples provided in the library and supporting documentation.
-- The Common Response Types Library and Customer Canonical Data Types Library.
-
+- The Common Response Types Library, if your API uses a shared response model.
+- The Customer Canonical Data Types Library documentation.
+å
 ## Information to Include in Your Request
 
 Providing the following information will help the support team respond more quickly:

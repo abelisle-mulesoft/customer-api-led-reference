@@ -45,11 +45,9 @@ The library defines the following core data types:
 
 ## Dependencies
 
-This library does not depend on other APIs.
+This library does not depend on other APIs. It is typically used with:
 
-It is typically used with:
-
-- Common Response Types Library -- standard response envelope used by Process APIs.
+- Common Response Types Library -- provides a shared response model that may be used when returning canonical data.
 
 ## Usage
 
@@ -65,10 +63,11 @@ System APIs should not use this library, as they must remain aligned to their un
 
 ## Relationship to Other Assets
 
-This library is part of the Customer API-led Reference Architecture and works in conjunction with:
+This library focuses on canonical data modeling and is intended for use in the Process API layer. It is part of the Customer API-led Reference Architecture and complements other reusable assets:
 
-- Common Response Types Library -- standard response envelope.
-- Customer Process API -- consumes and exposes canonical customer data.
+- System APIs -- provide system-aligned data that may be transformed into this canonical model.
+- Process APIs -- may use this library to define and expose a consistent, system-agnostic customer model.
+- Common Response Types Library -- may be used to structure responses that include canonical data.
 
 ## Versioning
 

@@ -1,25 +1,25 @@
 #%RAML 1.0 Library
 usage: |
-  This library is a reusable RAML 1.0 library that defines standard response traits for use in API
+  This library is a reusable RAML 1.0 library that defines response traits for use in API
   specifications.
 
-  As part of the Customer API-led reference architecture, it centralizes standard
-  method-level response declarations so APIs can consistently document common
-  request, routing, negotiation, and runtime error conditions without duplicating
-  response blocks.
+  As part of the Customer API-led reference architecture, it centralizes reusable
+  method-level response declarations so APIs can document common request,
+  routing, negotiation, and runtime error conditions consistently without
+  duplicating response blocks.
 
   This library is intended to be used in conjunction with:
-  - lib-common-responses for the standard response envelope and response detail types
+  - lib-common-responses for the shared response model and response detail types
   - lib-security-traits for security-related requirements such as Client ID Enforcement
 
 uses:
   common: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses/1.0.0/lib-common-responses.raml
 
 traits:
-  standard-routing-errors:
-    displayName: Standard routing errors
+  common-routing-errors:
+    displayName: Common routing errors
     description: |
-      Declares standard error responses commonly associated with request validation,
+      Documents reusable error responses commonly associated with request validation,
       resource resolution, HTTP method handling, and content negotiation.
     responses:
       400:
@@ -39,7 +39,7 @@ traits:
               correlationId: 4db53b1e-8c9d-4d2b-980b-a5fdbd1f5f9e
               details:
                 - severity: ERROR
-                  code: REQUEST-400
+                  code: COMMON.REQUEST.INVALID
                   message: Request does not conform to the API contract.
       404:
         description: |
@@ -57,7 +57,7 @@ traits:
               correlationId: 7f69c032-0eb3-4af4-9a8b-381b2d66197b
               details:
                 - severity: ERROR
-                  code: ROUTING-404
+                  code: COMMON.RESOURCE.NOT_FOUND
                   message: No resource matched the requested URI.
       405:
         description: |
@@ -75,7 +75,7 @@ traits:
               correlationId: 8dbaf4d7-9d8c-4019-b319-a19b5a1ee8d1
               details:
                 - severity: ERROR
-                  code: ROUTING-405
+                  code: COMMON.METHOD.NOT_ALLOWED
                   message: The requested HTTP method is not allowed for this resource.
       406:
         description: |
@@ -93,7 +93,7 @@ traits:
               correlationId: 78fba7dc-0323-4cd7-bc8e-594148d8f09b
               details:
                 - severity: ERROR
-                  code: NEGOTIATION-406
+                  code: COMMON.REPRESENTATION.NOT_ACCEPTABLE
                   message: The API cannot produce a representation matching the Accept header.
       415:
         description: |
@@ -111,7 +111,7 @@ traits:
               correlationId: 1c1a4a3f-f65a-4d87-b20b-9d0f17d32499
               details:
                 - severity: ERROR
-                  code: NEGOTIATION-415
+                  code: COMMON.MEDIA_TYPE.UNSUPPORTED
                   message: The request Content-Type is not supported for this operation.
       501:
         description: |
@@ -129,14 +129,15 @@ traits:
               correlationId: 97d8e9fe-c48f-4986-b7fb-f5dfb3b29c4c
               details:
                 - severity: ERROR
-                  code: ROUTING-501
+                  code: COMMON.OPERATION.NOT_IMPLEMENTED
                   message: The requested operation is declared but not implemented.
 
-  standard-routing-and-runtime-errors:
-    displayName: Standard routing and runtime errors
+  common-routing-and-runtime-errors:
+    displayName: Common routing and runtime errors
     description: |
-      Extends the standard routing error set with the generic internal server error
-      commonly returned when an unexpected runtime exception occurs.
+      Documents a reusable set of routing and runtime error responses, including
+      the generic internal server error commonly returned when an unexpected
+      runtime exception occurs.
     responses:
       400:
         description: |
@@ -155,7 +156,7 @@ traits:
               correlationId: 4db53b1e-8c9d-4d2b-980b-a5fdbd1f5f9e
               details:
                 - severity: ERROR
-                  code: REQUEST-400
+                  code: COMMON.REQUEST.INVALID
                   message: Request does not conform to the API contract.
       404:
         description: |
@@ -173,7 +174,7 @@ traits:
               correlationId: 7f69c032-0eb3-4af4-9a8b-381b2d66197b
               details:
                 - severity: ERROR
-                  code: ROUTING-404
+                  code: COMMON.RESOURCE.NOT_FOUND
                   message: No resource matched the requested URI.
       405:
         description: |
@@ -191,7 +192,7 @@ traits:
               correlationId: 8dbaf4d7-9d8c-4019-b319-a19b5a1ee8d1
               details:
                 - severity: ERROR
-                  code: ROUTING-405
+                  code: COMMON.METHOD.NOT_ALLOWED
                   message: The requested HTTP method is not allowed for this resource.
       406:
         description: |
@@ -209,7 +210,7 @@ traits:
               correlationId: 78fba7dc-0323-4cd7-bc8e-594148d8f09b
               details:
                 - severity: ERROR
-                  code: NEGOTIATION-406
+                  code: COMMON.REPRESENTATION.NOT_ACCEPTABLE
                   message: The API cannot produce a representation matching the Accept header.
       415:
         description: |
@@ -227,7 +228,7 @@ traits:
               correlationId: 1c1a4a3f-f65a-4d87-b20b-9d0f17d32499
               details:
                 - severity: ERROR
-                  code: NEGOTIATION-415
+                  code: COMMON.MEDIA_TYPE.UNSUPPORTED
                   message: The request Content-Type is not supported for this operation.
       500:
         description: |
@@ -245,7 +246,7 @@ traits:
               correlationId: 8c0dd93b-e9c7-4d50-bce3-9db5bb5df155
               details:
                 - severity: ERROR
-                  code: RUNTIME-500
+                  code: SYSTEM.REQUEST.PROCESSING_ERROR
                   message: The request could not be completed because of an unexpected server-side error.
       501:
         description: |
@@ -263,14 +264,14 @@ traits:
               correlationId: 97d8e9fe-c48f-4986-b7fb-f5dfb3b29c4c
               details:
                 - severity: ERROR
-                  code: ROUTING-501
+                  code: COMMON.OPERATION.NOT_IMPLEMENTED
                   message: The requested operation is declared but not implemented.
 
-  standard-validation-and-negotiation-errors:
-    displayName: Standard validation and negotiation errors
+  common-validation-and-negotiation-errors:
+    displayName: Common validation and negotiation errors
     description: |
-      Declares the subset of standard errors most commonly associated with request
-      validation and content negotiation failures.
+      Documents the subset of reusable error responses most commonly associated
+      with request validation and content negotiation failures.
     responses:
       400:
         description: |
@@ -289,7 +290,7 @@ traits:
               correlationId: 4db53b1e-8c9d-4d2b-980b-a5fdbd1f5f9e
               details:
                 - severity: ERROR
-                  code: REQUEST-400
+                  code: COMMON.REQUEST.INVALID
                   message: Request does not conform to the API contract.
       406:
         description: |
@@ -307,7 +308,7 @@ traits:
               correlationId: 78fba7dc-0323-4cd7-bc8e-594148d8f09b
               details:
                 - severity: ERROR
-                  code: NEGOTIATION-406
+                  code: COMMON.REPRESENTATION.NOT_ACCEPTABLE
                   message: The API cannot produce a representation matching the Accept header.
       415:
         description: |
@@ -325,5 +326,5 @@ traits:
               correlationId: 1c1a4a3f-f65a-4d87-b20b-9d0f17d32499
               details:
                 - severity: ERROR
-                  code: NEGOTIATION-415
+                  code: COMMON.MEDIA_TYPE.UNSUPPORTED
                   message: The request Content-Type is not supported for this operation.

@@ -13,7 +13,9 @@ Before opening a support request, please review the following resources:
 - The **Home** and **How to Consume** documentation pages of this asset.
 - Your API specification to confirm the RAML library was imported correctly.
 - The examples provided in the library and supporting documentation.
-- The [Common Response Types Library](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses), [Customer Canonical Data Types Library](), and [Code Taxonomy Guide](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/guide-code-taxonomy) assets.
+- The Common Response Types Library, if your API uses a shared response model.
+- The Customer Canonical Data Types Library, if your question relates to canonical transformation boundaries.
+- The Code Taxonomy Guide, if your API uses structured response codes.
 
 These resources address the most common usage patterns and design questions.
 

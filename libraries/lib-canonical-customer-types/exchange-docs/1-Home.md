@@ -45,11 +45,11 @@ This library is designed for use by Process APIs that orchestrate and transform 
 
 ## Relationship to Other Assets
 
-This library is commonly used in conjunction with the following assets:
+This library may be used alongside other assets in the reference architecture, including:
 
-- [Common Response Types Library](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses): provides the standard response envelope.
+- [Common Response Types Library](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses): provides a shared response model that may be used when returning canonical data.
 
-API designers are encouraged to use this library for canonical data structures and to utilize the Common Response Types Library for response envelopes.
+API designers can use this library for canonical data structures and may pair it with the Common Response Types Library when a shared response model is desirable.
 
 ## Versioning
 

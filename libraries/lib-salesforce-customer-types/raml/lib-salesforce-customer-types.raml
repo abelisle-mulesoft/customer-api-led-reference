@@ -6,8 +6,8 @@ usage: |
   As part of the Customer API-led reference architecture, it provides shared data types aligned with
   Salesforce Account concepts while avoiding direct exposure of source system internals.
 
-  This library does not define response envelopes. APIs should use the standard response envelope
-  defined in lib-common-responses and the code values defined in guide-code-taxonomy.
+  This library does not define response envelopes. APIs may use the shared response model defined in
+  lib-common-responses when a consistent response structure is desirable.
 
 types:
   SalesforceCustomer:
@@ -201,7 +201,7 @@ types:
 
   SalesforceCustomerGetData:
     displayName: Salesforce Customer Get Data
-    description: Salesforce customer retrieval payload returned in the standard response envelope.
+    description: Payload representing multiple Salesforce customer records.
     type: object
     additionalProperties: false
     properties:
@@ -243,7 +243,7 @@ types:
 
   SalesforceCustomerSingleGetData:
     displayName: Salesforce Customer Single Get Data
-    description: Single Salesforce customer retrieval payload returned in the standard response envelope.
+    description: Payload representing a single Salesforce customer record.
     type: object
     additionalProperties: false
     properties:
@@ -278,7 +278,7 @@ types:
 
   SalesforceCustomerUpsertData:
     displayName: Salesforce Customer Upsert Data
-    description: Salesforce customer processing summary returned in the standard response envelope.
+    description: Payload representing the result of a create or update operation.
     type: object
     additionalProperties: false
     properties:

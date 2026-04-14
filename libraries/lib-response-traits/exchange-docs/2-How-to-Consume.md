@@ -26,24 +26,24 @@ Example:
 ```yaml
 /customers:
   get:
-    is: [ responseTraits.standard-routing-and-runtime-errors ]
+    is: [ responseTraits.common-routing-and-runtime-errors ]
 ```
 
-This ensures that the method documents all standard error responses using the shared response model.
+This helps the method document common HTTP error responses using the shared response model.
 
 ## Typical Usage Patterns
 
 - Apply response traits consistently across all endpoints within an API.
 - Use a single alias (e.g., `responseTraits`) across all API specifications.
-- Combine with the Common Response Types Library to standardize response payloads and error structures.
+- Combine with the Common Response Types Library when a shared response model is desirable.
 - Use alongside the API Security Traits Library to ensure consistent alignment between access control and error responses.
 
-## Recommended Best Practices
+## Recommended Patterns
 
-- Apply response traits to all externally exposed methods.
-- Use predefined traits instead of redefining response blocks in each API.
-- Ensure all responses align with the standard response envelope.
-- Keep trait usage consistent across System, Process, and Experience APIs.
+- Use predefined traits when you want reusable documentation for common HTTP error scenarios.
+- Apply response traits consistently within an API when adopting the shared response model.
+- Combine with the Common Response Types Library when a structured response model is appropriate for the API.
+- Keep documented responses aligned with actual implementation behavior.
 
 ## Frequent Implementation Pitfalls
 

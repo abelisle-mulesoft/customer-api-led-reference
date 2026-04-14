@@ -1,22 +1,26 @@
 ## Overview
 
-The Common Response Types Library is a reusable RAML 1.0 library that defines a standard response envelope for all APIs in the Customer API-led Reference Architecture.
+The Common Response Types Library is a reusable RAML 1.0 library that defines a reference response model for APIs in the Customer API-led Reference Architecture.
 
-This library establishes a consistent structure for communicating request outcomes, messages, and operation-specific payloads. It enables APIs across all layers (System, Process, and Experience) to return predictable and uniform responses as part of a broader model where:
+This library promotes a consistent structure for communicating request outcomes, messages, and operation-specific payloads. Its strongest recommendation is the use of a structured response model for communicating errors, warnings, and diagnostic details in a predictable way across APIs.
+
+The broader `ApiResponse` envelope defined by this library can also be used to represent successes, warnings, and errors in a uniform way across an internal API portfolio. That approach is intentional and opinionated. It is suitable for enterprise integration environments that value consistency, observability, and reusable implementation patterns, but it should be adopted deliberately rather than treated as a universal default for every API.
+
+Within the broader reference architecture:
 
 - Response structure is defined in this library.
 - Response behavior is defined in the API Response Traits Library.
 - Access control is defined in the API Security Traits Library.
 
-All APIs should return responses using the ApiResponse envelope defined in this library.
+Teams can use this library as a reference for establishing their own response standards, adopting either the full response envelope or selected aspects of it, such as the structured error model, correlation identifiers, and standardized detail messages.
 
 ## Role in the Architecture
 
-This library defines how API responses are structured across the API-led connectivity model.
+This library defines a reference approach for structuring API responses across the API-led connectivity model.
 
-- System APIs use the response envelope to standardize backend-facing responses.
-- Process APIs use the envelope to communicate orchestration outcomes, warnings, and multi-system conditions.
-- Experience APIs use the envelope to provide consistent responses to client applications.
+- System APIs can use the response model to standardize backend-facing responses and operational diagnostics.
+- Process APIs are the strongest candidates for the full envelope because they often need to communicate orchestration outcomes, warnings, and multi-system conditions.
+- Experience APIs may adopt the full envelope when consistency across an internal portfolio is more important than a lightweight client-facing shape, but teams should evaluate that choice intentionally.
 
 ## Contents
 
@@ -32,9 +36,10 @@ This folder contains the design-time artifacts used to define and publish the Co
 
 The Common Response Types Library is responsible for:
 
-- Defining a standard response envelope used across all APIs.
-- Separating HTTP status from business outcome semantics.
-- Providing a consistent structure for success, warning, and error responses.
+- Defining a reference response envelope for use across internal APIs.
+- Promoting a structured error model with machine-readable codes, human-readable messages, and optional diagnostic details.
+- Separating HTTP status from business outcome semantics when teams choose to adopt the full envelope.
+- Providing a consistent structure for success, warning, and error responses in portfolios that benefit from a uniform model.
 - Enabling structured detail messages for validation, warnings, and errors.
 - Supporting observability through correlation identifiers and standardized codes.
 
@@ -59,23 +64,23 @@ It is typically used with:
 
 ## Usage
 
-This library is intended to be imported and used by all APIs.
+This library is intended to be imported and used as a reference when defining response models.
 
 Typical usage includes:
 
-- Defining response payloads using the `ApiResponse` envelope.
-- Returning consistent success, warning, and error responses.
-- Including structured detail messages for validation and business conditions.
-- Embedding operation-specific payloads within the `data` property.
+- Defining structured error payloads with standardized codes, messages, and optional detail entries.
+- Returning consistent warning and error responses across internal APIs.
+- Optionally adopting the full ApiResponse envelope for success, warning, and error responses when a uniform enterprise model is desirable.
+- Embedding operation-specific payloads within the `data` property when the full envelope is used.
 
 ## Relationship to Other Assets
 
-This library is part of the Customer API-led Reference Architecture and works in conjunction with:
+This library focuses on response structure and can be used on its own or alongside libraries that define response behavior and access control. It is part of the Customer API-led Reference Architecture and complements other reusable assets:
 
-- API Response Traits Library -- standardized response definitions at the method level.
-- API Security Traits Library -- reusable security traits and related responses.
-- Customer Canonical Data Types Library -- defines canonical payloads used within the response `data` property.
-- System and Process APIs -- use this library to ensure consistent response structures.
+- API Response Traits Library -- defines reusable response behaviors for common HTTP scenarios.
+- API Security Traits Library -- defines reusable traits for authentication and authorization.
+- Customer Canonical Data Types Library -- defines canonical payloads that may be used within the response `data` property.
+- System, Process, and Experience APIs -- may use this library to define consistent response structures when appropriate.
 
 ## Versioning
 
@@ -91,3 +96,5 @@ This asset is intended for:
 - Integration architects.
 - MuleSoft developers.
 - Platform engineers defining enterprise API standards.
+
+It is especially relevant for teams defining internal enterprise API standards and evaluating whether to adopt a full response envelope or only the structured error aspects of the model.

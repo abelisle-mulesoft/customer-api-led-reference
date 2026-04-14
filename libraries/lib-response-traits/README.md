@@ -10,7 +10,7 @@ This library defines response behavior as part of a broader model where:
 - Response behavior is defined in this library.
 - Access control is defined in the API Security Traits Library.
 
-All APIs should apply standardized response traits defined in this library.
+APIs may apply the reusable response traits defined in this library to document common HTTP error scenarios consistently.
 
 ## Role in the Architecture
 
@@ -36,7 +36,7 @@ The API Response Traits Library is responsible for:
 
 - Defining reusable traits for standard HTTP response scenarios.
 - Standardizing how APIs document and implement error handling.
-- Ensuring consistent response behavior across all APIs.
+- Promoting consistent response behavior across APIs that choose to adopt these traits.
 - Promoting reuse and reducing duplication in API specifications.
 - Aligning response definitions with the Common Response Types Library.
 
@@ -51,7 +51,7 @@ The library defines reusable traits for standard HTTP response scenarios, includ
 - Runtime errors (500)
 - Not implemented responses (501)
 
-Each trait applies the standard response envelope defined in the Common Response Types Library.
+Each trait is designed to work with the response model defined in the Common Response Types Library.
 
 ## Dependencies
 
@@ -64,7 +64,7 @@ It is typically used with:
 
 ## Usage
 
-This library is intended to be imported and applied across all APIs.
+This library is intended to be imported and applied where teams want reusable, consistent documentation for common HTTP error scenarios.
 
 Typical usage includes:
 
@@ -75,11 +75,11 @@ Typical usage includes:
 
 ## Relationship to Other Assets
 
-This library is part of the Customer API-led Reference Architecture and works in conjunction with:
+This library focuses on response behavior and can be used on its own or alongside libraries that define response structure and access control. It is part of the Customer API-led Reference Architecture and complements other reusable assets:
 
-- Common Response Types Library -- defines the response structure used by all traits.
-- API Security Traits Library -- defines access control requirements that complement response behavior.
-- System, Process, and Experience APIs -- apply these traits to standardize response behavior.
+- Common Response Types Library -- defines a shared response model that may be used by these traits.
+- API Security Traits Library -- defines access control requirements that may accompany response behavior.
+- System, Process, and Experience APIs -- may use these traits to document common HTTP response scenarios consistently.
 
 ## Versioning
 

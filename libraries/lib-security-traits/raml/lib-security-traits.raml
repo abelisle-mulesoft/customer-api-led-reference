@@ -1,17 +1,17 @@
 #%RAML 1.0 Library
 usage: |
-  This library defines reusable security traits for enforcing authentication and authorization
-  requirements across APIs.
+  This library defines reusable security traits for declaring authentication and authorization
+  requirements in API specifications.
 
   As part of the Customer API-led reference architecture, it centralizes common security patterns,
-  such as Client ID Enforcement, enabling consistent declaration of required authentication
-  mechanisms.
+  such as Client ID Enforcement, so teams can declare consistent authentication requirements
+  without duplicating security definitions.
 
   These traits define the contract between API consumers and the platform, while policy enforcement
   is managed through Anypoint API Manager and the MuleSoft gateway.
 
-  This library is intended for use across System, Process, and Experience APIs to promote consistent
-  and reusable security definitions.
+  This library may be used across System, Process, and Experience APIs when reusable, consistent
+  security declarations are desirable.
 
 traits:
   client-id-enforced:
@@ -21,8 +21,8 @@ traits:
       operation.
 
       This trait is designed to complement the Client ID Enforcement policy configured in Anypoint
-      API Manager. It defines the credential requirements specified in the API specification,
-      whereas enforcement occurs at runtime via the API gateway.
+      API Manager. It defines the credential requirements declared in the API specification, whereas
+      enforcement occurs at runtime via the API gateway.
     headers:
       client_id:
         displayName: Client ID

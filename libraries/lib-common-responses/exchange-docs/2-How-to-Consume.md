@@ -1,6 +1,6 @@
 ## Overview
 
-The Common Response Types Library is available as a reusable RAML 1.0 library in Anypoint Exchange. API designers incorporate this library into their API specifications to enforce a consistent response structure across APIs and integrations. Using a shared response library maintains uniform contracts, enhances observability, and reduces discrepancies in response handling across domains.
+The Common Response Types Library is available as a reusable RAML 1.0 library in Anypoint Exchange. API designers incorporate this library into their API specifications to promote a consistent response structure across APIs and integrations. Using a shared response library maintains uniform contracts, enhances observability, and reduces discrepancies in response handling across domains.
 
 The library offers reusable response types that can be referenced directly in API specifications and extended by constraining the `ApiResponse.data` property to an operation-specific payload. The `ResponseDetail.code` field in this library must adhere to the standard outlined in the Brilliant Mule [Code Taxonomy Guide](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/guide-code-taxonomy).
 
@@ -17,9 +17,9 @@ uses:
 
 Once imported, the library types can be referenced throughout the API specification.
 
-## Use the Standard Envelope
+## Use the Response Envelope (Optional Pattern)
 
-The library exposes several reusable types that can be used in request and response definitions. In most cases, API designers reference the standard envelope `common.ApiResponse` as the response type. This establishes a consistent response contract while allowing the payload structure to remain flexible.
+The library exposes several reusable types that can be used in request and response definitions. API designers may reference the `common.ApiResponse` envelope when a consistent response model is desired across APIs.
 
 Example:
 
@@ -99,26 +99,26 @@ Example payload:
 
 The `ResponseDetail.code` field must adhere to the standard outlined in the Brilliant Mule [Code Taxonomy Guide](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/guide-code-taxonomy).
 
-## Recommended Pattern
+## Recommended Patterns
 
 When using the Common Response Types Library:
 
-- Always use `ApiResponse` as the response envelope.
-- Constrain the `ApiResponse.data` property to an operation-specific type.
-- Use `ResponseDetail` to communicate validation issues, warnings, and additional conditions.
+- Adopt the structured error model (`ResponseDetail`) to provide consistent, machine-readable error and warning information.
+- Consider using the `ApiResponse` envelope when a uniform response model is beneficial across an internal API portfolio.
+- Constrain the `ApiResponse.data` property to an operation-specific type when the envelope is used.
 - Ensure all `ResponseDetail.code` values follow the Code Taxonomy Guide.
 
-This pattern ensures consistency, strong typing, and clear communication of outcomes across APIs.
+These patterns allow teams to balance consistency, clarity, and flexibility based on the needs of each API.
 
 ## Typical Usage Patterns
 
 The Common Response Types Library is typically used across APIs structured according to the API-led connectivity approach.
 
-- System APIs use the library to standardize backend-facing response structures.
+- System APIs can use the library to standardize backend-facing response structures.
 
-- Process APIs use the library to communicate orchestration outcomes, warnings, and detail conditions consistently across multi-system workflows.
+- Process APIs are strong candidates for the full envelope, especially when orchestrating multiple systems.
 
-- Experience APIs use the library to provide predictable response envelopes to applications and channels while maintaining the same response semantics used elsewhere in the platform.
+- Experience APIs may choose a lighter response model or adopt the full envelope depending on client needs.
 
 ## Related Standards
 

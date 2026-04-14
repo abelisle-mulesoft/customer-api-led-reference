@@ -56,7 +56,7 @@ This library does not depend on other APIs.
 
 It is typically used with:
 
-- Common Response Types Library -- provides the standard response envelope.
+- Common Response Types Library -- provides a shared response model that may be used when returning system-aligned data.
 - API Response Traits Library -- defines standardized response behavior.
 - API Security Traits Library -- defines access control requirements.
 
@@ -76,11 +76,11 @@ Experience APIs should not use this library directly unless there is a deliberat
 
 ## Relationship to Other Assets
 
-This library is part of the Customer API-led Reference Architecture and works in conjunction with:
+This library focuses on system-aligned data modeling for Salesforce and is intended for use in the System API layer. It is part of the Customer API-led Reference Architecture and complements other reusable assets:
 
-- API Response Traits Library -- standardizes response behavior.
-- Common Response Types Library -- defines the response envelope used by APIs.
-- Salesforce System APIs -- use this library to expose Salesforce-aligned data.
+- System APIs -- may use this library to expose Salesforce-aligned customer data.
+- Process APIs -- may transform this system-aligned data into the canonical model.
+- Common Response Types Library -- may be used to structure responses that include system-aligned data.
 
 ## Versioning
 

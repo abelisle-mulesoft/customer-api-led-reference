@@ -9,8 +9,9 @@ usage: |
   System-specific identifiers should be retained in `externalIds`, and transformation logic should
   reside in System APIs and mapping layers.
 
-  This library does not define response envelopes. APIs should use the standard response envelope
-  specified in lib-common-responses and the code values defined in guide-code-taxonomy.
+  This library does not define response envelopes. APIs may use the shared response model defined in
+  lib-common-responses when a consistent response structure is desirable. Code values, when used,
+  should follow the guidance defined in guide-code-taxonomy.
 
 types:
   CustomerType:
@@ -352,7 +353,7 @@ types:
 
   CustomerGetData:
     displayName: Customer Get Data
-    description: Canonical customer retrieval payload returned in the standard response envelope.
+    description: Canonical customer retrieval payload for Process API responses.
     type: object
     additionalProperties: false
     properties:
@@ -419,7 +420,7 @@ types:
 
   CustomerSingleGetData:
     displayName: Customer Single Get Data
-    description: Single canonical customer retrieval payload returned in the standard response envelope.
+    description: Single canonical customer retrieval payload for Process API responses.
     type: object
     additionalProperties: false
     properties:

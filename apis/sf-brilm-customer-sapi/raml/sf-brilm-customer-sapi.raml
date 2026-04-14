@@ -31,7 +31,7 @@ uses:
     description: Retrieve customer account records from the Salesforce Brilliant Mule instance.
     is:
       - security.client-id-enforced
-      - responses.standard-routing-and-runtime-errors
+      - responses.common-routing-and-runtime-errors
     responses:
       200:
         description: Customer records retrieved.
@@ -45,7 +45,7 @@ uses:
       Create or update multiple customer account records in the Salesforce Brilliant Mule instance.
     is:
       - security.client-id-enforced
-      - responses.standard-routing-and-runtime-errors
+      - responses.common-routing-and-runtime-errors
     body:
       application/json:
         type: sfCustomer.SalesforceCustomerCollection
@@ -70,7 +70,7 @@ uses:
       Retrieve a customer account record by ID from the Salesforce Brilliant Mule instance.
     is:
       - security.client-id-enforced
-      - responses.standard-routing-and-runtime-errors
+      - responses.common-routing-and-runtime-errors
     responses:
       200:
         description: Customer record retrieved.

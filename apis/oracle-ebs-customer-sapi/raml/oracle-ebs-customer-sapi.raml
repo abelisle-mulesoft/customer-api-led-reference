@@ -26,7 +26,7 @@ uses:
     description: Retrieve customer account records from Oracle E-Business Suite R12.
     is:
       - security.client-id-enforced
-      - responses.standard-routing-and-runtime-errors
+      - responses.common-routing-and-runtime-errors
     responses:
       200:
         description: Customer records retrieved.
@@ -40,7 +40,7 @@ uses:
       Create or update multiple customer account records in Oracle E-Business Suite R12.
     is:
       - security.client-id-enforced
-      - responses.standard-routing-and-runtime-errors
+      - responses.common-routing-and-runtime-errors
     body:
       application/json:
         type: OracleEbsCustomerCollection

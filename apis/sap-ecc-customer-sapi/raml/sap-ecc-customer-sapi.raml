@@ -26,7 +26,7 @@ uses:
     description: Retrieve customer records from SAP ECC.
     is:
       - security.client-id-enforced
-      - responses.standard-routing-and-runtime-errors
+      - responses.common-routing-and-runtime-errors
     responses:
       200:
         description: Customer records retrieved.
@@ -39,7 +39,7 @@ uses:
     description: Create or update multiple customer records in SAP ECC.
     is:
       - security.client-id-enforced
-      - responses.standard-routing-and-runtime-errors
+      - responses.common-routing-and-runtime-errors
     body:
       application/json:
         type: SapEccCustomerCollection

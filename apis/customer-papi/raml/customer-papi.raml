@@ -33,7 +33,7 @@ uses:
       them using the canonical Customer model.
     is:
       - security.client-id-enforced
-      - responses.standard-routing-and-runtime-errors
+      - responses.common-routing-and-runtime-errors
     responses:
       200:
         description: Customer records retrieved.
@@ -60,7 +60,7 @@ uses:
       Customer representation.
     is:
       - security.client-id-enforced
-      - responses.standard-routing-and-runtime-errors
+      - responses.common-routing-and-runtime-errors
     responses:
       200:
         description: Customer record retrieved.
@@ -85,7 +85,7 @@ uses:
       of the change across connected systems.
     is:
       - security.client-id-enforced
-      - responses.standard-routing-and-runtime-errors
+      - responses.common-routing-and-runtime-errors
     body:
       application/json:
         type: CustomerSyncEvent

@@ -1,8 +1,6 @@
 ## Overview
 
-The SAP ECC Customer System API is part of the Customer API-led Reference Architecture and implements the System API layer for the Customer domain.
-
-This API provides system-aligned access to customer data in SAP ECC. It exposes resources and data structures that reflect the underlying system without applying canonical transformations.
+The SAP ECC Customer System API is part of the Customer API-led Reference Architecture and implements the System API layer for the Customer domain. This API provides system-aligned access to customer data in SAP ECC. It exposes resources and data structures that reflect the underlying system without applying canonical transformations.
 
 ## Role in the Architecture
 
@@ -22,7 +20,7 @@ It reflects the capabilities and limitations of the underlying system, including
 
 ## Contents
 
-This folder contains the design-time artifacts used to define and publish the SAP ECC Customer System API to Anypoint Exchange.
+This folder contains the design-time and implementation artifacts for the SAP ECC Customer System API.
 
 - `raml/sap-ecc-customer-sapi.raml` -- RAML specification defining the API contract.
 - `exchange-docs/` -- Anypoint Exchange documentation pages (as per best practices).
@@ -31,6 +29,22 @@ This folder contains the design-time artifacts used to define and publish the SA
 	- `3-Security.md` -- Describes security requirements and policies applied to the API (e.g., client ID enforcement).
 	- `4-Environments-and-Testing.md` -- Lists available environments, endpoints, and prerequisites for testing the API.
 	- `5-Getting-Help.md` -- Describes how to get support and additional information.  ￼
+- `implementation/sap-ecc-customer-sapi/` -- Anypoint Studio Mule project implementing the API.
+  - Contains the Mule flows, configurations, and DataWeave logic that realize the API contract.
+  - Can be imported directly into Anypoint Studio for development and deployment.
+
+## Implementation
+
+The `implementation/sap-ecc-customer-sapi` folder contains the Anypoint Studio Mule project that implements this API. The Mule project can be imported into Anypoint Studio and deployed across environments using a build-once, deploy-everywhere approach. This implementation:
+
+- Adheres to the RAML specification defined in `raml/sap-ecc-customer-sapi.raml`.
+- Enforces the API contract, including request/response structures and error handling.
+- Is intended as a reference implementation aligned with API-led connectivity best practices.
+- Focuses on demonstrating API-led connectivity patterns rather than system-specific integration details.
+- Provides a stubbed implementation aligned with the API contract, enabling development, testing, and demonstration without requiring a fully configured SAP ECC instance.
+- Uses Mule flows and DataWeave scripts to simulate SAP ECC interactions.
+
+The RAML specification defines the contract, while the Mule implementation realizes that contract at runtime.
 
 ## Key Responsibilities
 

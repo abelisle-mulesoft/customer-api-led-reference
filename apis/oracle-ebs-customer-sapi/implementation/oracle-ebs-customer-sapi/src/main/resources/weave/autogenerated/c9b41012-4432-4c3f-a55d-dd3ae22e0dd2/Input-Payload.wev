@@ -1,0 +1,6 @@
+%dw 2.0
+
+type auto_c9b41012_4432_4c3f_a55d_dd3ae22e0dd2_Input_Payload = Array<{|  primaryContactName?: String,   accountSiteNumber?: String,   customerClassCode?: String,   city?: String,   customerAccountName: String,   accountType?: String,   postalCode?: String,   customerAccountNumber: String,   accountStatus?: String,   emailAddress?: String,   lastUpdatedDate?: String,   phoneNumber?: String,   createdDate?: String,   stateOrProvince?: String,   countryCode?: String,   partyName?: String,   addressLine1?: String,   addressLine2?: String,   partyNumber?: String,   siteUseCode?: String,   activeFlag?: Boolean|} {"description": "Oracle E-Business Suite R12-aligned representation of a customer account record exposed by\nthe System API. Field names are human-readable but remain aligned to Oracle EBS customer\naccount concepts rather than the enterprise canonical customer model.\n",
+"label": "Oracle EBS Customer"}> {"label": "Oracle EBS Customer Collection",
+"description": "Collection of Oracle EBS customer account records."}
+

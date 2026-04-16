@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<global-property doc:name="Global Property" doc:id="72193561-eae2-4b3c-ac9e-af8c271748cd" name="env" value="dev" />
+	<configuration-properties doc:name="Configuration properties" doc:id="9c7adc77-3193-464e-8c5b-2e644abcbffd" file="properties/mule-props-${env}.yaml" />
+    <http:listener-config name="oracle-ebs-customer-sapi-httpListenerConfig">
+		<http:listener-connection host="0.0.0.0" port="${http.port}"/>
+    </http:listener-config>
+</mule>

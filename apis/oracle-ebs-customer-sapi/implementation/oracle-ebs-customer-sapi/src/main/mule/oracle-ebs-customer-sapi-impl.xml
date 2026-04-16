@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="oracle-ebs-create-customer-flow" doc:id="c9b41012-4432-4c3f-a55d-dd3ae22e0dd2" >
+		<logger level="DEBUG" doc:name="Debug - Flow Starting" doc:id="7e99a5e0-364d-4325-8b5c-33d89654bed4" message="Flow starting" />
+		<ee:transform doc:name="Hardcoded Response" doc:id="12080747-76e4-4f4c-bcb8-7ce2cb539404">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import nowUtc from modules::datetime::utils
+---
+{
+  dateTime: nowUtc(),
+  httpStatus: 201,
+  status: "SUCCESS",
+  message: "Customer records processed successfully.",
+  correlationId: correlationId,
+  data: {
+    recordCount: sizeOf(payload),
+    processedCount: sizeOf(payload),
+    skippedCount: 0
+  }
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[201]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Debug - Flow Ending" doc:id="1a498b08-f4e2-4a87-9609-d1c4df46c667" message="Flow ending" />
+	</flow>
+	<flow name="oracle-ebs-get-customers-flow" doc:id="8b685005-a7c8-4d7b-9487-6b1bd9263c40" >
+		<logger level="DEBUG" doc:name="Debug - Flow Starting" doc:id="793cacce-aedd-4fe1-adc3-41652a22f775" message="Flow starting" />
+		<ee:transform doc:name="Hardcoded Response" doc:id="079cb981-2bed-4be6-a238-cfbdfe42a6eb">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import nowUtc from modules::datetime::utils
+---
+{
+  dateTime: nowUtc(),
+  httpStatus: 200,
+  status: "SUCCESS",
+  message: "Customer records retrieved successfully.",
+  correlationId: correlationId,
+  data: {
+    customers: [
+      {
+        customerAccountNumber: "10001",
+        customerAccountName: "Acme Corporation",
+        partyNumber: "30001",
+        partyName: "Acme Corporation",
+        customerClassCode: "COMMERCIAL",
+        accountStatus: "ACTIVE",
+        accountType: "ORGANIZATION",
+        accountSiteNumber: "50001",
+        siteUseCode: "BILL_TO",
+        primaryContactName: "Jane Smith",
+        emailAddress: "ops@acme.example",
+        phoneNumber: "+1-206-555-0100",
+        addressLine1: "100 Main Street",
+        addressLine2: "Suite 400",
+        city: "Seattle",
+        stateOrProvince: "WA",
+        postalCode: "98101",
+        countryCode: "US",
+        activeFlag: true,
+        createdDate: "2026-03-12T18:25:43Z",
+        lastUpdatedDate: "2026-03-15T09:42:10Z"
+      }
+    ],
+    recordCount: 1
+  }
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Debug - Flow Ending" doc:id="5c644795-fc8d-4b12-9580-cd63aa5767ee" message="Flow ending" />
+	</flow>
+</mule>

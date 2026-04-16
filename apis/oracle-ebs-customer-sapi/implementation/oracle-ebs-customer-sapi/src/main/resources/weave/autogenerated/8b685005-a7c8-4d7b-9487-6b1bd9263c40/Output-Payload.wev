@@ -1,0 +1,21 @@
+%dw 2.0
+
+type auto_8b685005_a7c8_4d7b_9487_6b1bd9263c40_Output_Payload = {
+  dateTime: String, 
+  data?: {|
+    recordCount: Number, 
+    customers: Array<{|      primaryContactName?: String,       accountSiteNumber?: String,       customerClassCode?: String,       city?: String,       customerAccountName: String,       accountType?: String,       postalCode?: String,       customerAccountNumber: String,       accountStatus?: String,       emailAddress?: String,       lastUpdatedDate?: String,       phoneNumber?: String,       createdDate?: String,       stateOrProvince?: String,       countryCode?: String,       partyName?: String,       addressLine1?: String,       addressLine2?: String,       partyNumber?: String,       siteUseCode?: String,       activeFlag?: Boolean    |} {"description": "Oracle E-Business Suite R12-aligned representation of a customer account record exposed by\nthe System API. Field names are human-readable but remain aligned to Oracle EBS customer\naccount concepts rather than the enterprise canonical customer model.\n",
+    "label": "Oracle EBS Customer"}> {"description": "Customer account records retrieved from Oracle EBS.",
+    "label": "Oracle EBS Customer Collection"}
+  |} {"description": "Oracle EBS customer retrieval payload returned in the standard response envelope.",
+  "label": "Oracle EBS Customer Get Data"}, 
+  httpStatus: Number, 
+  correlationId?: String, 
+  details?: Array<{    severity: "ERROR" | "INFO" | "WARNING",     code?: String,     message: String,     target?: String,     _?: Any  } {"description": "Structured detail message returned by the API.\n\nDetail messages provide additional actionable information such as validation failures, skipped\nrecords, unsupported values, or other context that helps the client understand the outcome\nwithout changing the top-level response message.\n",
+  "label": "Response detail"}> {"description": "Optional list of structured detail messages that provide additional context,\nsuch as validation failures, warnings, or informational notes.\n"}, 
+  message: String, 
+  status: "SUCCESS" | "ERROR" | "WARNING", 
+  _?: Any
+} {"label": "Get Oracle EBS Customers Response",
+"description": "Standard API response envelope with an Oracle EBS customer retrieval payload."}
+

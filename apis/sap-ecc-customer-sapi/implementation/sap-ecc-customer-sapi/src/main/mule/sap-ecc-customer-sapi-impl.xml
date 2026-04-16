@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="sap-ecc-create-customers-flow" doc:id="b9087950-5a1c-45a7-bca3-f38f4fe8d739" >
+		<logger level="DEBUG" doc:name="Debug - Flow Starting" doc:id="64876e07-88d0-42ac-9b53-3d1f9e083d19" message="Flow starting" />
+		<ee:transform doc:name="Hardcoded Response" doc:id="91f3bd70-9028-48a7-9971-b3af0a000cc3">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  dateTime: "2026-03-17T16:05:00Z",
+  httpStatus: 200,
+  status: "SUCCESS",
+  message: "Customer records processed successfully",
+  correlationId: "2f6c2b7b-8b1b-4f2d-9ef2-9c6a2a1b0d6a",
+  data: {
+    recordCount: 2,
+    createdCount: 1,
+    updatedCount: 1
+  }
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[201]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Debug - Flow Ending" doc:id="bd8e69a9-c772-4f11-af5b-4084e7418cb5" message="Flow ending" />
+	</flow>
+	<flow name="sap-ecc-get-customers-flow" doc:id="b0c599c1-6e3f-4e75-bc50-7b94d3a136f1" >
+		<logger level="DEBUG" doc:name="Debug - Flow Starting" doc:id="f05cd9d5-03fe-4397-bb29-1558a53091cc" message="Flow starting" />
+		<ee:transform doc:name="Hardcoded Response" doc:id="ee4e21f2-9b81-4910-a89c-4cb30048b444">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  dateTime: "2026-03-17T16:00:00Z",
+  httpStatus: 200,
+  status: "SUCCESS",
+  message: "Customer records retrieved successfully",
+  correlationId: "2f6c2b7b-8b1b-4f2d-9ef2-9c6a2a1b0d6a",
+  data: {
+    customers: [
+      {
+        sapCustomerNumber: "0001001001",
+        accountGroup: "Z001",
+        companyCode: "1000",
+        salesOrganization: "1000",
+        distributionChannel: "10",
+        division: "00",
+        nameLine1: "Acme Corporation",
+        city: "Seattle",
+        region: "WA",
+        postalCode: "98101",
+        countryCode: "US",
+        emailAddress: "ops@acme.example",
+        deletionFlag: false,
+        centralPostingBlock: false
+      }
+    ],
+    recordCount: 1
+  }
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Debug - Flow Ending" doc:id="5452bbd9-c85c-4c1b-b6fc-57aba4cb71e3" message="Flow ending" />
+	</flow>
+</mule>

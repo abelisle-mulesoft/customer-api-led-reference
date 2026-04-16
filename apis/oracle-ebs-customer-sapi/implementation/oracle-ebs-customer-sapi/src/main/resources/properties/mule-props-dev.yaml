@@ -11,10 +11,3 @@ env:
 #   testing outside of CloudHub 2.0 (e.g. Anypoint Studio).
 http:
   port: "8081"
-
-#---------------------------------------------------------------------------------------------------
-# Mule Gateway API Autodiscovery
-# autodiscovery:
-#   api_id:     ""
-#   flow_name:  ""
-

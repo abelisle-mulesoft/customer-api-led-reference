@@ -21,6 +21,9 @@
 .metadata/
 .recommenders/
 
+# Ignore Anypoint Studio-generated Exchange docs inside implementations
+apis/**/implementation/**/exchange-docs/
+
 # --------------------------------------
 # Java / Maven / Mule build artifacts
 # --------------------------------------

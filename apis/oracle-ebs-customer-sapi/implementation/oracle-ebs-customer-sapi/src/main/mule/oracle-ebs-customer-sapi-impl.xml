@@ -6,7 +6,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="oracle-ebs-create-customer-flow" doc:id="c9b41012-4432-4c3f-a55d-dd3ae22e0dd2" >
+	<flow name="oracle-ebs-create-customers-flow" doc:id="c9b41012-4432-4c3f-a55d-dd3ae22e0dd2" >
 		<logger level="DEBUG" doc:name="Debug - Flow Starting" doc:id="7e99a5e0-364d-4325-8b5c-33d89654bed4" message="Flow starting" />
 		<ee:transform doc:name="Hardcoded Response" doc:id="12080747-76e4-4f4c-bcb8-7ce2cb539404">
 			<ee:message>

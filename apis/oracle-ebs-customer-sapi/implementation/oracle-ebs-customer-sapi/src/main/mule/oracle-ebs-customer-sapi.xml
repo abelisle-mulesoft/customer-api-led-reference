@@ -220,6 +220,6 @@ buildErrorResponseWithInlineDetail({
         <flow-ref doc:name="oracle-ebs-get-customers-flow" doc:id="9b75117d-925a-4d24-af75-3fc3980f8653" name="oracle-ebs-get-customers-flow" />
     </flow>
     <flow name="post:\customers:application\json:oracle-ebs-customer-sapi-config">
-        <flow-ref doc:name="oracle-ebs-create-customer-flow" doc:id="7b654ea0-8f1a-4fa5-b1fd-81ea2d0a3eae" name="oracle-ebs-create-customer-flow" />
+        <flow-ref doc:name="oracle-ebs-create-customers-flow" doc:id="7b654ea0-8f1a-4fa5-b1fd-81ea2d0a3eae" name="oracle-ebs-create-customers-flow" />
     </flow>
 </mule>

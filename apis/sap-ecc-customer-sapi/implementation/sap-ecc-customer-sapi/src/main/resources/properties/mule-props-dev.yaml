@@ -1,5 +1,5 @@
 #===================================================================================================
-# Mule Application Properties - oracle-ebs-customer-sapi
+# Mule Application Properties - sap-ecc-customer-sapi
 #===================================================================================================
 env:
   name: "dev"

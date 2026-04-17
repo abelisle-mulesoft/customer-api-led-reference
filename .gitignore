@@ -45,6 +45,9 @@ dependency-reduced-pom.xml
 .env.*
 !.env.example
 
+# Secure Mule application properties (encrypted values; never commit)
+secure-props-*.yaml
+
 # --------------------------------------
 # Logs
 # --------------------------------------

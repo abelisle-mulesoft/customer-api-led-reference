@@ -9,10 +9,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
+import nowUtc from modules::datetime::utils
 ---
 {
-  dateTime: "2026-03-17T16:05:00Z",
-  httpStatus: 200,
+  dateTime: nowUtc(),
+  httpStatus: 201,
   status: "SUCCESS",
   message: "Customer records processed successfully",
   correlationId: "2f6c2b7b-8b1b-4f2d-9ef2-9c6a2a1b0d6a",
@@ -35,9 +36,10 @@ output application/json
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
+import nowUtc from modules::datetime::utils
 ---
 {
-  dateTime: "2026-03-17T16:00:00Z",
+  dateTime: nowUtc(),
   httpStatus: 200,
   status: "SUCCESS",
   message: "Customer records retrieved successfully",

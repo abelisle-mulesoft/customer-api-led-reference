@@ -20,6 +20,7 @@
 .settings/
 .metadata/
 .recommenders/
+.mule/
 
 # Ignore Anypoint Studio-generated Exchange docs inside implementations
 apis/**/implementation/**/exchange-docs/

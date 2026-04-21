@@ -1,0 +1,15 @@
+#===================================================================================================
+# Mule Secure Properties Template - sf-umbre-customer-sapi
+#===================================================================================================
+
+#---------------------------------------------------------------------------------------------------
+# Salesforce Connector Config (Basic Authentication)
+# This configuration uses username, password, and Salesforce security token (not OAuth).
+# The security token is generated from the Salesforce UI (Reset My Security Token).
+# Refer to MuleSoft Secure Properties documentation for encryption details:
+# https://docs.mulesoft.com/mule-runtime/latest/secure-configuration-properties#secure_props_tool
+salesforce:
+  umbre:
+    username:       "![<encrypted value>]"  # Salesforce username
+    password:       "![<encrypted value>]"  # Salesforce password
+    security_token: "![<encrypted value>]"  # Salesforce security token

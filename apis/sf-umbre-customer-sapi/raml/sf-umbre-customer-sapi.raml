@@ -87,11 +87,19 @@ types:
     type: object
     additionalProperties: false
     properties:
-      salesforceAccountId:
+      salesforceAccountId?:
         displayName: Salesforce Account ID
         description: Salesforce Account record identifier.
         type: string
         example: 001bm00000J2nswAAB
+      externalId?:
+        displayName: External ID
+        description: |
+          External identifier used to match customer records during Salesforce upsert operations.
+          This value is typically sourced from the upstream system of record or derived from it
+          to ensure uniqueness across integrated systems.
+        type: string
+        example: ORACLE:12345
       accountName:
         displayName: Account Name
         description: Salesforce Account Name field.
@@ -194,6 +202,7 @@ types:
         example: 2026-03-16T09:42:10Z
     example:
       salesforceAccountId: 001bm00000J2nswAAB
+      externalId: ORACLE:12345
       accountName: Acme Corporation
       accountNumber: A-10001
       website: https://www.acme.example
@@ -222,6 +231,7 @@ types:
     minItems: 1
     example:
       - salesforceAccountId: 001bm00000J2nswAAB
+        externalId: ORACLE:12345
         accountName: Acme Corporation
         accountNumber: A-10001
         website: https://www.acme.example
@@ -243,6 +253,7 @@ types:
         createdDate: 2026-03-12T18:25:43Z
         lastModifiedDate: 2026-03-16T09:42:10Z
       - salesforceAccountId: 001bm00000J2nsyAAB
+        externalId: SAP:0009876543
         accountName: Globex Corporation
         accountNumber: A-10002
         website: https://www.globex.example
@@ -278,6 +289,7 @@ types:
     example:
       customers:
         - salesforceAccountId: 001bm00000J2nswAAB
+          externalId: ORACLE:12345
           accountName: Acme Corporation
           accountNumber: A-10001
           website: https://www.acme.example
@@ -313,6 +325,7 @@ types:
     example:
       customer:
         salesforceAccountId: 001bm00000J2nswAAB
+        externalId: ORACLE:12345
         accountName: Acme Corporation
         accountNumber: A-10001
         website: https://www.acme.example
@@ -334,6 +347,39 @@ types:
         createdDate: 2026-03-12T18:25:43Z
         lastModifiedDate: 2026-03-16T09:42:10Z
 
+  SalesforceCustomerUpsertResult:
+    displayName: Salesforce Customer Upsert Result
+    description: Result of processing an individual customer record during upsert.
+    type: object
+    additionalProperties: false
+    properties:
+      externalId?:
+        displayName: External ID
+        description: External identifier of the customer record submitted for upsert.
+        type: string
+        example: ORACLE:12345
+      status:
+        displayName: Status
+        description: Outcome of the individual customer record upsert operation.
+        type: string
+        enum: [SUCCESS, FAILED]
+        example: SUCCESS
+      salesforceAccountId?:
+        displayName: Salesforce Account ID
+        description: Salesforce Account record identifier returned for a successfully processed record.
+        type: string
+        example: 001Do00000ltEbfIAE
+      code?:
+        displayName: Code
+        description: Stable application error code for a failed customer upsert result.
+        type: string
+        example: customer.upsert.validation-failed
+      message:
+        displayName: Message
+        description: Human-readable message describing the outcome for the individual customer record.
+        type: string
+        example: Customer upserted successfully.
+
   SalesforceCustomerUpsertData:
     displayName: Salesforce Customer Upsert Data
     description: Payload representing the result of a create or update operation.
@@ -342,26 +388,49 @@ types:
     properties:
       recordCount:
         displayName: Record Count
-        description: Number of account records received.
+        description: Number of customer records received for processing.
         type: integer
         minimum: 0
         example: 3
-      processedCount:
-        displayName: Processed Count
-        description: Number of account records successfully processed.
+      successCount:
+        displayName: Success Count
+        description: Number of customer records successfully created or updated in Salesforce.
         type: integer
         minimum: 0
-        example: 3
-      skippedCount?:
-        displayName: Skipped Count
-        description: Number of account records skipped during processing.
+        example: 2
+      failureCount:
+        displayName: Failure Count
+        description: |
+          Number of customer records that failed during upsert processing.
+          A failure indicates that the record could not be created or updated in Salesforce.
         type: integer
         minimum: 0
-        example: 0
-    example:
-      recordCount: 3
-      processedCount: 3
-      skippedCount: 0
+        example: 1
+      results?:
+        displayName: Results
+        description: |
+          Per-record upsert results. This property is typically returned when one or more customer
+          records fail processing.
+        type: SalesforceCustomerUpsertResult[]
+        minItems: 1
+    examples:
+      success:
+        recordCount: 3
+        successCount: 3
+        failureCount: 0
+      partial-success:
+        recordCount: 3
+        successCount: 2
+        failureCount: 1
+        results:
+          - externalId: ORACLE:12345
+            status: SUCCESS
+            salesforceAccountId: 001Do00000ltEbfIAE
+            message: Customer upserted successfully.
+          - externalId: SAP:0009876543
+            status: FAILED
+            code: customer.upsert.validation-failed
+            message: "Owner ID: id value of incorrect type: 001bm00000J2nswAAB FIELD_INTEGRITY_EXCEPTION"
 
   GetSalesforceUmbreCustomersResponse:
     displayName: Get Salesforce Umbrella Customers Response
@@ -380,6 +449,7 @@ types:
         data:
           customers:
             - salesforceAccountId: 001bm00000J2nswAAB
+              externalId: ORACLE:12345
               accountName: Acme Corporation
               accountNumber: A-10001
               website: https://www.acme.example
@@ -414,6 +484,7 @@ types:
         data:
           customers:
             - salesforceAccountId: 001bm00000J2nswAAB
+              externalId: ORACLE:12345
               accountName: Acme Corporation
               accountNumber: A-10001
               website: https://www.acme.example
@@ -453,6 +524,7 @@ types:
         data:
           customer:
             salesforceAccountId: 001bm00000J2nswAAB
+            externalId: ORACLE:12345
             accountName: Acme Corporation
             accountNumber: A-10001
             website: https://www.acme.example
@@ -490,5 +562,5 @@ types:
         correlationId: 6d7b8b6c-7093-4787-8f18-0fef4f2b94c4
         data:
           recordCount: 3
-          processedCount: 3
-          skippedCount: 0
+          successCount: 3
+          failureCount: 0

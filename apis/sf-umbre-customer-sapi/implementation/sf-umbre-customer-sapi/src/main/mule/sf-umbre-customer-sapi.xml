@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <apikit:config name="sf-umbre-customer-sapi-config" api="resource::16339d91-3161-43b4-bef8-7e3fbf0af852:sf-umbre-customer-sapi:1.0.9:raml:zip:sf-umbre-customer-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="sf-umbre-customer-sapi-main">
+        <http:listener config-ref="sf-umbre-customer-sapi-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="sf-umbre-customer-sapi-config" />
+        <error-handler>
+            <!-- =============================================================================== -->
+            <!-- APIKIT ROUTING / CONTRACT ERRORS                                                -->
+            <!-- =============================================================================== -->
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform doc:name="Create HTTP 400 Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 400,
+  message: (error.description default "Bad request"),
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "COMMON.REQUEST.INVALID",
+  detailMessage: "The request does not conform to the API contract."
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <!-- =============================================================================== -->
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform doc:name="Create HTTP 404 Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 404,
+  message: (error.description default "Resource not found"),
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "COMMON.RESOURCE.NOT_FOUND",
+  detailMessage: "There is no resource that matches the provided URI."
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <!-- =============================================================================== -->
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform doc:name="Create HTTP 405 Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 405,
+  message: (error.description default "Method not allowed"),
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "COMMON.METHOD.NOT_ALLOWED",
+  detailMessage: "The requested HTTP method is not supported for this resource."
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[405]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <!-- =============================================================================== -->
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform doc:name="Create HTTP 406 Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 406,
+  message: (error.description default "Not acceptable"),
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "COMMON.REPRESENTATION.NOT_ACCEPTABLE",
+  detailMessage: "The requested representation is not available in a supported format."
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[406]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <!-- =============================================================================== -->
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform doc:name="Create HTTP 415 Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 415,
+  message: (error.description default "Unsupported media type"),
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "COMMON.MEDIA_TYPE.UNSUPPORTED",
+  detailMessage: "The request media type is not supported."
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[415]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <!-- =============================================================================== -->
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform doc:name="Create HTTP 501 Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 501,
+  message: (error.description default "Operation not implemented"),
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "COMMON.OPERATION.NOT_IMPLEMENTED",
+  detailMessage: "This resource or method is defined in the contract but is not implemented in this reference application."
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <!-- =============================================================================== -->
+            <!-- APPLICATION ERRORS                                                              -->
+            <!-- =============================================================================== -->
+            <on-error-propagate type="APP:BAD_REQUEST">
+                <ee:transform doc:name="Create HTTP 400 APP Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 400,
+  message: "Invalid Salesforce account identifier.",
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "SALESFORCE.ACCOUNT.INVALID_INPUT",
+  detailMessage: (error.description default "")
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <!-- =============================================================================== -->
+            <on-error-propagate type="APP:NOT_FOUND">
+                <ee:transform doc:name="Create HTTP 404 APP Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 404,
+  message: "Salesforce account not found.",
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "SALESFORCE.ACCOUNT.NOT_FOUND",
+  detailMessage: (error.description default "")
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <!-- =============================================================================== -->
+            <on-error-propagate type="APP:INTERNAL_SERVER_ERROR">
+                <ee:transform doc:name="Create HTTP 500 APP Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 500,
+  message: "Unable to process the Salesforce account request.",
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "SALESFORCE.ACCOUNT.PROCESSING_ERROR",
+  detailMessage: (error.description default "")
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <!-- =============================================================================== -->
+            <!-- APPLICATION FALLBACK                                                            -->
+            <!-- =============================================================================== -->
+            <on-error-propagate type="APP:*">
+                <ee:transform doc:name="Create Default APP Error Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 500,
+  message: "Application error.",
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "SYSTEM.REQUEST.PROCESSING_ERROR",
+  detailMessage: "An unexpected application error occurred while processing the request."
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <!-- =============================================================================== -->
+            <!-- FINAL SAFETY NET                                                                -->
+            <!-- =============================================================================== -->
+            <on-error-propagate type="ANY">
+                <ee:transform doc:name="Create HTTP 500 Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 500,
+  message: (error.description default "Internal server error"),
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "SYSTEM.REQUEST.PROCESSING_ERROR",
+  detailMessage: "An unexpected runtime error occurred while processing the request."
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="sf-umbre-customer-sapi-console">
+        <http:listener config-ref="sf-umbre-customer-sapi-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="sf-umbre-customer-sapi-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform doc:name="Create HTTP 404 Response">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import buildErrorResponseWithInlineDetail from modules::errors::responses
+
+---
+buildErrorResponseWithInlineDetail({
+  httpStatus: 404,
+  message: (error.description default "Resource not found"),
+  correlationId: correlationId,
+  severity: "ERROR",
+  code: "COMMON.RESOURCE.NOT_FOUND",
+  detailMessage: "There is no resource that matches the provided URI."
+})]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="get:\customers\(salesforceAccountId):sf-umbre-customer-sapi-config">
+        <flow-ref doc:name="sf-umbre-get-customer-by-id-impl-flow" doc:id="aef6ace7-73ed-49e8-a0fe-5f037dd375bc" name="sf-umbre-get-customer-by-id-impl-flow" />
+    </flow>
+    <flow name="get:\customers:sf-umbre-customer-sapi-config">
+        <flow-ref doc:name="sf-umbre-get-customers-impl-flow" doc:id="6f5675ca-9371-450b-afed-e9c8d2201c7a" name="sf-umbre-get-customers-impl-flow" />
+    </flow>
+    <flow name="post:\customers:application\json:sf-umbre-customer-sapi-config">
+        <flow-ref doc:name="sf-umbre-create-customers-impl-flow" doc:id="173e6d73-5c9b-47c8-9f59-9d88ade1391e" name="sf-umbre-create-customers-impl-flow" />
+    </flow>
+</mule>

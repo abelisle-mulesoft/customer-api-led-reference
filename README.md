@@ -55,7 +55,6 @@ This implementation follows an API-led connectivity model composed of three laye
 │   ├── lib-canonical-customer-types/
 │   ├── lib-common-responses/
 │   ├── lib-response-traits/
-│   ├── lib-salesforce-customer-types/
 │   └── lib-security-traits/
 │
 ├── scripts/
@@ -94,7 +93,6 @@ Reusable RAML libraries are employed to standardize API design throughout the ar
 ### Data Models
 
 - `lib-canonical-customer-types` -- Defines the canonical customer data model used by Process APIs.
-- `lib-salesforce-customer-types` -- Defines Salesforce-aligned customer data types used by System APIs.
 
 ### Response and Behavior
 

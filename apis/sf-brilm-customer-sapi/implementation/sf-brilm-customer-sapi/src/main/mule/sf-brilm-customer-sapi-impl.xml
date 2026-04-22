@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="sf-brilm-create-customers-impl-flow" doc:id="e72ee786-dcb0-4146-8229-cc443b80da07">
+		<logger level="DEBUG" doc:name="Debug - Flow Starting" message="Flow starting" />
+		<set-variable value="#[payload]" doc:name="originalRequestPayload" doc:id="73f76fc1-ceaa-4c54-a96c-c21508486cd3" variableName="originalRequestPayload" />
+		<ee:transform doc:name="To Salesforce Format" doc:id="7e3ee92c-cc1e-4541-8c54-e70ed9ad2857">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	External_Id__c: payload01.externalId,
+	Name: payload01.accountName,
+	Type: payload01.accountType,
+	BillingStreet: payload01.billingStreet,
+	BillingCity: payload01.billingCity,
+	BillingState: payload01.billingState,
+	BillingPostalCode: payload01.billingPostalCode,
+	BillingCountry: payload01.billingCountry,
+	ShippingStreet: payload01.shippingStreet,
+	ShippingCity: payload01.shippingCity,
+	ShippingState: payload01.shippingState,
+	ShippingPostalCode: payload01.shippingPostalCode,
+	ShippingCountry: payload01.shippingCountry,
+	Phone: payload01.phoneNumber,
+	AccountNumber: payload01.accountNumber,
+	Website: payload01.website,
+	Industry: payload01.industry,
+	OwnerId: payload01.ownerId,
+	Active__c: payload01.activeFlag as String
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:upsert doc:name="Accounts" doc:id="d8a64ca3-2a9d-4016-b43a-cba82a710640" config-ref="Salesforce_BrilliantMule_Config" objectType="Account" externalIdFieldName="External_Id__c" />
+		<choice doc:name="Choice" doc:id="b966cc0b-8bb4-41ee-ae80-7149d229b184" >
+			<when expression="#[payload.successful]" >
+				<ee:transform doc:name="Create Success Response" doc:id="39ed2244-ffb5-4d94-959c-480116a83711" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+import nowUtc from modules::datetime::utils
+---
+{
+	dateTime: nowUtc(),
+	httpStatus: 201,
+	status: "SUCCESS",
+	message: "Customer records processed successfully.",
+	correlationId: correlationId,
+	data: {
+		recordCount: sizeOf(vars.originalRequestPayload),
+		successCount: sizeOf(payload.items),
+		failureCount: 0
+	}
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Create Response with Errors" doc:id="afeb4c3b-8737-4cbc-ad97-a7c6e916b9d1" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+import nowUtc from modules::datetime::utils
+
+var upsertItems = payload.items default []
+var originalRequestPayload = vars.originalRequestPayload default []
+var successCount = sizeOf(upsertItems filter ((item) -> item.successful default false))
+var failureCount = sizeOf(upsertItems filter ((item) -> !(item.successful default false)))
+var overallStatus =
+    if (failureCount == 0) "SUCCESS"
+    else if (successCount == 0) "ERROR"
+    else "WARNING"
+var overallMessage =
+    if (failureCount == 0) "Customer records processed successfully."
+    else if (successCount == 0) "Customer records failed processing."
+    else "Customer records processed with partial success."
+---
+{
+    dateTime: nowUtc(),
+    httpStatus: 201,
+    status: overallStatus,
+    message: overallMessage,
+    correlationId: correlationId default "",
+    data: {
+        recordCount: sizeOf(originalRequestPayload),
+        successCount: successCount,
+        failureCount: failureCount,
+        results: upsertItems map (item, indexOfItem) -> {
+            externalId: originalRequestPayload[indexOfItem].externalId default null,
+            status: if (item.successful default false) "SUCCESS" else "FAILED",
+            (code: "CUSTOMER.UPSERT.VALIDATION-FAILED") if !(item.successful default false),
+            (salesforceAccountId: item.id) if (item.successful default false),
+            message:
+                if (item.successful default false)
+                  "Customer processed successfully."
+                else
+                  item.message default "Customer processing failed."
+        }
+    }
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="DEBUG" doc:name="Debug - Flow Ending" message="Flow ending" />
+	</flow>
+	<flow name="sf-brilm-get-customer-by-id-impl-flow" doc:id="710165c4-9dba-473c-9cf2-c1e63bd59eb7" >
+		<logger level="DEBUG" doc:name="Debug - Flow Starting" message="Flow starting"/>
+		<choice doc:name="Is vars.sfAccountId set?" doc:id="6f6a37e1-1831-48e7-86e7-6ac5bb380f0a" >
+			<when expression="#[!vars.sfAccountId?]">
+				<set-variable value="#[attributes.uriParams.salesforceAccountId]" doc:name="sfAccountId" doc:id="d78dd735-645a-49a8-872c-c91ae428ff3e" variableName="sfAccountId" />
+			</when>
+		</choice>
+		<try doc:name="Try" doc:id="ad199014-d66f-47c6-b020-81d1b31ad111">
+			<salesforce:query doc:name="Account by ID" doc:id="f6f670a1-eaa3-4c1d-b3df-f4d62da145d4" config-ref="Salesforce_BrilliantMule_Config">
+				<salesforce:salesforce-query><![CDATA[SELECT FIELDS(ALL) FROM Account WHERE Id = ':id' LIMIT 1]]></salesforce:salesforce-query>
+				<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	"id" : vars.sfAccountId
+}]]]></salesforce:parameters>
+			</salesforce:query>
+			<error-handler>
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c385c8e3-f0d2-4da1-a952-d65fa9681f31">
+					<choice doc:name="Invalid ID?" doc:id="7dad2bed-5b5a-40ef-8e95-87fac59378a2">
+						<when expression='#[lower(error.description default "") contains("invalid id field")]'>
+							<raise-error doc:name="BAD_REQUEST" doc:id="511c9aa9-3cb3-4da9-810d-85fbbf4e4018" type="APP:BAD_REQUEST" description="The provided salesforceAccountId is not a valid Salesforce ID" />
+						</when>
+						<otherwise>
+							<raise-error doc:name="INTERNAL_SERVER_ERROR" doc:id="2fc0f0fc-ff20-4979-a9ab-e2d016de7de9" type="APP:INTERNAL_SERVER_ERROR" description="An unexpected error occurred while retrieving the Salesforce account." />
+						</otherwise>
+					</choice>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<choice doc:name="Account found?" doc:id="1536e5c8-24b5-414b-a1b8-36202e2d0a4a">
+			<when expression="#[isEmpty(payload)]">
+				<raise-error doc:name="NOT_FOUND" doc:id="5532bf3e-4e33-4230-ad8c-ad6429c15e2c" type="APP:NOT_FOUND" description="No Salesforce account exists for the provided salesforceAccountId." />
+			</when>
+			<otherwise>
+				<ee:transform doc:name="To System-Aligned Model" doc:id="c3bf8208-1ee8-4453-a8a2-918332a70512">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import nowUtc from modules::datetime::utils
+---
+{
+	dateTime: nowUtc(),
+	httpStatus: 200,
+	status: "SUCCESS",
+	message: "Customer record retrieved successfully.",
+	correlationId: correlationId,
+	data: {
+		customer: {
+			salesforceAccountId: payload[0].Id default "",
+			externalId: payload[0].External_Id__c default "",
+			accountName: payload[0].Name default "",
+			accountNumber: payload[0].AccountNumber default "",
+			website: payload[0].Website default "",
+			phoneNumber: payload[0].Phone default "",
+			billingStreet: payload[0].BillingStreet default "",
+			billingCity: payload[0].BillingCity default "",
+			billingState: payload[0].BillingState default "",
+			billingPostalCode: payload[0].BillingPostalCode default "",
+			billingCountry: payload[0].BillingCountry default "",
+			shippingStreet: payload[0].ShippingStreet default "",
+			shippingCity: payload[0].ShippingCity default "",
+			shippingState: payload[0].ShippingState default "",
+			shippingPostalCode: payload[0].ShippingPostalCode default "",
+			shippingCountry: payload[0].ShippingCountry default "",
+			industry: payload[0].Industry default "",
+			accountType: payload[0].Type default "",
+			ownerId: payload[0].OwnerId default "",
+			activeFlag: payload[0].Active__c as Boolean default true,
+			createdDate: payload[0].CreatedDate as String default "",
+			lastModifiedDate: payload[0].LastModifiedDate as String default ""
+		}
+	}
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="DEBUG" doc:name="Debug - Flow Ending" message="Flow ending" />
+	</flow>
+	<flow name="sf-brilm-get-customers-impl-flow" doc:id="ff0b7f8f-77cc-4818-8197-fc788c73e6c7" >
+		<logger level="DEBUG" doc:name="Debug - Flow Starting" message="Flow starting"/>
+		<salesforce:query-all doc:name="Accounts" doc:id="f3bce817-ef09-42fb-b6a7-d431969a6df9" config-ref="Salesforce_BrilliantMule_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT FIELDS(ALL) FROM Account LIMIT 200]]></salesforce:salesforce-query>
+		</salesforce:query-all>
+		<ee:transform doc:name="To System-Aligned Model" doc:id="9e38eb5a-6ad5-4b1a-9a51-f47271128e42" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+import nowUtc from modules::datetime::utils
+---
+{
+	dateTime: nowUtc(),
+	httpStatus: 200,
+	status: "SUCCESS",
+	message: "Customer records retrieved successfully.",
+	correlationId: correlationId,
+	data: {
+		customers: payload map ( payload01 , indexOfPayload01 ) -> {
+			salesforceAccountId: payload01.Id default "",
+			externalId: payload01.External_Id__c default "",
+			accountName: payload01.Name default "",
+			accountNumber: payload01.AccountNumber default "",
+			website: payload01.Website default "",
+			phoneNumber: payload01.Phone default "",
+			billingStreet: payload01.BillingStreet default "",
+			billingCity: payload01.BillingCity default "",
+			billingState: payload01.BillingState default "",
+			billingPostalCode: payload01.BillingPostalCode default "",
+			billingCountry: payload01.BillingCountry default "",
+			shippingStreet: payload01.ShippingStreet default "",
+			shippingCity: payload01.ShippingCity default "",
+			shippingState: payload01.ShippingState default "",
+			shippingPostalCode: payload01.ShippingPostalCode default "",
+			shippingCountry: payload01.ShippingCountry default "",
+			industry: payload01.Industry default "",
+			accountType: payload01.Type default "",
+			ownerId: payload01.OwnerId default "",
+			activeFlag: payload01.Active__c as Boolean default true,
+			createdDate: payload01.CreatedDate as String default "",
+			lastModifiedDate: payload01.LastModifiedDate as String default ""
+		},
+		recordCount: sizeOf(payload)
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Debug - Flow Ending" message="Flow ending" />
+	</flow>
+</mule>

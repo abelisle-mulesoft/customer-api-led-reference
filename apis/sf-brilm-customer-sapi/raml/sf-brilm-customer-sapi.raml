@@ -19,7 +19,6 @@ uses:
   common: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses/1.0.4/lib-common-responses.raml
   responses: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-response-traits/1.0.4/lib-response-traits.raml
   security: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-security-traits/1.0.4/lib-security-traits.raml
-  sfCustomer: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-salesforce-customer-types/1.0.4/lib-salesforce-customer-types.raml
 
 /customers:
   displayName: Customers
@@ -48,9 +47,9 @@ uses:
       - responses.common-routing-and-runtime-errors
     body:
       application/json:
-        type: sfCustomer.SalesforceCustomerCollection
+        type: SalesforceCustomerCollection
     responses:
-      200:
+      201:
         description: Customer records processed.
         body:
           application/json:
@@ -62,7 +61,6 @@ uses:
       displayName: Salesforce Account ID
       description: Unique identifier of the Salesforce customer account record.
       type: string
-      minLength: 1
       example: 001bm00000J2nswAAB
   get:
     displayName: Get customer by ID
@@ -84,13 +82,434 @@ uses:
             type: common.ApiResponse
 
 types:
+  SalesforceCustomer:
+    displayName: Salesforce Customer
+    description: |
+      Salesforce-aligned representation of an account record exposed by a System API.
+      Field names are human-readable but remain aligned to Salesforce Account concepts rather
+      than the enterprise canonical customer model.
+    type: object
+    additionalProperties: false
+    properties:
+      salesforceAccountId?:
+        displayName: Salesforce Account ID
+        description: Salesforce Account record identifier.
+        type: string
+        example: 001bm00000J2nswAAB
+      externalId?:
+        displayName: External ID
+        description: |
+          External identifier used to match customer records during Salesforce upsert operations.
+          This value is typically sourced from the upstream system of record or derived from it
+          to ensure uniqueness across integrated systems.
+        type: string
+        example: ORACLE:12345
+      accountName:
+        displayName: Account Name
+        description: Salesforce Account Name field.
+        type: string
+        example: Acme Corporation
+      accountNumber?:
+        displayName: Account Number
+        description: Salesforce Account Number field.
+        type: string
+        example: A-10001
+      website?:
+        displayName: Website
+        description: Salesforce Website field.
+        type: string
+        example: https://www.acme.example
+      phoneNumber?:
+        displayName: Phone Number
+        description: Salesforce Phone field.
+        type: string
+        example: +1-206-555-0100
+      billingStreet?:
+        displayName: Billing Street
+        description: Salesforce Billing Street field.
+        type: string
+        example: 100 Main Street
+      billingCity?:
+        displayName: Billing City
+        description: Salesforce Billing City field.
+        type: string
+        example: Seattle
+      billingState?:
+        displayName: Billing State
+        description: Salesforce Billing State or Province field.
+        type: string
+        example: WA
+      billingPostalCode?:
+        displayName: Billing Postal Code
+        description: Salesforce Billing Postal Code field.
+        type: string
+        example: "98101"
+      billingCountry?:
+        displayName: Billing Country
+        description: Salesforce Billing Country field.
+        type: string
+        example: USA
+      shippingStreet?:
+        displayName: Shipping Street
+        description: Salesforce Shipping Street field.
+        type: string
+        example: 100 Main Street
+      shippingCity?:
+        displayName: Shipping City
+        description: Salesforce Shipping City field.
+        type: string
+        example: Seattle
+      shippingState?:
+        displayName: Shipping State
+        description: Salesforce Shipping State or Province field.
+        type: string
+        example: WA
+      shippingPostalCode?:
+        displayName: Shipping Postal Code
+        description: Salesforce Shipping Postal Code field.
+        type: string
+        example: "98101"
+      shippingCountry?:
+        displayName: Shipping Country
+        description: Salesforce Shipping Country field.
+        type: string
+        example: USA
+      industry?:
+        displayName: Industry
+        description: Salesforce Industry field.
+        type: string
+        example: Manufacturing
+      accountType?:
+        displayName: Account Type
+        description: Salesforce Account Type field.
+        type: string
+        example: Customer
+      ownerId?:
+        displayName: Owner ID
+        description: Salesforce User ID of the account owner.
+        type: string
+        example: 005bm000001ABCdAAO
+      activeFlag?:
+        displayName: Active Flag
+        description: Indicates whether the account is considered active for this integration.
+        type: boolean
+        example: true
+      createdDate?:
+        displayName: Created Date
+        description: Timestamp when the account record was created in Salesforce.
+        type: datetime
+        example: 2026-03-12T18:25:43Z
+      lastModifiedDate?:
+        displayName: Last Modified Date
+        description: Timestamp when the account record was last modified in Salesforce.
+        type: datetime
+        example: 2026-03-16T09:42:10Z
+    example:
+      salesforceAccountId: 001bm00000J2nswAAB
+      externalId: ORACLE:12345
+      accountName: Acme Corporation
+      accountNumber: A-10001
+      website: https://www.acme.example
+      phoneNumber: +1-206-555-0100
+      billingStreet: 100 Main Street
+      billingCity: Seattle
+      billingState: WA
+      billingPostalCode: "98101"
+      billingCountry: USA
+      shippingStreet: 100 Main Street
+      shippingCity: Seattle
+      shippingState: WA
+      shippingPostalCode: "98101"
+      shippingCountry: USA
+      industry: Manufacturing
+      accountType: Customer
+      ownerId: 005bm000001ABCdAAO
+      activeFlag: true
+      createdDate: 2026-03-12T18:25:43Z
+      lastModifiedDate: 2026-03-16T09:42:10Z
+
+  SalesforceCustomerCollection:
+    displayName: Salesforce Customer Collection
+    description: Collection of Salesforce customer records.
+    type: SalesforceCustomer[]
+    minItems: 1
+    example:
+      - salesforceAccountId: 001bm00000J2nswAAB
+        externalId: ORACLE:12345
+        accountName: Acme Corporation
+        accountNumber: A-10001
+        website: https://www.acme.example
+        phoneNumber: +1-206-555-0100
+        billingStreet: 100 Main Street
+        billingCity: Seattle
+        billingState: WA
+        billingPostalCode: "98101"
+        billingCountry: USA
+        shippingStreet: 100 Main Street
+        shippingCity: Seattle
+        shippingState: WA
+        shippingPostalCode: "98101"
+        shippingCountry: USA
+        industry: Manufacturing
+        accountType: Customer
+        ownerId: 005bm000001ABCdAAO
+        activeFlag: true
+        createdDate: 2026-03-12T18:25:43Z
+        lastModifiedDate: 2026-03-16T09:42:10Z
+      - salesforceAccountId: 001bm00000J2nsyAAB
+        externalId: SAP:0009876543
+        accountName: Globex Corporation
+        accountNumber: A-10002
+        website: https://www.globex.example
+        phoneNumber: +1-425-555-0199
+        billingStreet: 500 Market Street
+        billingCity: Bellevue
+        billingState: WA
+        billingPostalCode: "98004"
+        billingCountry: USA
+        industry: Technology
+        accountType: Prospect
+        ownerId: 005bm000001XYZdAAO
+        activeFlag: true
+        createdDate: 2026-03-10T09:00:00Z
+        lastModifiedDate: 2026-03-12T16:45:00Z
+
+  SalesforceCustomerGetData:
+    displayName: Salesforce Customer Get Data
+    description: Payload representing multiple Salesforce customer records.
+    type: object
+    additionalProperties: false
+    properties:
+      customers:
+        displayName: Customers
+        description: Account records retrieved from Salesforce.
+        type: SalesforceCustomerCollection
+      recordCount:
+        displayName: Record Count
+        description: Number of account records returned.
+        type: integer
+        minimum: 0
+        example: 1
+    example:
+      customers:
+        - salesforceAccountId: 001bm00000J2nswAAB
+          externalId: ORACLE:12345
+          accountName: Acme Corporation
+          accountNumber: A-10001
+          website: https://www.acme.example
+          phoneNumber: +1-206-555-0100
+          billingStreet: 100 Main Street
+          billingCity: Seattle
+          billingState: WA
+          billingPostalCode: "98101"
+          billingCountry: USA
+          shippingStreet: 100 Main Street
+          shippingCity: Seattle
+          shippingState: WA
+          shippingPostalCode: "98101"
+          shippingCountry: USA
+          industry: Manufacturing
+          accountType: Customer
+          ownerId: 005bm000001ABCdAAO
+          activeFlag: true
+          createdDate: 2026-03-12T18:25:43Z
+          lastModifiedDate: 2026-03-16T09:42:10Z
+      recordCount: 1
+
+  SalesforceCustomerSingleGetData:
+    displayName: Salesforce Customer Single Get Data
+    description: Payload representing a single Salesforce customer record.
+    type: object
+    additionalProperties: false
+    properties:
+      customer:
+        displayName: Customer
+        description: Account record retrieved from Salesforce.
+        type: SalesforceCustomer
+    example:
+      customer:
+        salesforceAccountId: 001bm00000J2nswAAB
+        externalId: ORACLE:12345
+        accountName: Acme Corporation
+        accountNumber: A-10001
+        website: https://www.acme.example
+        phoneNumber: +1-206-555-0100
+        billingStreet: 100 Main Street
+        billingCity: Seattle
+        billingState: WA
+        billingPostalCode: "98101"
+        billingCountry: USA
+        shippingStreet: 100 Main Street
+        shippingCity: Seattle
+        shippingState: WA
+        shippingPostalCode: "98101"
+        shippingCountry: USA
+        industry: Manufacturing
+        accountType: Customer
+        ownerId: 005bm000001ABCdAAO
+        activeFlag: true
+        createdDate: 2026-03-12T18:25:43Z
+        lastModifiedDate: 2026-03-16T09:42:10Z
+
+  SalesforceCustomerUpsertResult:
+    displayName: Salesforce Customer Upsert Result
+    description: Result of processing an individual customer record during upsert.
+    type: object
+    additionalProperties: false
+    properties:
+      externalId?:
+        displayName: External ID
+        description: External identifier of the customer record submitted for upsert.
+        type: string
+        example: ORACLE:12345
+      status:
+        displayName: Status
+        description: Outcome of the individual customer record upsert operation.
+        type: string
+        enum: [SUCCESS, FAILED]
+        example: SUCCESS
+      salesforceAccountId?:
+        displayName: Salesforce Account ID
+        description: Salesforce Account record identifier returned for a successfully processed record.
+        type: string
+        example: 001Do00000ltEbfIAE
+      code?:
+        displayName: Code
+        description: Stable application error code for a failed customer upsert result.
+        type: string
+        example: customer.upsert.validation-failed
+      message:
+        displayName: Message
+        description: Human-readable message describing the outcome for the individual customer record.
+        type: string
+        example: Customer upserted successfully.
+
+  SalesforceCustomerUpsertData:
+    displayName: Salesforce Customer Upsert Data
+    description: Payload representing the result of a create or update operation.
+    type: object
+    additionalProperties: false
+    properties:
+      recordCount:
+        displayName: Record Count
+        description: Number of customer records received for processing.
+        type: integer
+        minimum: 0
+        example: 3
+      successCount:
+        displayName: Success Count
+        description: Number of customer records successfully created or updated in Salesforce.
+        type: integer
+        minimum: 0
+        example: 2
+      failureCount:
+        displayName: Failure Count
+        description: |
+          Number of customer records that failed during upsert processing.
+          A failure indicates that the record could not be created or updated in Salesforce.
+        type: integer
+        minimum: 0
+        example: 1
+      results?:
+        displayName: Results
+        description: |
+          Per-record upsert results. This property is typically returned when one or more customer
+          records fail processing.
+        type: SalesforceCustomerUpsertResult[]
+        minItems: 1
+    examples:
+      success:
+        recordCount: 3
+        successCount: 3
+        failureCount: 0
+      partial-success:
+        recordCount: 3
+        successCount: 2
+        failureCount: 1
+        results:
+          - externalId: ORACLE:12345
+            status: SUCCESS
+            salesforceAccountId: 001Do00000ltEbfIAE
+            message: Customer upserted successfully.
+          - externalId: SAP:0009876543
+            status: FAILED
+            code: customer.upsert.validation-failed
+            message: "Owner ID: id value of incorrect type: 001bm00000J2nswAAB FIELD_INTEGRITY_EXCEPTION"
+
   GetSalesforceBrilmCustomersResponse:
     displayName: Get Salesforce Brilliant Mule Customers Response
     description: Standard API response envelope with a customer retrieval payload.
     type: common.ApiResponse
     properties:
       data?:
-        type: sfCustomer.SalesforceCustomerGetData
+        type: SalesforceCustomerGetData
+    examples:
+      success:
+        dateTime: 2026-03-17T16:00:00Z
+        httpStatus: 200
+        status: SUCCESS
+        message: Customer records retrieved successfully.
+        correlationId: 2f6c2b7b-8b1b-4f2d-9ef2-9c6a2a1b0d6a
+        data:
+          customers:
+            - salesforceAccountId: 001bm00000J2nswAAB
+              externalId: ORACLE:12345
+              accountName: Acme Corporation
+              accountNumber: A-10001
+              website: https://www.acme.example
+              phoneNumber: +1-206-555-0100
+              billingStreet: 100 Main Street
+              billingCity: Seattle
+              billingState: WA
+              billingPostalCode: "98101"
+              billingCountry: USA
+              shippingStreet: 100 Main Street
+              shippingCity: Seattle
+              shippingState: WA
+              shippingPostalCode: "98101"
+              shippingCountry: USA
+              industry: Manufacturing
+              accountType: Customer
+              ownerId: 005bm000001ABCdAAO
+              activeFlag: true
+              createdDate: 2026-03-12T18:25:43Z
+              lastModifiedDate: 2026-03-16T09:42:10Z
+          recordCount: 1
+      success-with-warning:
+        dateTime: 2026-03-17T22:30:00Z
+        httpStatus: 200
+        status: WARNING
+        message: Customer records retrieved with warnings.
+        correlationId: 123e4567-e89b-12d3-a456-426614174000
+        details:
+          - severity: WARNING
+            code: CUSTOMER.RETRIEVAL.INACTIVE-SKIPPED
+            message: Inactive customer accounts were skipped during retrieval.
+        data:
+          customers:
+            - salesforceAccountId: 001bm00000J2nswAAB
+              externalId: ORACLE:12345
+              accountName: Acme Corporation
+              accountNumber: A-10001
+              website: https://www.acme.example
+              phoneNumber: +1-206-555-0100
+              billingStreet: 100 Main Street
+              billingCity: Seattle
+              billingState: WA
+              billingPostalCode: "98101"
+              billingCountry: USA
+              shippingStreet: 100 Main Street
+              shippingCity: Seattle
+              shippingState: WA
+              shippingPostalCode: "98101"
+              shippingCountry: USA
+              industry: Manufacturing
+              accountType: Customer
+              ownerId: 005bm000001ABCdAAO
+              activeFlag: true
+              createdDate: 2026-03-12T18:25:43Z
+              lastModifiedDate: 2026-03-16T09:42:10Z
+          recordCount: 1
 
   GetSalesforceBrilmCustomerResponse:
     displayName: Get Salesforce Brilliant Mule Customer Response
@@ -98,7 +517,38 @@ types:
     type: common.ApiResponse
     properties:
       data?:
-        type: sfCustomer.SalesforceCustomerSingleGetData
+        type: SalesforceCustomerSingleGetData
+    examples:
+      success:
+        dateTime: 2026-03-17T16:00:00Z
+        httpStatus: 200
+        status: SUCCESS
+        message: Customer record retrieved successfully.
+        correlationId: 2f6c2b7b-8b1b-4f2d-9ef2-9c6a2a1b0d6a
+        data:
+          customer:
+            salesforceAccountId: 001bm00000J2nswAAB
+            externalId: ORACLE:12345
+            accountName: Acme Corporation
+            accountNumber: A-10001
+            website: https://www.acme.example
+            phoneNumber: +1-206-555-0100
+            billingStreet: 100 Main Street
+            billingCity: Seattle
+            billingState: WA
+            billingPostalCode: "98101"
+            billingCountry: USA
+            shippingStreet: 100 Main Street
+            shippingCity: Seattle
+            shippingState: WA
+            shippingPostalCode: "98101"
+            shippingCountry: USA
+            industry: Manufacturing
+            accountType: Customer
+            ownerId: 005bm000001ABCdAAO
+            activeFlag: true
+            createdDate: 2026-03-12T18:25:43Z
+            lastModifiedDate: 2026-03-16T09:42:10Z
 
   UpsertSalesforceBrilmCustomersResponse:
     displayName: Upsert Salesforce Brilliant Mule Customers Response
@@ -106,5 +556,15 @@ types:
     type: common.ApiResponse
     properties:
       data?:
-        type: sfCustomer.SalesforceCustomerUpsertData
-
+        type: SalesforceCustomerUpsertData
+    examples:
+      success:
+        dateTime: 2026-03-17T16:05:00Z
+        httpStatus: 201
+        status: SUCCESS
+        message: Customer records processed successfully.
+        correlationId: 6d7b8b6c-7093-4787-8f18-0fef4f2b94c4
+        data:
+          recordCount: 3
+          successCount: 3
+          failureCount: 0

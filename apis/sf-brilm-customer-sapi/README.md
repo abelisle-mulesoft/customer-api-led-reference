@@ -62,7 +62,6 @@ This API depends on the following RAML libraries:
 - API Response Traits Library.
 - API Security Traits Library.
 - Common Response Types Library.
-- Salesforce Customer Data Types Library.
 
 This API does not depend on other APIs.
 
@@ -86,7 +85,6 @@ This API is part of the Customer API-led Reference Architecture and works in con
 - Code Taxonomy Guide -- standardized response codes.
 - Common Response Types Library -- standard response envelope.
 - Customer Process API -- orchestrates and transforms data across multiple System APIs.
-- Salesforce Customer Data Types Library -- system-aligned customer data model.
 
 ## Versioning
 

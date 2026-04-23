@@ -10,7 +10,7 @@ The library provides reusable data types that represent canonical customer data 
 
 The following diagram illustrates how system-aligned customer data is mapped to the canonical model and subsequently used by Process APIs. It highlights the role of the canonical model in normalizing and abstracting underlying source systems.
 
-![Library Relationships](resources/lib-canonical-customer-types-diagram-f43271e8-ea61-4dcd-8355-8af75efbcdb3.png)
+![Library Relationships](resources/lib-canonical-customer-types-diagram-1dff9f06-a385-4fda-a5f7-68f931fdcf2b.png)
 
 The Customer Canonical Data Types Library defines the canonical data model illustrated in the diagram above, enabling consistent data representation and transformation across Process APIs. System-aligned models are defined by system-specific libraries such as the Salesforce Customer Data Types Library.
 

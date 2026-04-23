@@ -13,7 +13,7 @@ The library provides reusable data types that address common API design and runt
 
 Think of these libraries as defining: who can call the API, what happens, and how responses are structured.
 
-- **Who can call the API** → API Security Traits Library
+- **Who can call the API** → API Security Schemes Library
 - **What happens** → API Response Traits Library
 - **How responses look** → Common Response Types Library
 
@@ -23,7 +23,7 @@ Together, they ensure consistent access control, behavior, and response structur
 
 The following diagram visualizes how these libraries work together, showing how access control, response behavior, and response structure are defined across APIs.
 
-![Library Relationships](resources/lib-common-responses-diagram-f48532ea-b170-4112-adbe-eff7863a26c2.png)
+![Library Relationships](resources/lib-common-responses-diagram-a4ef2264-5e1c-46f7-a321-b1b4a6c69131.png)
 
 The Common Response Types Library defines the response structure referenced in the diagram above, providing a consistent response model that can be adopted across APIs. Response behavior is defined by the API Response Traits Library.
 
@@ -148,13 +148,13 @@ This library defines the reference response model used within the Customer API-l
 It works in conjunction with:
 
 - [API Response Traits Library](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-response-traits): applies standardized HTTP response definitions at the method level using this response model.
-- [API Security Traits Library](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-security-traits): defines access control requirements that may result in standardized error responses structured using this library.
+- [API Security Schemes Library](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-security-schemes): defines access control requirements that may result in standardized error responses structured using this library.
 
 Together, these libraries establish a consistent model where:
 
 - Response structure is defined here.
 - Response behavior is defined in response traits.
-- Access control is defined in security traits.
+- Access control is defined in security schemes.
 
 ## Typical Usage
 

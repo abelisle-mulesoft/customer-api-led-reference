@@ -1,6 +1,6 @@
 ## Support
 
-If you need assistance using the API Security Traits Library, contact the integration platform support team at [support@brilliantmule.com](mailto:support@brilliantmule.com).
+If you need assistance using the API Security Schemes Library, contact the integration platform support team at [support@brilliantmule.com](mailto:support@brilliantmule.com).
 
 Support hours: Monday through Friday, 9:00 AM – 5:00 PM Pacific Time.
 
@@ -19,7 +19,7 @@ Before opening a support request, please review the following resources:
 
 Providing the following information will help the support team respond more quickly:
 
-- Exchange asset name and version (example: lib-security-traits -- v1.0.0).
+- Exchange asset name and version (example: lib-security-schemes -- v1.0.0).
 - Name of the API that is using the library.
 - Description of the issue or question.
 - RAML snippet showing how the library is being used.
@@ -30,10 +30,10 @@ Including a minimal reproducible example greatly improves the ability to diagnos
 
 ## Intended Usage
 
-This asset provides reusable security traits for API specifications. Support requests should be related to:
+This asset provides reusable security schemes for API specifications. Support requests should be related to:
 
 - Importing the RAML library into an API specification.
-- Applying security traits to API methods correctly.
+- Applying security schemes to API methods correctly.
 - Aligning RAML-declared security requirements with API Manager policies.
 - Using consistent header names and authentication requirements across APIs.
 - Troubleshooting mismatches between contract-level security declarations and runtime enforcement.

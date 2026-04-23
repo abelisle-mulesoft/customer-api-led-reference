@@ -8,7 +8,7 @@ It centralizes method-level response definitions so APIs can consistently docume
 
 Think of these libraries as defining: who can call the API, what happens, and how responses are structured.
 
-- **Who can call the API** → defined by the API Security Traits Library
+- **Who can call the API** → defined by the API Security Schemes Library
 - **What happens when a request is processed** → defined by the API Response Traits Library
 - **How responses are structured** → defined by the Common Response Types Library
 
@@ -18,7 +18,7 @@ Together, they promote consistent access control, behavior, and response structu
 
 The following diagram visualizes how these libraries work together, showing how access control, response behavior, and response structure are defined across APIs.
 
-![Library Relationships](resources/lib-response-traits-diagram-1f260164-0c83-49bd-9b2b-5071a7c0ebff.png)
+![Library Relationships](resources/lib-response-traits-diagram-bc2f8338-0d18-49e2-853a-0627334cfa93.png)
 
 The API Response Traits Library defines the response behavior illustrated in the diagram above, standardizing how APIs respond to both successful and error scenarios. Response structure is defined by the Common Response Types Library.
 
@@ -55,13 +55,13 @@ This library is designed for use across all API layers:
 This library defines standard response behavior and is used in conjunction with the following assets:
 
 - [Common Response Types Library](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses): provides the standard response envelope used by all traits.
-- [API Security Traits Library](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-security-traits): defines access control requirements that complement response definitions.
+- [API Security Schemes Library](https://anypoint.mulesoft.com/exchange/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-security-schemes): defines access control requirements that complement response definitions.
 
 Together, these libraries establish a consistent model where:
 
 - Response behavior (status codes and scenarios) is defined in this library
 - Response structure is defined in the Common Response Types Library
-- Access control is defined in the API Security Traits Library
+- Access control is defined in the API Security Schemes Library
 
 ## Versioning
 

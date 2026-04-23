@@ -10,7 +10,7 @@ Within the broader reference architecture:
 
 - Response structure is defined in this library.
 - Response behavior is defined in the API Response Traits Library.
-- Access control is defined in the API Security Traits Library.
+- Access control is defined in the API Security Schemes Library.
 
 Teams can use this library as a reference for establishing their own response standards, adopting either the full response envelope or selected aspects of it, such as the structured error model, correlation identifiers, and standardized detail messages.
 
@@ -59,7 +59,7 @@ This library does not depend on other APIs.
 It is typically used with:
 
 - API Response Traits Library -- applies standardized responses using this model.
-- API Security Traits Library -- produces responses structured using this model.
+- API Security Schemes Library -- produces responses structured using this model.
 - Code Taxonomy Guide -- standardizes response and error codes.
 
 ## Usage
@@ -78,7 +78,7 @@ Typical usage includes:
 This library focuses on response structure and can be used on its own or alongside libraries that define response behavior and access control. It is part of the Customer API-led Reference Architecture and complements other reusable assets:
 
 - API Response Traits Library -- defines reusable response behaviors for common HTTP scenarios.
-- API Security Traits Library -- defines reusable traits for authentication and authorization.
+- API Security Schemes Library -- defines reusable traits for authentication and authorization.
 - Customer Canonical Data Types Library -- defines canonical payloads that may be used within the response `data` property.
 - System, Process, and Experience APIs -- may use this library to define consistent response structures when appropriate.
 

@@ -8,7 +8,7 @@ This library defines response behavior as part of a broader model where:
 
 - Response structure is defined in the Common Response Types Library.
 - Response behavior is defined in this library.
-- Access control is defined in the API Security Traits Library.
+- Access control is defined in the API Security Schemes Library.
 
 APIs may apply the reusable response traits defined in this library to document common HTTP error scenarios consistently.
 
@@ -60,7 +60,7 @@ This library does not depend on other APIs.
 It is typically used with:
 
 - Common Response Types Library -- provides the standard response envelope used by all traits.
-- API Security Traits Library -- complements response behavior with access control requirements.
+- API Security Schemes Library -- complements response behavior with access control requirements.
 
 ## Usage
 
@@ -78,7 +78,7 @@ Typical usage includes:
 This library focuses on response behavior and can be used on its own or alongside libraries that define response structure and access control. It is part of the Customer API-led Reference Architecture and complements other reusable assets:
 
 - Common Response Types Library -- defines a shared response model that may be used by these traits.
-- API Security Traits Library -- defines access control requirements that may accompany response behavior.
+- API Security Schemes Library -- defines access control requirements that may accompany response behavior.
 - System, Process, and Experience APIs -- may use these traits to document common HTTP response scenarios consistently.
 
 ## Versioning

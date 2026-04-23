@@ -47,17 +47,17 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>16339d91-3161-43b4-bef8-7e3fbf0af852</groupId>
-			<artifactId>oracle-ebs-customer-sapi</artifactId>
-			<version>1.0.4</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-apikit-module</artifactId>
 			<version>1.11.16</version>
 			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>16339d91-3161-43b4-bef8-7e3fbf0af852</groupId>
+			<artifactId>oracle-ebs-customer-sapi</artifactId>
+			<version>1.0.5</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
 		</dependency>
 	</dependencies>
 

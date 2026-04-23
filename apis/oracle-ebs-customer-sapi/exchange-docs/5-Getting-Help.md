@@ -12,7 +12,7 @@ Before submitting a support request, please review the following resources:
 
 - The documentation pages of this asset.
 - The API specification and resource documentation.
-- The API Response Traits Library, API Security Traits Library, and Common Response Types Library.
+- The API Response Traits Library, API Security Schemes Library, and Common Response Types Library.
 
 These resources address most integration and usage questions.
 

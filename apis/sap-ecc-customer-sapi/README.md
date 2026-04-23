@@ -69,7 +69,7 @@ This API supports the following capabilities:
 This API depends on the following RAML libraries:
 
 - API Response Traits Library.
-- API Security Traits Library.
+- API Security Schemes Library.
 - Common Response Types Library.
 
 This API does not depend on other APIs.
@@ -89,7 +89,7 @@ Typical use cases include:
 This API is part of the Customer API-led Reference Architecture and works in conjunction with:
 
 - API Response Traits Library -- standardized response behaviors and status handling.
-- API Security Traits Library -- reusable security traits such as client ID enforcement.
+- API Security Schemes Library -- reusable security schemes such as client ID enforcement.
 - Code Taxonomy Guide -- standardized response codes.
 - Common Response Types Library -- standard response envelope.
 - Customer Process API -- orchestrates and transforms data across multiple System APIs.

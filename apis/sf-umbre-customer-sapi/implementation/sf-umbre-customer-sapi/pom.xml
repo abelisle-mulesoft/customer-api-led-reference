@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>16339d91-3161-43b4-bef8-7e3fbf0af852</groupId>
 			<artifactId>sf-umbre-customer-sapi</artifactId>
-			<version>1.0.9</version>
+			<version>1.0.10</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
 		</dependency>

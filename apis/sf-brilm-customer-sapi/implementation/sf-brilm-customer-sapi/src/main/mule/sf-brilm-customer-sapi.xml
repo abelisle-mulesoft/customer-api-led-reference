@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <apikit:config name="sf-brilm-customer-sapi-config" api="resource::16339d91-3161-43b4-bef8-7e3fbf0af852:sf-brilm-customer-sapi:1.0.5:raml:zip:sf-brilm-customer-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="sf-brilm-customer-sapi-config" api="resource::16339d91-3161-43b4-bef8-7e3fbf0af852:sf-brilm-customer-sapi:1.0.6:raml:zip:sf-brilm-customer-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="sf-brilm-customer-sapi-main">
         <http:listener config-ref="sf-brilm-customer-sapi-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -313,12 +313,12 @@ buildErrorResponseWithInlineDetail({
         </error-handler>
     </flow>
     <flow name="get:\customers\(salesforceAccountId):sf-brilm-customer-sapi-config">
-		<flow-ref doc:name="sf-brilm-get-customer-by-id-impl-flow" doc:id="4a024b2b-af50-436d-8fe4-663fe424deeb" name="sf-brilm-get-customer-by-id-impl-flow"/>
+        <flow-ref doc:name="sf-brilm-get-customer-by-id-impl-flow" doc:id="4a024b2b-af50-436d-8fe4-663fe424deeb" name="sf-brilm-get-customer-by-id-impl-flow" />
     </flow>
     <flow name="get:\customers:sf-brilm-customer-sapi-config">
-		<flow-ref doc:name="sf-brilm-get-customers-impl-flow" doc:id="7770e1e1-24ef-4c97-9b9a-1af32a10bcc1" name="sf-brilm-get-customers-impl-flow"/>
+        <flow-ref doc:name="sf-brilm-get-customers-impl-flow" doc:id="7770e1e1-24ef-4c97-9b9a-1af32a10bcc1" name="sf-brilm-get-customers-impl-flow" />
     </flow>
     <flow name="post:\customers:application\json:sf-brilm-customer-sapi-config">
-		<flow-ref doc:name="sf-brilm-create-customers-impl-flow" doc:id="a5c968ac-fdf5-4981-806b-8b4a8ee5e5e7" name="sf-brilm-create-customers-impl-flow"/>
+        <flow-ref doc:name="sf-brilm-create-customers-impl-flow" doc:id="a5c968ac-fdf5-4981-806b-8b4a8ee5e5e7" name="sf-brilm-create-customers-impl-flow" />
     </flow>
 </mule>

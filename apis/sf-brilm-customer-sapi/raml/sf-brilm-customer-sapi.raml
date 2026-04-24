@@ -18,7 +18,7 @@ protocols:
 uses:
   common: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-common-responses/1.0.4/lib-common-responses.raml
   responses: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-response-traits/1.0.4/lib-response-traits.raml
-  security: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-security-traits/1.0.4/lib-security-traits.raml
+  security: exchange_modules/16339d91-3161-43b4-bef8-7e3fbf0af852/lib-security-schemes/1.0.1/lib-security-schemes.raml
 
 /customers:
   displayName: Customers
@@ -28,8 +28,9 @@ uses:
   get:
     displayName: Get customers
     description: Retrieve customer account records from the Salesforce Brilliant Mule instance.
+    securedBy:
+      - security.client-id-enforcement
     is:
-      - security.client-id-enforced
       - responses.common-routing-and-runtime-errors
     responses:
       200:
@@ -42,8 +43,9 @@ uses:
     displayName: Upsert customers
     description: |
       Create or update multiple customer account records in the Salesforce Brilliant Mule instance.
+    securedBy:
+      - security.client-id-enforcement
     is:
-      - security.client-id-enforced
       - responses.common-routing-and-runtime-errors
     body:
       application/json:
@@ -66,8 +68,9 @@ uses:
     displayName: Get customer by ID
     description: |
       Retrieve a customer account record by ID from the Salesforce Brilliant Mule instance.
+    securedBy:
+      - security.client-id-enforcement
     is:
-      - security.client-id-enforced
       - responses.common-routing-and-runtime-errors
     responses:
       200:

@@ -31,8 +31,9 @@ uses:
     description: |
       Retrieves customer records from connected customer system APIs, aggregates them, and returns
       them using the canonical Customer model.
+    securedBy:
+      - security.client-id-enforcement
     is:
-      - security.client-id-enforced
       - responses.common-routing-and-runtime-errors
     responses:
       200:
@@ -58,8 +59,9 @@ uses:
     description: |
       Retrieve a customer record by ID from connected customer system APIs and return the canonical
       Customer representation.
+    securedBy:
+      - security.client-id-enforcement
     is:
-      - security.client-id-enforced
       - responses.common-routing-and-runtime-errors
     responses:
       200:
@@ -83,8 +85,9 @@ uses:
     description: |
       Accepts a canonical customer synchronization event and synchronously orchestrates propagation
       of the change across connected systems.
+    securedBy:
+      - security.client-id-enforcement
     is:
-      - security.client-id-enforced
       - responses.common-routing-and-runtime-errors
     body:
       application/json:

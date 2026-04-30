@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.brilliantmule</groupId>
+	<groupId>16339d91-3161-43b4-bef8-7e3fbf0af852</groupId>
 	<artifactId>sap-ecc-customer-sapi-v1</artifactId>
 	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
@@ -15,6 +15,15 @@
 
 		<app.runtime>4.10.0</app.runtime>
 		<mule.maven.plugin.version>4.5.3</mule.maven.plugin.version>
+
+		<!-- CloudHub 2.0 deployment properties. Override from Maven settings, profiles, or the command line. -->
+		<anypoint.environment>Sandbox</anypoint.environment>
+		<!-- Short lowercase environment suffix used only for the CloudHub application name. -->
+		<app.env>dev</app.env>
+		<anypoint.businessGroupId>16339d91-3161-43b4-bef8-7e3fbf0af852</anypoint.businessGroupId>
+		<cloudhub2.target>Cloudhub-US-West-2</cloudhub2.target>
+		<cloudhub2.replicas>1</cloudhub2.replicas>
+		<cloudhub2.vcores>0.2</cloudhub2.vcores>
 	</properties>
 
 	<build>
@@ -29,6 +38,18 @@
 				<artifactId>mule-maven-plugin</artifactId>
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
+				<configuration>
+					<cloudhub2Deployment>
+						<provider>MC</provider>
+						<environment>${anypoint.environment}</environment>
+						<target>${cloudhub2.target}</target>
+						<businessGroupId>${anypoint.businessGroupId}</businessGroupId>
+						<server>anypoint-exchange-v3</server>
+						<applicationName>${project.name}-${app.env}</applicationName>
+						<replicas>${cloudhub2.replicas}</replicas>
+						<vCores>${cloudhub2.vcores}</vCores>
+					</cloudhub2Deployment>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -88,4 +109,12 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+	<distributionManagement>
+		<repository>
+			<id>anypoint-exchange-v3</id>
+			<name>Anypoint Exchange</name>
+			<url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${anypoint.businessGroupId}/maven</url>
+			<layout>default</layout>
+		</repository>
+	</distributionManagement>
 </project>

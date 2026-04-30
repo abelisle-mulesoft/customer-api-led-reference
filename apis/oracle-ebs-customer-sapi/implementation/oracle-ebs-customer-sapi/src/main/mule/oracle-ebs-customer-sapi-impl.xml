@@ -25,7 +25,7 @@ import nowUtc from modules::datetime::utils
     processedCount: sizeOf(payload),
     skippedCount: 0
   }
-} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+} ]]></ee:set-payload>
 			</ee:message>
 			<ee:variables >
 				<ee:set-variable variableName="httpStatus" ><![CDATA[201]]></ee:set-variable>
@@ -75,7 +75,7 @@ import nowUtc from modules::datetime::utils
     ],
     recordCount: 1
   }
-} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+} ]]></ee:set-payload>
 			</ee:message>
 			<ee:variables >
 				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>

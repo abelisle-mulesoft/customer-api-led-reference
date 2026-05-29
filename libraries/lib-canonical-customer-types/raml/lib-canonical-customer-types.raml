@@ -65,7 +65,7 @@ types:
       These values identify upstream systems and are useful for traceability,
       troubleshooting, and orchestration.
     type: string
-    enum: [ SALESFORCE, ORACLE_EBS, SAP_ECC ]
+    enum: [ ORACLE_EBS, SAP_ECC, SF_BRILM, SF_UMBRE ]
     example: SAP_ECC
 
   SourceSystemCollection:
@@ -73,7 +73,7 @@ types:
     description: Collection of source systems that contribute to the canonical customer record.
     type: SourceSystem[]
     minItems: 1
-    example: [ SAP_ECC, SALESFORCE ]
+    example: [ SAP_ECC, SF_BRILM ]
 
   ExternalIds:
     displayName: External IDs
@@ -264,7 +264,7 @@ types:
         salesforceAccountId: 001bm00000J2nswAAB
         oracleCustomerId: "1000002451"
         sapCustomerNumber: "0001234567"
-      sourceSystems: [ SAP_ECC, SALESFORCE ]
+      sourceSystems: [ SAP_ECC, SF_BRILM ]
       name: Acme Corporation
       customerType: BUSINESS
       status: ACTIVE
@@ -307,7 +307,7 @@ types:
         externalIds:
           salesforceAccountId: 001bm00000J2nswAAB
           sapCustomerNumber: "0001234567"
-        sourceSystems: [ SAP_ECC, SALESFORCE ]
+        sourceSystems: [ SAP_ECC, SF_BRILM ]
         name: Acme Corporation
         customerType: BUSINESS
         status: ACTIVE
@@ -373,7 +373,7 @@ types:
           externalIds:
             salesforceAccountId: 001bm00000J2nswAAB
             sapCustomerNumber: "0001234567"
-          sourceSystems: [ SAP_ECC, SALESFORCE ]
+          sourceSystems: [ SAP_ECC, SF_BRILM ]
           name: Acme Corporation
           customerType: BUSINESS
           status: ACTIVE
@@ -434,7 +434,7 @@ types:
         externalIds:
           salesforceAccountId: 001bm00000J2nswAAB
           sapCustomerNumber: "0001234567"
-        sourceSystems: [ SAP_ECC, SALESFORCE ]
+        sourceSystems: [ SAP_ECC, SF_BRILM ]
         name: Acme Corporation
         customerType: BUSINESS
         status: ACTIVE

@@ -19,7 +19,7 @@
 		<!-- CloudHub 2.0 deployment properties. Override from Maven settings, profiles, or the command line. -->
 		<anypoint.environment>Sandbox</anypoint.environment>
 		<!-- Short lowercase environment suffix used only for the CloudHub application name. -->
-		<app.env>dev</app.env>		
+		<app.env>dev</app.env>
 		<anypoint.businessGroupId>16339d91-3161-43b4-bef8-7e3fbf0af852</anypoint.businessGroupId>
 		<cloudhub2.target>Cloudhub-US-West-2</cloudhub2.target>
 		<cloudhub2.replicas>1</cloudhub2.replicas>
@@ -62,23 +62,23 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>org.mule.connectors</groupId>
-			<artifactId>mule-http-connector</artifactId>
-			<version>1.11.1</version>
-			<classifier>mule-plugin</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-apikit-module</artifactId>
-			<version>1.11.16</version>
-			<classifier>mule-plugin</classifier>
-		</dependency>
-		<dependency>
 			<groupId>16339d91-3161-43b4-bef8-7e3fbf0af852</groupId>
 			<artifactId>oracle-ebs-customer-sapi</artifactId>
 			<version>1.0.5</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-apikit-module</artifactId>
+			<version>1.11.17</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-http-connector</artifactId>
+			<version>1.11.3</version>
+			<classifier>mule-plugin</classifier>
 		</dependency>
 	</dependencies>
 

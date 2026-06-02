@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:sapecc-customer-system-api="http://www.mulesoft.org/schema/mule/sapecc-customer-system-api" xmlns:salesforce-umbrella-customer-system-api="http://www.mulesoft.org/schema/mule/salesforce-umbrella-customer-system-api"
+	xmlns:salesforce-brilliant-mule-customer-system-api="http://www.mulesoft.org/schema/mule/salesforce-brilliant-mule-customer-system-api"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:oracle-ebs-customer-system-api="http://www.mulesoft.org/schema/mule/oracle-ebs-customer-system-api" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/oracle-ebs-customer-system-api http://www.mulesoft.org/schema/mule/oracle-ebs-customer-system-api/current/mule-oracle-ebs-customer-system-api.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce-brilliant-mule-customer-system-api http://www.mulesoft.org/schema/mule/salesforce-brilliant-mule-customer-system-api/current/mule-salesforce-brilliant-mule-customer-system-api.xsd
+http://www.mulesoft.org/schema/mule/salesforce-umbrella-customer-system-api http://www.mulesoft.org/schema/mule/salesforce-umbrella-customer-system-api/current/mule-salesforce-umbrella-customer-system-api.xsd
+http://www.mulesoft.org/schema/mule/sapecc-customer-system-api http://www.mulesoft.org/schema/mule/sapecc-customer-system-api/current/mule-sapecc-customer-system-api.xsd">
+	<flow name="get-customers-impl-flow" doc:id="f6e87883-74af-491c-b1f1-94219a29d889">
+		<logger level="DEBUG" doc:name="Debug - Flow Starting" message="Flow starting"/>
+		<scatter-gather doc:name="Get Customers from All Sources" doc:id="e55cb34a-cc2c-4df5-9eea-55f124f4df67" >
+			<route >
+				<oracle-ebs-customer-system-api:get-customers doc:name="From Oracle EBS" doc:id="b647fcc9-193b-4279-8196-8a57c2f2196a" config-ref="Oracle_EBS_Customer_SAPI_Config"/>
+				<ee:transform doc:name="To Customer Data Type" doc:id="22c57c2c-8c0b-4188-8bf0-945325bd657e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+---
+payload.data.customers default [] map (customer) -> {
+			id: "ORACLE-EBS-" ++ (customer.customerAccountNumber as String),
+			externalIds: {
+				oracleCustomerId: customer.customerAccountNumber as String
+			},
+			sourceSystems: ["ORACLE_EBS"],
+			name: customer.customerAccountName default customer.partyName,
+			customerType:
+				if (["PERSON", "INDIVIDUAL"] contains upper((customer.accountType default "") as String))
+					"INDIVIDUAL"
+				else
+					"BUSINESS",
+			status:
+				if (!(customer.activeFlag default true))
+					"INACTIVE"
+				else if (upper((customer.accountStatus default "") as String) == "INACTIVE")
+					"INACTIVE"
+				else
+					"ACTIVE",
+			contacts:
+				if (
+					customer.primaryContactName != null or
+					customer.emailAddress != null or
+					customer.phoneNumber != null
+				)
+					[
+						{
+							role: "PRIMARY",
+							name: customer.primaryContactName,
+							email: customer.emailAddress,
+							phone: customer.phoneNumber
+						}
+					]
+				else
+					null,
+			addresses:
+				if (customer.addressLine1 != null)
+					[
+						{
+							addressType:
+								if (upper((customer.siteUseCode default "") as String) == "SHIP_TO")
+									"SHIPPING"
+								else
+									"BILLING",
+							line1: customer.addressLine1,
+							line2: customer.addressLine2,
+							city: customer.city,
+							state: customer.stateOrProvince,
+							postalCode: customer.postalCode,
+							country: customer.countryCode
+						}
+					]
+				else
+					null,
+			metadata: {
+				partyNumber: customer.partyNumber,
+				partyName: customer.partyName,
+				customerClassCode: customer.customerClassCode,
+				accountSiteNumber: customer.accountSiteNumber,
+				siteUseCode: customer.siteUseCode
+			},
+			createdDate: customer.createdDate,
+			lastModifiedDate: customer.lastUpdatedDate
+
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</route>
+			<route >
+				<salesforce-brilliant-mule-customer-system-api:get-customers doc:name="From SF Brilliant Mule" doc:id="60690011-e914-4829-9d4a-278e131f160d" config-ref="SF_BrilliantMule_Customer_SAPI_Config"/>
+				<ee:transform doc:name="To Customer Data Type" doc:id="a412d76a-334c-40a6-b768-343209429900">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json skipNullOn = "everywhere"
+---
+payload.data.customers default [] map (customer) -> {
+			id: "SF-BRILM-" ++ (customer.salesforceAccountId as String),
+			externalIds: {
+				salesforceAccountId: customer.salesforceAccountId
+			},
+			sourceSystems: ["SF_BRILM"],
+			name: customer.accountName,
+			customerType:
+				if (["PERSON", "INDIVIDUAL"] contains upper((customer.accountType default "") as String))
+					"INDIVIDUAL"
+				else
+					"BUSINESS",
+			status:
+				if (!(customer.activeFlag default true))
+					"INACTIVE"
+				else
+					"ACTIVE",
+			contacts:
+				if (customer.phoneNumber != null)
+					[
+						{
+							role: "PRIMARY",
+							phone: customer.phoneNumber
+						}
+					]
+				else
+					null,
+			addresses:
+				(
+					if (
+						customer.billingStreet != null and
+						customer.billingCity != null and
+						customer.billingCountry != null
+					)
+						[
+							{
+								addressType: "BILLING",
+								line1: customer.billingStreet,
+								city: customer.billingCity,
+								state: customer.billingState,
+								postalCode: customer.billingPostalCode,
+								country: customer.billingCountry
+							}
+						]
+					else
+						[]
+				)
+				++
+				(
+					if (
+						customer.shippingStreet != null and
+						customer.shippingCity != null and
+						customer.shippingCountry != null
+					)
+						[
+							{
+								addressType: "SHIPPING",
+								line1: customer.shippingStreet,
+								city: customer.shippingCity,
+								state: customer.shippingState,
+								postalCode: customer.shippingPostalCode,
+								country: customer.shippingCountry
+							}
+						]
+					else
+						[]
+				),
+			metadata: {
+				externalId: customer.externalId,
+				accountNumber: customer.accountNumber,
+				website: customer.website,
+				industry: customer.industry,
+				accountType: customer.accountType,
+				ownerId: customer.ownerId
+			},
+			createdDate: customer.createdDate,
+			lastModifiedDate: customer.lastModifiedDate			
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</route>
+			<route >
+				<salesforce-umbrella-customer-system-api:get-customers doc:name="From SF Umbrella" doc:id="4898c724-5017-49b2-aca7-61ee3465a829" config-ref="SF_Umbrella_Customer_SAPI_Config"/>
+				<ee:transform doc:name="To Customer Data Type" doc:id="27057ef8-ebbd-4f5c-9a0d-beb812ec9e5a">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json skipNullOn = "everywhere"
+---
+payload.data.customers default [] map (customer) -> {
+			id: "SF-UMBRE-" ++ (customer.salesforceAccountId as String),
+			externalIds: {
+				salesforceAccountId: customer.salesforceAccountId
+			},
+			sourceSystems: ["SF_UMBRE"],
+			name: customer.accountName,
+			customerType:
+				if (["PERSON", "INDIVIDUAL"] contains upper((customer.accountType default "") as String))
+					"INDIVIDUAL"
+				else
+					"BUSINESS",
+			status:
+				if (!(customer.activeFlag default true))
+					"INACTIVE"
+				else
+					"ACTIVE",
+			contacts:
+				if (customer.phoneNumber != null)
+					[
+						{
+							role: "PRIMARY",
+							phone: customer.phoneNumber
+						}
+					]
+				else
+					null,
+			addresses:
+				(
+					if (
+						customer.billingStreet != null and
+						customer.billingCity != null and
+						customer.billingCountry != null
+					)
+						[
+							{
+								addressType: "BILLING",
+								line1: customer.billingStreet,
+								city: customer.billingCity,
+								state: customer.billingState,
+								postalCode: customer.billingPostalCode,
+								country: customer.billingCountry
+							}
+						]
+					else
+						[]
+				)
+				++
+				(
+					if (
+						customer.shippingStreet != null and
+						customer.shippingCity != null and
+						customer.shippingCountry != null
+					)
+						[
+							{
+								addressType: "SHIPPING",
+								line1: customer.shippingStreet,
+								city: customer.shippingCity,
+								state: customer.shippingState,
+								postalCode: customer.shippingPostalCode,
+								country: customer.shippingCountry
+							}
+						]
+					else
+						[]
+				),
+			metadata: {
+				externalId: customer.externalId,
+				accountNumber: customer.accountNumber,
+				website: customer.website,
+				industry: customer.industry,
+				accountType: customer.accountType,
+				ownerId: customer.ownerId
+			},
+			createdDate: customer.createdDate,
+			lastModifiedDate: customer.lastModifiedDate			
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</route>
+			<route >
+				<sapecc-customer-system-api:get-customers doc:name="From SAP ECC" doc:id="f393a634-dd37-404a-a8bf-bdc2f4d1b2ef" config-ref="SAP_ECC_Customer_SAPI_Config"/>
+				<ee:transform doc:name="To Customer Data Type" doc:id="c5661be6-b17f-4bf5-a703-f4b4b0fa616e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json skipNullOn = "everywhere"
+---
+payload.data.customers default [] map (customer) -> {
+			id: "SAP-ECC-" ++ (customer.sapCustomerNumber as String),
+			externalIds: {
+				sapCustomerNumber: customer.sapCustomerNumber
+			},
+			sourceSystems: ["SAP_ECC"],
+			name:
+				if (customer.nameLine2 != null)
+					(customer.nameLine1 default "") ++ " " ++ (customer.nameLine2 default "")
+				else
+					customer.nameLine1,
+			customerType: "BUSINESS",
+			status:
+				if (!(customer.deletionFlag default false) or !(customer.centralPostingBlock default false))
+					"INACTIVE"
+				else
+					"ACTIVE",
+			contacts:
+				if (customer.emailAddress != null or customer.phoneNumber != null)
+					[
+						{
+							role: "PRIMARY",
+							email: customer.emailAddress,
+							phone: customer.phoneNumber
+						}
+					]
+				else
+					null,
+			addresses:
+				if (
+					customer.streetAddress != null and
+					customer.city != null and
+					customer.countryCode != null
+				)
+					[
+						{
+							addressType: "BILLING",
+							line1: customer.streetAddress,
+							city: customer.city,
+							state: customer.region,
+							postalCode: customer.postalCode,
+							country: customer.countryCode
+						}
+					]
+				else
+					null,
+			metadata: {
+				accountGroup: customer.accountGroup,
+				companyCode: customer.companyCode,
+				salesOrganization: customer.salesOrganization,
+				distributionChannel: customer.distributionChannel,
+				division: customer.division,
+				searchTerm: customer.searchTerm,
+				taxNumber1: customer.taxNumber1,
+				taxNumber2: customer.taxNumber2,
+				createdBy: customer.createdBy
+			},
+			createdDate: customer.createdDate,
+			lastModifiedDate: customer.lastChangedDate
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Flatten Scatter-Gather Output" doc:id="21c0e1e1-258f-400f-a8a4-cd180b54e679" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+flatten(payload..payload)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="To Standard Response Model" doc:id="63528731-56ab-40c1-87fe-e58c96a2bf48" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+import nowUtc from modules::datetime::utils
+---
+{
+	dateTime: nowUtc(),
+	httpStatus: 200,
+	status: "SUCCESS",
+	message: "Customer records retrieved successfully.",
+	correlationId: correlationId,
+	data: {
+		customers: payload,
+		recordCount: sizeOf(payload)
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Debug - Flow Ending" message="Flow ending" />
+	</flow>
+	<flow name="get-customer-by-id-impl-flow" doc:id="424131a9-e39e-486c-b43d-db1b65eb4365">
+		<logger level="DEBUG" doc:name="Debug - Flow Starting" message="Flow starting"/>
+		<scatter-gather doc:name="Get Customer by ID from all Sources" doc:id="ea842be8-948e-4889-bef0-d0bbab4f8be9" >
+			<route >
+				<try doc:name="Try" doc:id="2acc9616-2939-4f7e-ac31-bfc1d597e726" >
+					<salesforce-brilliant-mule-customer-system-api:get-customer-by-id doc:name="From SF Brilliant Mule" doc:id="e8a4e35d-dd17-4d51-8aeb-f244c7902ed8" config-ref="SF_BrilliantMule_Customer_SAPI_Config" salesforce-account-id="#[attributes.uriParams.customerId]"/>
+					<ee:transform doc:name="To Standard Response Model" doc:id="b2d90293-e5ba-4916-8fb4-4677b16ea388">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import nowUtc from modules::datetime::utils
+
+var customer = payload.data.customer
+---
+{
+  dateTime: nowUtc(),
+  httpStatus: 200,
+  status: "SUCCESS",
+  message: "Customer record retrieved successfully.",
+  correlationId: correlationId,
+  data: {
+    customer: {
+      id: "SF-BRILM-" ++ (customer.salesforceAccountId default ""),
+      externalIds: {
+        salesforceAccountId: customer.salesforceAccountId
+      },
+      sourceSystems: [
+        "SF_BRILM"
+      ],
+      name: customer.accountName,
+      customerType: "BUSINESS",
+      status: if (customer.activeFlag default true) "ACTIVE" else "INACTIVE",
+      contacts: [
+        {
+          role: "PRIMARY",
+          phone: customer.phoneNumber
+        }
+      ],
+      addresses: [
+        {
+          addressType: "BILLING",
+          line1: customer.billingStreet,
+          city: customer.billingCity,
+          state: customer.billingState,
+          postalCode: customer.billingPostalCode,
+          country: customer.billingCountry
+        },
+        {
+          addressType: "SHIPPING",
+          line1: customer.shippingStreet,
+          city: customer.shippingCity,
+          state: customer.shippingState,
+          postalCode: customer.shippingPostalCode,
+          country: customer.shippingCountry
+        }
+      ],
+      metadata: {
+        externalId: customer.externalId,
+        accountNumber: customer.accountNumber,
+        website: customer.website,
+        industry: customer.industry,
+        accountType: customer.accountType,
+        ownerId: customer.ownerId
+      },
+      createdDate: customer.createdDate,
+      lastModifiedDate: customer.lastModifiedDate
+    },
+    recordCount: 1
+  }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+					<error-handler >
+						<on-error-continue enableNotifications="false" logException="false" doc:name="On Error Continue" doc:id="c6a11d08-2263-4ca0-a74e-0fc0062b5d61" type="*:NOT_FOUND">
+							<logger level="DEBUG" doc:name="Debug - Not Found" doc:id="4ba72583-61d5-4381-9a36-838abdc3d269" message="No account found in the Brilliant Mule Salesforce instance for the provided ID"/>
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</route>
+			<route >
+				<try doc:name="Try" doc:id="537b4070-da5e-4fcf-8966-cd2d593f22d3" >
+					<salesforce-umbrella-customer-system-api:get-customer-by-id doc:name="From SF Umbrella" doc:id="99e63fe5-7575-43af-af83-4234d4b197d0" config-ref="SF_Umbrella_Customer_SAPI_Config" salesforce-account-id="#[attributes.uriParams.customerId]"/>
+					<ee:transform doc:name="To Standard Response Model" doc:id="82f5f430-e1f5-4e31-86b4-4ad9781b0c60" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+import nowUtc from modules::datetime::utils
+
+var customer = payload.data.customer
+---
+{
+  dateTime: nowUtc(),
+  httpStatus: 200,
+  status: "SUCCESS",
+  message: "Customer record retrieved successfully.",
+  correlationId: correlationId,
+  data: {
+    customer: {
+      id: "SF-UMBRE-" ++ (customer.salesforceAccountId default ""),
+      externalIds: {
+        salesforceAccountId: customer.salesforceAccountId
+      },
+      sourceSystems: [
+        "SF_UMBRE"
+      ],
+      name: customer.accountName,
+      customerType: "BUSINESS",
+      status: if (customer.activeFlag default true) "ACTIVE" else "INACTIVE",
+      contacts: [
+        {
+          role: "PRIMARY",
+          phone: customer.phoneNumber
+        }
+      ],
+      addresses: [
+        {
+          addressType: "BILLING",
+          line1: customer.billingStreet,
+          city: customer.billingCity,
+          state: customer.billingState,
+          postalCode: customer.billingPostalCode,
+          country: customer.billingCountry
+        },
+        {
+          addressType: "SHIPPING",
+          line1: customer.shippingStreet,
+          city: customer.shippingCity,
+          state: customer.shippingState,
+          postalCode: customer.shippingPostalCode,
+          country: customer.shippingCountry
+        }
+      ],
+      metadata: {
+        externalId: customer.externalId,
+        accountNumber: customer.accountNumber,
+        website: customer.website,
+        industry: customer.industry,
+        accountType: customer.accountType,
+        ownerId: customer.ownerId
+      },
+      createdDate: customer.createdDate,
+      lastModifiedDate: customer.lastModifiedDate
+    },
+    recordCount: 1
+  }
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<error-handler >
+						<on-error-continue enableNotifications="false" logException="false" doc:name="On Error Continue" doc:id="2eea724d-1475-4c47-b93e-4fc91b427ac9" type="*:NOT_FOUND">
+							<logger level="DEBUG" doc:name="Debug - Not Found" doc:id="0f68eafe-22e1-433c-bfe1-c2ed1236a84b" message="No account found in the Umbrella Salesforce instance for the provided ID" />
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Process Results" doc:id="7c0f3fa0-89ce-4752-bb87-97ed2d0a8f34">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+(flatten(valuesOf(payload) map ((result) -> result.*payload)) filter ((object) -> object != {}))[0]
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Debug - Flow Ending" message="Flow ending" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e2d893c5-4176-4b14-8f54-dc134fb882be" type="ANY">
+				<raise-error doc:name="INTERNAL_SERVER_ERROR" doc:id="494d7ec2-2157-41a7-829e-44b918e0a916" type="APP:INTERNAL_SERVER_ERROR" description="An unexpected error occurred while processing the request" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="process-customer-synch-event-impl-flow" doc:id="230b1eda-b922-4365-8cc0-9014e20b7142">
+		<logger level="DEBUG" doc:name="Debug - Flow Starting" message="Flow starting"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="ce2af9de-fc71-4f97-9662-2a9fed3e80f3" >
+			<route >
+				<choice doc:name="Source is not SF-BRILM?" doc:id="8794138a-e6bb-4ddb-b30c-61529f63346d" >
+					<when expression='#[payload.sourceSystem != "SF_BRILM"]'>
+						<logger level="DEBUG" doc:name="Debug - Forwarding event to SF_BRILM" doc:id="8817216f-898f-4f3b-bfe4-a10645a827f6" message="Forwarding event to SF_BRILM for processing"/>
+						<ee:transform doc:name="To System Aligned Model" doc:id="10a1a820-2d24-4de4-a6f3-a6e50070539d">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+
+var customer = payload.customer
+var billingAddress = (customer.addresses filter ($.addressType == "BILLING"))[0] default {}
+var shippingAddress = (customer.addresses filter ($.addressType == "SHIPPING"))[0] default {}
+var primaryContact = (customer.contacts filter ($.role == "PRIMARY"))[0] default {}
+
+---
+[{
+    externalId: customer.id,
+    accountName: customer.name,
+    website: customer.metadata.website default null,
+    phoneNumber: primaryContact.phone default null,
+    billingStreet: billingAddress.line1 default null,
+    billingCity: billingAddress.city default null,
+    billingState: billingAddress.state default null,
+    billingPostalCode: billingAddress.postalCode default null,
+    billingCountry: billingAddress.country default null,
+    shippingStreet: shippingAddress.line1 default null,
+    shippingCity: shippingAddress.city default null,
+    shippingState: shippingAddress.state default null,
+    shippingPostalCode: shippingAddress.postalCode default null,
+    shippingCountry: shippingAddress.country default null,
+    industry: customer.metadata.industry default null,
+    accountType: customer.customerType,
+    activeFlag: customer.status == "ACTIVE",
+    createdDate: customer.createdDate as DateTime as String { format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" },
+    lastModifiedDate: customer.lastModifiedDate as DateTime as String { format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" }
+}]]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+						<salesforce-brilliant-mule-customer-system-api:upsert-customers doc:name="To SF Brilliant Mule" doc:id="c5577503-f7b1-452f-9547-ba90f359c456" config-ref="SF_BrilliantMule_Customer_SAPI_Config" />
+						<logger level="DEBUG" doc:name="Debug - Event Processed" doc:id="d76fe5a7-7db6-43f5-aae5-d104f453de0b" message="Event processed successfully"/>
+					</when>
+					<otherwise >
+						<logger level="DEBUG" doc:name="Debug - Do nothing" doc:id="083ad002-4aaf-4994-bca1-54f341d72559" message="Doing nothing - Source is SF-BRILM"/>
+					</otherwise>
+				</choice>
+			</route>
+			<route >
+				<choice doc:name="Source is not SF-UMBR?" doc:id="d095cc9a-b86f-40dc-a893-223349eda679" >
+					<when expression='#[payload.sourceSystem != "SF_UMBRE"]'>
+						<logger level="DEBUG" doc:name="Debug - Forwarding event to SF_UMBRE" doc:id="e20c6f12-6783-45b6-a746-e088ac54ee84" message="Forwarding event to SF_UMBRE for processing" />
+						<ee:transform doc:name="To System Aligned Model" doc:id="638b271e-7f9b-441e-8f16-6db083903fb4">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+
+var customer = payload.customer
+var billingAddress = (customer.addresses filter ($.addressType == "BILLING"))[0] default {}
+var shippingAddress = (customer.addresses filter ($.addressType == "SHIPPING"))[0] default {}
+var primaryContact = (customer.contacts filter ($.role == "PRIMARY"))[0] default {}
+
+---
+[{
+    externalId: customer.id,
+    accountName: customer.name,
+    website: customer.metadata.website default null,
+    phoneNumber: primaryContact.phone default null,
+    billingStreet: billingAddress.line1 default null,
+    billingCity: billingAddress.city default null,
+    billingState: billingAddress.state default null,
+    billingPostalCode: billingAddress.postalCode default null,
+    billingCountry: billingAddress.country default null,
+    shippingStreet: shippingAddress.line1 default null,
+    shippingCity: shippingAddress.city default null,
+    shippingState: shippingAddress.state default null,
+    shippingPostalCode: shippingAddress.postalCode default null,
+    shippingCountry: shippingAddress.country default null,
+    industry: customer.metadata.industry default null,
+    accountType: customer.customerType,
+    activeFlag: customer.status == "ACTIVE",
+    createdDate: customer.createdDate as DateTime as String { format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" },
+    lastModifiedDate: customer.lastModifiedDate as DateTime as String { format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" }
+}]]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+						<salesforce-umbrella-customer-system-api:upsert-customers doc:name="To SF Umbrella" doc:id="1af6cd9f-e6c6-4bab-9c71-860ca47f39d4" config-ref="SF_Umbrella_Customer_SAPI_Config" />
+						<logger level="DEBUG" doc:name="Debug - Event Processed" doc:id="af1c8d16-3750-4c8c-8c88-5406f80ecc60" message="Event processed successfully" />
+					</when>
+					<otherwise >
+						<logger level="DEBUG" doc:name="Debug - Do nothing" doc:id="84965d9b-b8e2-4f08-879f-b384100e1af6" message="Doing nothing - Source is SF-UMBRE" />
+					</otherwise>
+				</choice>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="To Standard Response Model" doc:id="ae419343-5b0e-4c38-8628-f63ca38ca312">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import nowUtc from modules::datetime::utils
+---
+{
+	dateTime: nowUtc(),
+	httpStatus: 200,
+	status: "SUCCESS",
+	message: "Customer synchronization event processed successfully.",
+	correlationId: correlationId,
+	data: {
+		recordCount: 1,
+		processedCount: 1
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Debug - Flow Ending" message="Flow ending" />
+	</flow>
+</mule>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:customer-process-api="http://www.mulesoft.org/schema/mule/customer-process-api" xmlns:customer360papi="http://www.mulesoft.org/schema/mule/customer360papi"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/customer360papi http://www.mulesoft.org/schema/mule/customer360papi/current/mule-customer360papi.xsd
+http://www.mulesoft.org/schema/mule/customer-process-api http://www.mulesoft.org/schema/mule/customer-process-api/current/mule-customer-process-api.xsd">
+	<flow name="customer-change-event-subscriber-flow" doc:id="77a0ff7f-9a95-45e0-a917-8990cac155a9">
+		<salesforce:replay-channel-listener doc:name="Replay channel listener" doc:id="6dc51a49-9dd2-41ec-909e-83ccc3cd641c" config-ref="Salesforce_BrilliantMule_Config" replayOption="ONLY_NEW" streamingChannel="/data/AccountChangeEvent"/>
+		<logger level="TRACE" doc:name="Trace - Flow Starting" doc:id="d44a2e57-d4d8-473c-822a-c09538ef1d08" message="Flow starting"/>
+		<logger level="TRACE" doc:name="Trace - CDC Event Payload" doc:id="89179bf5-3ba6-4866-9112-97ad3fcfc174" message='#[output application/json --- payload]'/>
+		<choice doc:name="Filter Event?" doc:id="423d348f-8ce1-46be-b08a-10d2b93d9b55" >
+			<when expression='#[payload.data.payload.ChangeEventHeader.changeType == "DELETE"]'>
+				<logger level="TRACE" doc:name="Trace - changeType is DELETE" doc:id="fb218d0a-68d0-4cb7-8393-c68d7fcb99c8" message="Event's changeType is DELETE - Ignoring event"/>
+			</when>
+			<when expression='#[payload.data.payload.LastModifiedById == p("salesforce.brilm.integration_user_id")]'>
+				<logger level="TRACE" doc:name="Trace - LastModifiedById is Mule-API" doc:id="b897dd42-4637-4324-a2e3-a1409c25ef0e" message="Event's LastModifiedById is Mule-API - Ignoring event" />
+			</when>
+			<otherwise>
+				<logger level="TRACE" doc:name="Trace - LastModifiedById is NOT Mule-API" doc:id="8b7f15be-9174-4d70-b07a-5572084ac39b" message="LastModifiedById is NOT Mule-API - Processing event"/>
+				<set-variable value="#[payload]" doc:name="eventPayload" doc:id="f6a76aac-00ed-4fb8-a3e4-83e870dcc434" variableName="eventPayload" />
+				<foreach doc:name="For Each recordId" doc:id="4cc7ba8e-a4de-4af7-a8a8-1eac705dd791" collection="#[payload.data.payload.ChangeEventHeader.recordIds]">
+					<logger level="TRACE" doc:name="Trace - Retrieving Customer" doc:id="b490b4e3-d0da-4ee0-a501-fbdf350682c4" message="Retrieving customer with ID #[payload]"/>
+					<set-variable value="#[payload]" doc:name="sfAccountId" doc:id="511e5584-70b9-4731-b205-e222a0a79986" variableName="sfAccountId" />
+					<flow-ref doc:name="sf-brilm-get-customer-by-id-impl-flow" doc:id="62a0bce8-9878-49fe-861a-0724cdd6e919" name="sf-brilm-get-customer-by-id-impl-flow"/>
+					<ee:transform doc:name="To Customer Sync Envelope" doc:id="7fa67993-02f2-4d1f-88fb-93dc7378e107" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	sync: {
+		sourceId: vars.sfAccountId,
+		recordOwnerSystem: "SF-BRILM",
+		eventId: vars.eventPayload.data.payload.ChangeEventHeader.commitNumber as String default "",
+		sourceSystem: "SF-BRILM",
+		changeType: vars.eventPayload.data.payload.ChangeEventHeader.changeType default "",
+		eventTime: vars.eventPayload.data.payload.LastModifiedDate,
+		correlationId: correlationId,
+		replayId: vars.eventPayload.data.event.replayId as String
+	},
+	customer: {
+		customerId: payload.customerId default vars.sfAccountId,
+		companyName: payload.companyName default "",
+		email: payload.email default "",
+		phone: payload.phone default "",
+		contactName: payload.contactName default "",
+		addressLine1: payload.addressLine1 default "",
+		addressLine2: payload.addressLine2 default "",
+		city: payload.city default "",
+		state: payload.state default "",
+		postalCode: payload.postalCode default "",
+		country: payload.country default "",
+		customerType: payload.customerType default "",
+		isActive: payload.isActive default "",
+		createdAt: payload.createdAt default now(),
+		updatedAt: payload.updatedAt default now()
+	}
+}
+]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<!-- [STUDIO:"Connector"]<customer-process-api:process-customer-synchronization-event doc:name="Process customer synchronization event" doc:id="ddd45bf3-86c9-4bba-85f2-286844f1020f" config-ref="Customer_Process_API_Config"/> [STUDIO] -->
+				</foreach>
+			</otherwise>
+		</choice>
+		<logger level="TRACE" doc:name="Trace - Flow Ending" doc:id="218852b3-0b8d-428b-ba2c-5e8bd085d95c" message="Flow ending" />
+	</flow>
+</mule>

@@ -1,0 +1,70 @@
+{
+  "eventType": "CUSTOMER_UPDATED",
+  "sourceSystem": "SF_BRILM",
+  "occurredAt": "2026-03-24T17:30:00Z",
+  "customer": {
+    "id": "CUST-10001",
+    "externalIds": {
+      "salesforceAccountId": "001bm00000J2nswAAB",
+      "oracleCustomerId": "1000002451",
+      "sapCustomerNumber": "0001234567"
+    },
+    "sourceSystems": [
+      "SF_BRILM",
+      "SAP_ECC",
+      "ORACLE_EBS",
+      "SF_UMBRE"
+    ],
+    "name": "Acme Corporation",
+    "customerType": "BUSINESS",
+    "status": "ACTIVE",
+    "contacts": [
+      {
+        "role": "PRIMARY",
+        "name": "Jane Doe",
+        "email": "jane.doe@acme.example",
+        "phone": "+1-206-555-0112"
+      },
+      {
+        "role": "BILLING",
+        "name": "Accounts Payable",
+        "email": "ap@acme.example",
+        "phone": "+1-206-555-0198"
+      },
+      {
+        "role": "TECHNICAL",
+        "name": "John Smith",
+        "email": "john.smith@acme.example",
+        "phone": "+1-206-555-0133"
+      }
+    ],
+    "addresses": [
+      {
+        "addressType": "BILLING",
+        "line1": "100 Main Street",
+        "line2": "Suite 400",
+        "city": "Seattle",
+        "state": "WA",
+        "postalCode": "98101",
+        "country": "USA"
+      },
+      {
+        "addressType": "SHIPPING",
+        "line1": "500 Distribution Way",
+        "line2": "Building B",
+        "city": "Kent",
+        "state": "WA",
+        "postalCode": "98032",
+        "country": "USA"
+      }
+    ],
+    "metadata": {
+      "industry": "Manufacturing",
+      "paymentTerms": "NET_30",
+      "customerSegment": "Enterprise",
+      "preferredLanguage": "en-US"
+    },
+    "createdDate": "2026-03-12T18:25:43Z",
+    "lastModifiedDate": "2026-03-24T17:25:12Z"
+  }
+}

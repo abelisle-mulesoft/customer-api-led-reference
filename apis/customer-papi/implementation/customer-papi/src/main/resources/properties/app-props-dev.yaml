@@ -1,0 +1,49 @@
+#===================================================================================================
+# Mule Application Properties - customer-papi
+#===================================================================================================
+env:
+  name: "dev"
+
+#---------------------------------------------------------------------------------------------------
+# HTTP Listener Config (CloudHub 2.0)
+# - Applications must listen on host 0.0.0.0; no need to override here.
+# - CloudHub 2.0 injects the reserved property ${http.port}; it is defined here to support unit
+#   testing outside of CloudHub 2.0 (e.g. Anypoint Studio).
+http:
+  port: "8081"
+
+#---------------------------------------------------------------------------------------------------
+# Oracle EBS Customer System API Smart Connector Config
+oracle_ebs_customer_sapi:
+  host:             "oracle-ebs-customer-sapi-dev-34mjq8.goajj2-1.usa-w2.cloudhub.io"
+  port:             "" 
+  base_path:        "/api"
+  protocol:         "HTTPS"
+  response_timeout: ""
+
+#---------------------------------------------------------------------------------------------------
+# SAP ECC Customer System API Smart Connector Config
+sap_ecc_customer_sapi:
+  host:             "sap-ecc-customer-sapi-dev-34mjq8.goajj2-1.usa-w2.cloudhub.io"
+  port:             "" 
+  base_path:        "/api"
+  protocol:         "HTTPS"
+  response_timeout: ""
+
+#---------------------------------------------------------------------------------------------------
+# Salesforce Brilliant Mule Customer System API Smart Connector Config
+sf_brilm_customer_sapi:
+  host:             "sf-brilm-customer-sapi-dev-34mjq8.goajj2-1.usa-w2.cloudhub.io"
+  port:             "" 
+  base_path:        "/api"
+  protocol:         "HTTPS"
+  response_timeout: ""
+
+#---------------------------------------------------------------------------------------------------
+# Salesforce Umbrella Customer System API Smart Connector Config
+sf_umbre_customer_sapi:
+  host:             "sf-umbre-customer-sapi-dev-34mjq8.goajj2-2.usa-w2.cloudhub.io"
+  port:             "" 
+  base_path:        "/api"
+  protocol:         "HTTPS"
+  response_timeout: ""

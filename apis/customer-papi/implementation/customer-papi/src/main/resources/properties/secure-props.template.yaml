@@ -1,0 +1,29 @@
+#===================================================================================================
+# Mule Secure Properties - customer-papi
+#===================================================================================================
+# Refer to MuleSoft Secure Properties documentation for encryption details:
+# https://docs.mulesoft.com/mule-runtime/latest/secure-configuration-properties#secure_props_tool
+
+#---------------------------------------------------------------------------------------------------
+# Oracle EBS Customer System API Smart Connector Config
+oracle_ebs_customer_sapi:
+  client_id:        "![<encrypted value>]"
+  client_secret:    "![<encrypted value>]"
+
+#---------------------------------------------------------------------------------------------------
+# SAP ECC Customer System API Smart Connector Config
+sap_ecc_customer_sapi:
+  client_id:        "![<encrypted value>]"
+  client_secret:    "![<encrypted value>]"
+
+#---------------------------------------------------------------------------------------------------
+# Salesforce Brilliant Mule Customer System API Smart Connector Config
+sf_brilm_customer_sapi:
+  client_id:        "![<encrypted value>]"
+  client_secret:    "![<encrypted value>]"
+
+#---------------------------------------------------------------------------------------------------
+# Salesforce Umbrella Customer System API Smart Connector Config
+sf_umbre_customer_sapi:
+  client_id:        "![<encrypted value>]"
+  client_secret:    "![<encrypted value>]"

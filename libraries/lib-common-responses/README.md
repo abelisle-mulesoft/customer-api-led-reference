@@ -1,10 +1,8 @@
 ## Overview
 
-The Common Response Types Library is a reusable RAML 1.0 library that defines a reference response model for APIs in the Customer API-led Reference Architecture.
+The Common Response Types Library is a reusable RAML 1.0 library within the Customer API-led Reference Architecture. It establishes a consistent response model for communicating request outcomes, messages, and operation-specific payloads. The library strongly recommends using a structured response model to communicate errors, warnings, and diagnostic details consistently across APIs.
 
-This library promotes a consistent structure for communicating request outcomes, messages, and operation-specific payloads. Its strongest recommendation is the use of a structured response model for communicating errors, warnings, and diagnostic details in a predictable way across APIs.
-
-The broader `ApiResponse` envelope defined by this library can also be used to represent successes, warnings, and errors in a uniform way across an internal API portfolio. That approach is intentional and opinionated. It is suitable for enterprise integration environments that value consistency, observability, and reusable implementation patterns, but it should be adopted deliberately rather than treated as a universal default for every API.
+The broader `ApiResponse` envelope defined by this library can also be used to represent successes, warnings, and errors in a uniform way across an internal API portfolio.
 
 Within the broader reference architecture:
 
@@ -13,6 +11,10 @@ Within the broader reference architecture:
 - Access control is defined in the API Security Schemes Library.
 
 Teams can use this library as a reference for establishing their own response standards, adopting either the full response envelope or selected aspects of it, such as the structured error model, correlation identifiers, and standardized detail messages.
+
+## Opinionated Design Choice
+
+The use of a standardized response envelope for successful responses is an intentional architectural decision within this reference architecture. While many public APIs prefer lightweight resource representations for successful responses, enterprise integration environments often benefit from the consistency, observability, and diagnostic capabilities provided by a uniform response model.
 
 ## Role in the Architecture
 
@@ -24,10 +26,10 @@ This library defines a reference approach for structuring API responses across t
 
 ## Contents
 
-This folder contains the design-time artifacts used to define and publish the Common Response Types Library to Anypoint Exchange.
+This folder contains the assets that define and document the Common Response Types Library. Its structure reflects the opinionated conventions established by the Customer API-led Reference Architecture to ensure consistency, reusability, and maintainability.
 
 - `raml/lib-common-responses.raml` -- RAML 1.0 library defining the standard response envelope and related types.
-- `exchange-docs/` -- Anypoint Exchange documentation pages.
+- `exchange-docs/` -- Documentation pages published to Anypoint Exchange.
   - `1-Home.md` -- Introduces the library and its role in the architecture (overrides the default `home` page).
   - `2-How-to-Consume.md` -- Provides guidance for using the library in API specifications.
   - `5-Getting-Help.md` -- Describes how to get support and additional information.
@@ -52,41 +54,38 @@ The library defines the following core data types:
 - `ResponseDetail` -- Structured detail message for additional conditions.
 - `Severity` -- Classification of detail messages (e.g., INFO, WARNING, ERROR).
 
-## Dependencies
+## Related Assets
 
-This library does not depend on other APIs.
+The Common Response Types Library is part of the Customer API-led Reference Architecture and works in conjunction with the following assets.
 
-It is typically used with:
+### RAML Libraries
 
-- API Response Traits Library -- applies standardized responses using this model.
-- API Security Schemes Library -- produces responses structured using this model.
-- Code Taxonomy Guide -- standardizes response and error codes.
+- API Response Traits Library -- Uses this library to apply standardized responses.
+
+### APIs
+
+- Customer Process API -- Uses this library to produce standardized responses.
+- Oracle E-Business Suite Customer System API -- Uses this library to produce standardized responses.
+- Salesforce Brilliant Mule Customer System API -- Uses this library to produce standardized responses.
+- Salesforce Umbrella Customer System API -- Uses this library to produce standardized responses.
+- SAP ECC Customer System API -- Uses this library to produce standardized responses.
+
+### Standards
+
+- Code Taxonomy Guide -- Defines standardized response and error codes used across the architecture.
 
 ## Usage
 
-This library is intended to be imported and used as a reference when defining response models.
-
-Typical usage includes:
+This library is intended to be imported and used as a reference when defining response models. Typical usage includes:
 
 - Defining structured error payloads with standardized codes, messages, and optional detail entries.
 - Returning consistent warning and error responses across internal APIs.
-- Optionally adopting the full ApiResponse envelope for success, warning, and error responses when a uniform enterprise model is desirable.
+- Optionally adopting the full `ApiResponse` envelope for success, warning, and error responses when a uniform enterprise model is desirable.
 - Embedding operation-specific payloads within the `data` property when the full envelope is used.
-
-## Relationship to Other Assets
-
-This library focuses on response structure and can be used on its own or alongside libraries that define response behavior and access control. It is part of the Customer API-led Reference Architecture and complements other reusable assets:
-
-- API Response Traits Library -- defines reusable response behaviors for common HTTP scenarios.
-- API Security Schemes Library -- defines reusable traits for authentication and authorization.
-- Customer Canonical Data Types Library -- defines canonical payloads that may be used within the response `data` property.
-- System, Process, and Experience APIs -- may use this library to define consistent response structures when appropriate.
 
 ## Versioning
 
-This library follows semantic versioning.
-
-Version 1.0.0 represents the initial standardized release of the Customer API-led Reference Architecture.
+This library follows semantic versioning. Version 1.0.0 represents the initial standardized release of the Customer API-led Reference Architecture.
 
 ## Intended Audience
 

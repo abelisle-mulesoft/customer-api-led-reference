@@ -1,22 +1,18 @@
 ## Overview
 
-This repository provides a Customer API-led Reference Architecture that illustrates the design, structure, and standardization of APIs using an API-led connectivity approach.
+This repository provides a Customer API-led Reference Architecture that illustrates the design, structure, and standardization of APIs using an API-led connectivity approach. This reference architecture is based on a demo that illustrates two complementary concepts:
 
-It includes:
+- Event-driven integration using Salesforce Change Data Capture (CDC) in Mule.
+- A comprehensive API-led connectivity implementation for customer data across systems.
+
+The assets in this repository reflect the API design, implementation, and standardization aspects of that demo. This repository includes:
 
 - System APIs aligned to underlying systems.
 - A Process API that orchestrates and transforms data using a canonical model.
 - Reusable RAML libraries that standardize data models, response structures, behavior, and security.
 - Utility scripts that automate publishing assets to Anypoint Exchange.
 
-This repository functions as both a working implementation and a set of platform standards for reuse across multiple projects.
-
-This reference architecture is based on a demo that illustrates two complementary concepts:
-
-- Event-driven integration using Salesforce Change Data Capture (CDC) in Mule.
-- A comprehensive API-led connectivity implementation for customer data across systems.
-
-The assets in this repository reflect the API design and standardization aspects of that demo.
+This repository functions as both a working implementation and a set of platform standards for reuse across multiple projects. It intentionally represents an opinionated implementation of API-led connectivity based on practical customer experience and proven enterprise integration patterns. The conventions, structures, and standards presented here are intended to promote consistency, reuse, and maintainability across API portfolios.
 
 ## Architecture Diagram
 
@@ -32,7 +28,7 @@ This implementation follows an API-led connectivity model composed of three laye
 
 - **System APIs** provide access to underlying systems using system-aligned models.
 - **Process APIs** orchestrate data across systems and transform it into a canonical model.
-- **Experience APIs** (not included in this repository) consume canonical data and tailor it for specific consumers.
+- **Experience APIs** consume canonical data and tailor it for specific consumers, but they are intentionally omitted from this implementation because this reference architecture focuses on system integration and canonical data orchestration rather than consumer-specific experiences.
 
 ### Key Principles
 
@@ -55,19 +51,27 @@ This implementation follows an API-led connectivity model composed of three laye
 │   ├── lib-canonical-customer-types/
 │   ├── lib-common-responses/
 │   ├── lib-response-traits/
-│   └── lib-security-traits/
+│   └── lib-security-schemes/
 │
+├── assets/
 ├── scripts/
-│   └── upload-exchange-pages.sh
+└── standards/
 ```
 
-Each API and library folder includes the following components:
+API projects and RAML libraries adhere to standardized folder structures to ensure consistency throughout the reference architecture.
+
+Each API project contains the following components:
 
 - `raml/` -- Design-time RAML specifications and fragments.
 - `exchange-docs/` -- Documentation pages published to Anypoint Exchange.
-- `README.md` -- Overview and usage guidance.
+- `implementation/` -- Mule application implementation artifacts.
+- `README.md` -- Provides an overview and usage guidance.
 
-At this stage, the repository focuses on design-time assets, including API specifications and reusable RAML libraries. API implementations (Anypoint Studio projects) will be added in a future update to provide a complete, runnable reference implementation.
+Each RAML library contains the following components:
+
+- `raml/` -- RAML libraries, data types, traits, and related fragments.
+- `exchange-docs/` -- Documentation pages published to Anypoint Exchange.
+- `README.md` -- Provides an overview and usage guidance.
 
 ## APIs
 
@@ -101,13 +105,13 @@ Reusable RAML libraries are employed to standardize API design throughout the ar
 
 ### Security
 
-- `lib-security-traits` -- Defines reusable security traits for authentication and authorization.
+- `lib-security-schemes` -- Defines reusable security schemes for authentication and authorization.
 
 ### Design Model
 
 These libraries work together to provide:
 
-- **Access control** is defined in the Security Traits Library.
+- **Access control** is defined in the Security Schemes Library.
 - **Response behavior** is defined in the Response Traits Library.
 - **Response structure** is defined in the Common Responses Library.
 - **Data models** are defined in system-specific and canonical libraries.
@@ -143,17 +147,11 @@ Together, these components provide:
 - A reusable set of building blocks.
 - A repeatable approach to API development and publication.
 
-## Design-Time Artifacts
+## Implementation Scope
 
-All assets within this repository are design-time artifacts utilized to define and publish APIs and libraries to Anypoint Exchange.
+This repository demonstrates API-led architecture patterns, reusable RAML libraries, and Mule implementations for the APIs included in the reference architecture.
 
-These artifacts:
-
-- Define API contracts using RAML 1.0.
-- Provide standardized documentation for Exchange.
-- Enable consistent reuse across projects.
-
-This repository does not include standardized implementations for logging and error handling. In practice, MuleSoft Professional Services provides reusable patterns for these concerns across engagements. Those assets are not included here, and future implementations may use simplified or custom approaches.
+Standardized implementations for logging, monitoring, and enterprise error handling are not included. MuleSoft Professional Services typically provides reusable patterns for these capabilities in customer engagements. These assets are intentionally excluded from this reference architecture.
 
 ## Intended Audience
 

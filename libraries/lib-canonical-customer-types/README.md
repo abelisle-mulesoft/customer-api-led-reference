@@ -1,8 +1,6 @@
 ## Overview
 
-The Customer Canonical Data Types Library is a reusable RAML 1.0 library that defines canonical customer data types for use across Process APIs.
-
-This library provides a system-agnostic representation of customer data that abstracts underlying source systems such as Salesforce, SAP ECC, and Oracle EBS. It enables Process APIs to expose a consistent, business-aligned customer model regardless of the originating systems.
+The Customer Canonical Data Types Library is a reusable RAML 1.0 library within the Customer API-led Reference Architecture. It defines canonical customer data types for use across Process APIs, providing a system-agnostic representation that abstracts source systems such as Salesforce, SAP ECC, and Oracle EBS. This enables Process APIs to deliver a consistent, business-aligned customer model regardless of the originating system.
 
 ## Role in the Architecture
 
@@ -16,10 +14,10 @@ This separation ensures that system-specific complexity is isolated while provid
 
 ## Contents
 
-This folder contains the design-time artifacts used to define and publish the Customer Canonical Data Types Library to Anypoint Exchange.
+This folder contains the assets that define and document the Customer Canonical Data Types Library. Its structure reflects the opinionated conventions established by the Customer API-led Reference Architecture to ensure consistency, reusability, and maintainability.
 
 - `raml/lib-canonical-customer-types.raml` -- RAML 1.0 library defining canonical customer data types.
-- `exchange-docs/` -- Anypoint Exchange documentation pages.
+- `exchange-docs/` -- Documentation pages published to Anypoint Exchange.
   - `1-Home.md` -- Introduces the library and its role in the architecture (overrides the default `home` page).
   - `2-How-to-Consume.md` -- Provides guidance for using the library in API specifications.
   - `5-Getting-Help.md` -- Describes how to get support and additional information.
@@ -34,7 +32,7 @@ The Customer Canonical Data Types Library is responsible for:
 - Reducing duplication and divergence of data definitions across APIs.
 - Supporting reuse through a centralized RAML library.
 
-## Core Types
+## Core Data Types
 
 The library defines the following core data types:
 
@@ -43,17 +41,21 @@ The library defines the following core data types:
 - `CustomerGetData` -- Payload returned when retrieving multiple customer records.
 - `CustomerSingleGetData` -- Payload returned when retrieving a single customer record.
 
-## Dependencies
+## Related Assets
 
-This library does not depend on other APIs. It is typically used with:
+The Customer Canonical Data Types Library is part of the Customer API-led Reference Architecture and works in conjunction with the following assets.
 
-- Common Response Types Library -- provides a shared response model that may be used when returning canonical data.
+### RAML Libraries
+
+- Common Response Types Library -- Defines the standard response envelope used across APIs.
+
+### APIs
+
+- Customer Process API -- Uses this library to expose a canonical customer representation to upstream consumers.
 
 ## Usage
 
-This library is intended to be imported and used by Process APIs.
-
-Typical usage includes:
+This library is intended to be imported and used by Process APIs. Typical usage includes:
 
 - Defining request and response payloads using canonical customer types.
 - Transforming system-aligned data from System APIs into the canonical model.
@@ -61,19 +63,9 @@ Typical usage includes:
 
 System APIs should not use this library, as they must remain aligned to their underlying systems.
 
-## Relationship to Other Assets
-
-This library focuses on canonical data modeling and is intended for use in the Process API layer. It is part of the Customer API-led Reference Architecture and complements other reusable assets:
-
-- System APIs -- provide system-aligned data that may be transformed into this canonical model.
-- Process APIs -- may use this library to define and expose a consistent, system-agnostic customer model.
-- Common Response Types Library -- may be used to structure responses that include canonical data.
-
 ## Versioning
 
-This library follows semantic versioning.
-
-Version 1.0.0 represents the initial standardized release of the Customer API-led Reference Architecture.
+This library follows semantic versioning. Version 1.0.0 represents the initial standardized release of the Customer API-led Reference Architecture.
 
 ## Intended Audience
 

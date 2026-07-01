@@ -1,0 +1,13 @@
+{
+  "main": "lib-canonical-customer-types.raml",
+  "name": "Customer Canonical Data Types Library",
+  "groupId": "16339d91-3161-43b4-bef8-7e3fbf0af852",
+  "assetId": "lib-canonical-customer-types",
+  "version": "1.0.10",
+  "classifier": "raml-fragment",
+  "tags": [],
+  "descriptorVersion": "1.0.0",
+  "organizationId": "16339d91-3161-43b4-bef8-7e3fbf0af852",
+  "apiVersion": "v1",
+  "originalFormatVersion": "1.0"
+}

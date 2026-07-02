@@ -14,6 +14,9 @@ The assets in this repository reflect the API design, implementation, and standa
 
 This repository functions as both a working implementation and a collection of platform standards intended for reuse across multiple projects. It intentionally represents an opinionated implementation of API-led connectivity based on practical customer experience and proven enterprise integration patterns. The conventions, structures, and standards presented here are intended to promote consistency, reuse, and maintainability across API portfolios.
 
+> [!NOTE]
+> The historical context, goals, and scope of the initial baseline are documented in [`docs/releases/release-1-baseline.md`](docs/releases/release-1-baseline.md).
+
 ## Architecture Diagram
 
 The diagram below depicts the Customer API-led Reference Architecture, highlighting System APIs, the Process API, and supporting libraries.
@@ -61,6 +64,7 @@ This repository therefore follows a Git-centric workflow where source control, r
 
 - `apis/` -- API assets that comprise the reference architecture.
 - `assets/` -- Images used throughout repository documentation.
+- `docs/` -- Additional repository documentation, release notes, and technical guidance.
 - `libraries/` -- Shared RAML fragments used throughout the reference architecture.
 - `scripts/` -- Utility scripts supporting development and synchronization workflows.
 - `standards/` -- Standards, principles, and implementation guidance.

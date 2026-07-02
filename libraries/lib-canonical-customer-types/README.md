@@ -16,8 +16,8 @@ This separation ensures that system-specific complexity is isolated while provid
 
 This folder contains the assets that define and document the Customer Canonical Data Types Library. Its structure reflects the opinionated conventions established by the Customer API-led Reference Architecture to ensure consistency, reusability, and maintainability.
 
-- `raml/lib-canonical-customer-types.raml` -- RAML 1.0 library defining canonical customer data types.
-- `exchange-docs/` -- Documentation pages published to Anypoint Exchange.
+- `design/lib-canonical-customer-types.raml` -- RAML 1.0 library defining canonical customer data types.
+- `documentation/` -- Documentation pages published to Anypoint Exchange.
   - `1-Home.md` -- Introduces the library and its role in the architecture (overrides the default `home` page).
   - `2-How-to-Consume.md` -- Provides guidance for using the library in API specifications.
   - `5-Getting-Help.md` -- Describes how to get support and additional information.

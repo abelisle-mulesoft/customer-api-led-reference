@@ -22,8 +22,8 @@ Security enforcement is defined declaratively in API specifications and implemen
 
 This folder contains the assets that define and document the API Security Schemes Library. Its structure reflects the opinionated conventions established by the Customer API-led Reference Architecture to ensure consistency, reusability, and maintainability.
 
-- `raml/lib-security-schemes.raml` -- RAML 1.0 library defining reusable security schemes.
-- `exchange-docs/` -- Documentation pages published to Anypoint Exchange.
+- `design/lib-security-schemes.raml` -- RAML 1.0 library defining reusable security schemes.
+- `documentation/` -- Documentation pages published to Anypoint Exchange.
   - `1-Home.md` -- Introduces the library and its role in the architecture (overrides the default `home` page).
   - `2-How-to-Consume.md` -- Provides guidance for using the library in API specifications.
   - `5-Getting-Help.md` -- Describes how to get support and additional information.

@@ -37,6 +37,26 @@ This implementation follows an API-led connectivity model composed of three laye
 - **Separation of concerns** -- Each layer has a clearly defined responsibility.
 - **Reuse through libraries** -- Common patterns are centralized and reused across APIs.
 
+## Source of Truth
+
+This repository is the authoritative source of truth for all assets that comprise the Customer API-led Reference Architecture, including:
+
+- API specifications and RAML libraries
+- Anypoint Exchange metadata (i.e., `exchange.json` file)
+- Mule application implementations
+- Documentation page
+
+Assets published to Anypoint Platform, including Design Center projects and Anypoint Exchange assets, are considered generated artifacts derived from this repository and are maintained solely to support demonstrations, experimentation, and validation activities.
+
+As a result:
+
+- Changes are always made in Git first.
+- Design Center projects are synchronized from this repository through automation.
+- Anypoint Exchange publications are produced from the synchronized Design Center assets.
+- Drift between Git and Anypoint Platform assets is periodically detected and corrected in favor of the repository state.
+
+This repository therefore follows a Git-centric workflow where source control, rather than the Anypoint Platform, is the authoritative system of record.
+
 ## Repository Structure
 
 ```text
@@ -62,15 +82,15 @@ API projects and RAML libraries adhere to standardized folder structures to ensu
 
 Each API project contains the following components:
 
-- `raml/` -- Design-time RAML specifications and fragments.
-- `exchange-docs/` -- Documentation pages published to Anypoint Exchange.
+- `design/` -- Design-time RAML specifications and fragments.
+- `documentation/` -- Documentation pages published to Anypoint Exchange.
 - `implementation/` -- Mule application implementation artifacts.
 - `README.md` -- Provides an overview and usage guidance.
 
 Each RAML library contains the following components:
 
-- `raml/` -- RAML libraries, data types, traits, and related fragments.
-- `exchange-docs/` -- Documentation pages published to Anypoint Exchange.
+- `design/` -- RAML libraries, data types, traits, and related fragments.
+- `documentation/` -- Documentation pages published to Anypoint Exchange.
 - `README.md` -- Provides an overview and usage guidance.
 
 ## APIs

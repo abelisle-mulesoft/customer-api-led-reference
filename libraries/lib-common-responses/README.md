@@ -28,8 +28,8 @@ This library defines a reference approach for structuring API responses across t
 
 This folder contains the assets that define and document the Common Response Types Library. Its structure reflects the opinionated conventions established by the Customer API-led Reference Architecture to ensure consistency, reusability, and maintainability.
 
-- `raml/lib-common-responses.raml` -- RAML 1.0 library defining the standard response envelope and related types.
-- `exchange-docs/` -- Documentation pages published to Anypoint Exchange.
+- `design/lib-common-responses.raml` -- RAML 1.0 library defining the standard response envelope and related types.
+- `documentation/` -- Documentation pages published to Anypoint Exchange.
   - `1-Home.md` -- Introduces the library and its role in the architecture (overrides the default `home` page).
   - `2-How-to-Consume.md` -- Provides guidance for using the library in API specifications.
   - `5-Getting-Help.md` -- Describes how to get support and additional information.

@@ -20,9 +20,9 @@ This API provides access to customer data in Oracle EBS using system-specific st
 
 This folder contains the assets that define, document, and implement the Oracle EBS Customer System API. Its structure reflects the opinionated conventions established by the Customer API-led Reference Architecture to ensure consistency, reusability, and maintainability.
 
-- `raml/oracle-ebs-customer-sapi.raml` -- RAML specification defining the API contract.
+- `design/oracle-ebs-customer-sapi.raml` -- RAML specification defining the API contract.
 - `implementation/oracle-ebs-customer-sapi/` -- Mule application implementation containing flows, configurations, and supporting resources.
-- `exchange-docs/` -- Documentation pages published to Anypoint Exchange.
+- `documentation/` -- Documentation pages published to Anypoint Exchange.
   - `1-Home.md` -- Introduces the API and its role in the architecture (overrides the default `home` page).
   - `2-How-to-Consume.md` -- Describes how to request access and successfully invoke the API.
   - `3-Security.md` -- Describes security requirements and policies applied to the API.

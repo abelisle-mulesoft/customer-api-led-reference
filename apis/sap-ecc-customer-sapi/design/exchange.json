@@ -1,0 +1,33 @@
+{
+  "main": "sap-ecc-customer-sapi.raml",
+  "name": "SAP ECC Customer System API",
+  "classifier": "raml",
+  "tags": [],
+  "descriptorVersion": "1.0.0",
+  "organizationId": "16339d91-3161-43b4-bef8-7e3fbf0af852",
+  "apiVersion": "v1",
+  "dependencies": [
+    {
+      "groupId": "16339d91-3161-43b4-bef8-7e3fbf0af852",
+      "assetId": "lib-response-traits",
+      "version": "1.0.10",
+      "packaging": "zip"
+    },
+    {
+      "groupId": "16339d91-3161-43b4-bef8-7e3fbf0af852",
+      "assetId": "lib-common-responses",
+      "version": "1.0.10",
+      "packaging": "zip"
+    },
+    {
+      "groupId": "16339d91-3161-43b4-bef8-7e3fbf0af852",
+      "assetId": "lib-security-schemes",
+      "version": "1.0.10",
+      "classifier": "raml",
+      "packaging": "zip"
+    }
+  ],
+  "groupId": "16339d91-3161-43b4-bef8-7e3fbf0af852",
+  "assetId": "sap-ecc-customer-sapi",
+  "version": "1.0.10"
+}

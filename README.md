@@ -1,18 +1,21 @@
 ## Overview
 
-This repository provides a Customer API-led Reference Architecture that illustrates the design, structure, and standardization of APIs using an API-led connectivity approach. This reference architecture is based on a demo that illustrates two complementary concepts:
+This repository offers a Customer API-led Reference Architecture, initially developed and presented to a customer in October 2024 to demonstrate MuleSoft’s API-led connectivity and incorporate Salesforce Change Data Capture (CDC) based on specific requirements. In March 2026, the demo was revisited, refined through multiple iterations, and expanded in scope, ultimately resulting in this formalized Reference Architecture.
+
+The Customer API-led Reference Architecture demonstrates API design, structure, and standardization using an API-led connectivity approach. It currently highlights three complementary concepts:
 
 - Event-driven integration using Salesforce Change Data Capture (CDC) in Mule.
 - A comprehensive API-led connectivity implementation for customer data across systems.
+- Automation commands that can be used to implement CI/CD pipelines.
 
-The assets in this repository reflect the API design, implementation, and standardization aspects of that demo. This repository includes:
+The Customer API-led Reference Architecture is composed of the following reusable assets:
 
-- System APIs aligned to underlying systems.
+- System APIs that align with the underlying systems.
 - A Process API that orchestrates and transforms data using a canonical model.
 - Reusable RAML fragments that standardize data models, response structures, behavior, and security.
 - Utility scripts that support development, synchronization, publication, and maintenance workflows.
 
-This repository functions as both a working implementation and a collection of platform standards intended for reuse across multiple projects. It intentionally represents an opinionated implementation of API-led connectivity based on practical customer experience and proven enterprise integration patterns. The conventions, structures, and standards presented here are intended to promote consistency, reuse, and maintainability across API portfolios.
+This repository serves as both a working implementation and a set of platform standards for reuse across projects. It provides an opinionated approach to API-led connectivity, informed by practical customer experience and established enterprise integration patterns. The conventions, structures, and standards here are designed to promote consistency, reuse, and maintainability across API portfolios.
 
 > [!NOTE]
 > The historical context, goals, and scope of the initial baseline are documented in [`docs/releases/release-1-baseline.md`](docs/releases/release-1-baseline.md).
@@ -46,7 +49,7 @@ This repository is the authoritative source of truth for all assets that compris
 
 - API specifications and RAML fragments
 - Mule application implementations
-- Documentation pages
+- Documentation describing the architecture, standards, and supporting workflows
 - Anypoint Exchange metadata and dependency definitions
 
 Assets published to Anypoint Platform, including Design Center projects and Anypoint Exchange assets, are considered generated artifacts derived from this repository and are maintained solely to support demonstrations, experimentation, and validation activities.

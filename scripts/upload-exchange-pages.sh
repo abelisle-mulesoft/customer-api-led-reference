@@ -11,8 +11,12 @@ Required:
   -d docsDir       Directory containing markdown files
 
 Optional:
-  -s skipList      Comma-separated list of page titles to skip
+  -s skipList      Comma-separated list of existing page titles to skip
                    Example: -s 'Security, Environments and Testing'
+
+Pages:
+  Uploads recognized Markdown pages found in docsDir, in numeric order.
+  Unrecognized Markdown filenames produce warnings.
 
 Authentication:
   This script assumes credentials are already configured using:
@@ -101,7 +105,8 @@ PAGES=(
   "How to Consume|2-How-to-Consume.md"
   "Security|3-Security.md"
   "Environments and Testing|4-Environments-and-Testing.md"
-  "Getting Help|5-Getting-Help.md"
+  "Implementation and Testing|5-Implementation-and-Testing.md"
+  "Getting Help|9-Getting-Help.md"
 )
 
 VALID_PAGE_TITLES=()
@@ -129,21 +134,36 @@ if [[ -n "$SKIP_LIST" ]]; then
   done
 fi
 
-# Validate only pages that are NOT being skipped.
+# Discover recognized pages that exist, preserving the order defined above.
+AVAILABLE_PAGES=()
 for PAGE in "${PAGES[@]}"; do
-  TITLE="${PAGE%%|*}"
   FILE="${PAGE##*|}"
-  FULL_PATH="$DOCS_DIR/$FILE"
-
-  if contains_exact "$TITLE" "${SKIP_TITLES[@]:-}"; then
-    continue
-  fi
-
-  if [[ ! -f "$FULL_PATH" ]]; then
-    error "Missing documentation file for page '$TITLE': $FULL_PATH"
-    exit 1
+  if [[ -f "$DOCS_DIR/$FILE" ]]; then
+    AVAILABLE_PAGES+=("$PAGE")
   fi
 done
+
+# Warn about Markdown files that do not match a recognized page definition.
+shopt -s nullglob
+for FULL_PATH in "$DOCS_DIR"/*.md; do
+  FILE="${FULL_PATH##*/}"
+  RECOGNIZED=false
+  for PAGE in "${PAGES[@]}"; do
+    if [[ "$FILE" == "${PAGE##*|}" ]]; then
+      RECOGNIZED=true
+      break
+    fi
+  done
+  if [[ "$RECOGNIZED" == false ]]; then
+    warn "Unrecognized documentation file: $FILE"
+  fi
+done
+shopt -u nullglob
+
+if [[ ${#AVAILABLE_PAGES[@]} -eq 0 ]]; then
+  error "No recognized documentation pages found in: $DOCS_DIR"
+  exit 1
+fi
 
 log "Using pre-configured Anypoint CLI credentials"
 log "Uploading documentation pages to asset: $ASSET_ID"
@@ -151,7 +171,7 @@ log "Uploading documentation pages to asset: $ASSET_ID"
 UPLOADED_COUNT=0
 SKIPPED_COUNT=0
 
-for PAGE in "${PAGES[@]}"; do
+for PAGE in "${AVAILABLE_PAGES[@]}"; do
   TITLE="${PAGE%%|*}"
   FILE="${PAGE##*|}"
   FULL_PATH="$DOCS_DIR/$FILE"

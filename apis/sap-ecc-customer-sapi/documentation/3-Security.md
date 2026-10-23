@@ -11,7 +11,7 @@ The SAP ECC Customer System API is secured by a [Client ID Enforcement Policy](h
 ## Authentication Requirements and Security Details
 
 - Access is restricted to authorized client applications through the Client ID Enforcement policy.
-- Each request must include valid `client_id` and `client_secret` headers issued for an approved client application..
+- Each request must include valid `client_id` and `client_secret` headers issued for an approved client application.
 
 ## Access Control
 

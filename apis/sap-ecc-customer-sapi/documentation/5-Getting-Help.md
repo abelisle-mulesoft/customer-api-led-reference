@@ -37,4 +37,4 @@ The SAP ECC Customer System API provides access to customer data stored in SAP E
 
 ## Contribution and Feedback
 
-Feedback and improvement suggestions are encouraged to enhance clarity, interoperability, consistency, and reuse across APIs. Where applicable, proposed changes should align with existing platform standards and design principles. Suggestions that improve clarity, interoperability, consistency, or reuse across APIs are particularly valuable. If you identify documentation gaps or recommended improvements to the data model or usage patterns, submit feedback through your integration architecture or platform enablement team.
+Feedback and improvement suggestions are encouraged to enhance clarity, interoperability, consistency, and reuse across APIs. Proposed changes should align with existing platform standards and design principles. If you identify documentation gaps or opportunities to improve the data model or usage patterns, submit feedback through your integration architecture or platform enablement team.

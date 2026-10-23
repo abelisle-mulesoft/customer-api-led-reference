@@ -1,9 +1,9 @@
 ## Overview
-The SAP ECC Customer System API is deployed across multiple environments supporting development, testing, and production use cases.
+The SAP ECC Customer System API supports deployment across multiple environments for development, testing, and production use cases.
 
 ## Environment Details
 
-The API is available in the following environments:
+The following environments illustrate a typical deployment configuration:
 
 | Name | Purpose | Instance URL |
 | ------ | ------ | ------ |

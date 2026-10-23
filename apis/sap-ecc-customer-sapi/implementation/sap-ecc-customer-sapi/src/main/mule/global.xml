@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:customer-process-api="http://www.mulesoft.org/schema/mule/customer-process-api"
+	xmlns:sap="http://www.mulesoft.org/schema/mule/sap"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sap http://www.mulesoft.org/schema/mule/sap/current/mule-sap.xsd
+http://www.mulesoft.org/schema/mule/customer-process-api http://www.mulesoft.org/schema/mule/customer-process-api/current/mule-customer-process-api.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
 	<global-property doc:name="Global Property" name="env" value="dev" />
+	<global-property doc:name="Global Property" name="SECURE_PROPERTIES_KEY" value="PLACEHOLDER_ONLY__OVERRIDE_AT_RUNTIME" />
 	<configuration-properties doc:name="Configuration properties" file="properties/app-props-${env}.yaml" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" file="properties/secure-props-${env}.yaml" key="${SECURE_PROPERTIES_KEY}" />
     <http:listener-config name="sap-ecc-customer-sapi-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="${http.port}"/>
     </http:listener-config>
+	<sap:sap-config name="SAP_ECC_Config" doc:name="SAP Config" doc:id="7cb149d0-865d-4433-986a-cd2161dcb9ba" >
+		<sap:simple-connection-provider-connection username="${sap.username}" password="${secure::sap.password}" systemNumber="${sap.systemNumber}" client="${sap.client}" applicationServerHost="${sap.host}"/>
+	</sap:sap-config>
+	<customer-process-api:config name="Customer_Process_API_Config" doc:name="Customer Process API Config" doc:id="ce648b8f-f849-4ff7-a284-8c3b62dc5c6e" property_host="${customer_papi.host}" property_port="${customer_papi.port}" property_basePath="${customer_papi.base_path}" property_protocol="${customer_papi.protocol}" property_client-id="${client.id}" property_client-secret="${secure::client.secret}"/>
 </mule>

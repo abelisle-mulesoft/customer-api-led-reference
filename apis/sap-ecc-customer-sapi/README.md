@@ -32,7 +32,7 @@ This folder contains the assets that define, document, and implement the SAP ECC
 
 ## Implementation Notes
 
-The current implementation is intentionally stubbed and aligned with the API contract, enabling development, testing, and demonstration without requiring a fully configured SAP ECC environment. As such, it returns mocked responses for all operations.
+The GET operation retrieves customer records from a live SAP ECC instance using `BAPI_CUSTOMER_GETLIST`. The POST operation remains intentionally stubbed, returning mocked responses aligned with the API contract to support development, testing, and demonstration without modifying customer data in SAP ECC.
 
 ## Key Responsibilities
 
@@ -49,7 +49,7 @@ The SAP ECC Customer System API is responsible for:
 This API supports the following capabilities:
 
 - Retrieve SAP ECC customer account records.
-- Create or update multiple SAP ECC customer account records through an upsert operation.
+- Expose an upsert operation for creating or updating multiple SAP ECC customer account records (currently mocked).
 - Return SAP ECC customer data using SAP ECC-aligned field names and the standard response envelope.
 
 ## Related Assets
@@ -71,7 +71,7 @@ The SAP ECC Customer System API is part of the Customer API-led Reference Archit
 Process APIs and other consumers use this API to interact with customer data in SAP ECC. Typical use cases include:
 
 - Retrieve customer data from the system of record.
-- Create or update customer records in the system.
+- Test customer creation and update requests using the mocked upsert operation.
 - Access system-specific attributes required for downstream processing.
 
 ## Versioning

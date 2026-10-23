@@ -1,10 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+<mule xmlns:customer-process-api="http://www.mulesoft.org/schema/mule/customer-process-api" xmlns:sap="http://www.mulesoft.org/schema/mule/sap"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/sap http://www.mulesoft.org/schema/mule/sap/current/mule-sap.xsd
+http://www.mulesoft.org/schema/mule/customer-process-api http://www.mulesoft.org/schema/mule/customer-process-api/current/mule-customer-process-api.xsd">
+	<flow name="sap-ecc-get-customers-flow" doc:id="db5cbf27-e7c7-4821-b9f7-f924df34898c" >
+		<logger level="TRACE" doc:name="TRACE - Flow Starting" doc:id="f05cd9d5-03fe-4397-bb29-1558a53091cc" message="Flow starting" />
+		<ee:transform doc:name="Create Request" doc:id="781e326f-9a3e-47da-b8b3-3dfd33bf25be" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+{
+    BAPI_CUSTOMER_GETLIST: {
+        "import": {
+            MAXROWS: "100"
+        },
+        tables: {
+            IDRANGE: {
+                row: {
+                    SIGN: "I",
+                    OPTION: "BT",
+                    LOW: "0",
+                    HIGH: "999999999"
+                }
+            }
+        }
+    }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<sap:synchronous-remote-function-call doc:name="Synchronous Remote Function Call" doc:id="c7f710cb-8c25-4fb5-b78a-b77351b831a8" config-ref="SAP_ECC_Config" key="BAPI_CUSTOMER_GETLIST"/>
+		<ee:transform doc:name="SAP ECC Customers to API Response" doc:id="ff65004a-53d5-48ee-9156-a742f11718c9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+// Convert XML values to strings, omitting empty values.
+fun optionalString(value) =
+    if (isEmpty(trim((value default "") as String)))
+        null
+    else
+        trim(value as String)
+
+// Map an SAP ECC customer record to the API data model.
+fun mapCustomer(customer) =
+    {
+        sapCustomerNumber: (customer.CUSTOMER default "") as String,
+        nameLine1: (customer.NAME default "") as String,
+
+        (searchTerm: optionalString(customer.SORT1))
+            if (optionalString(customer.SORT1) != null),
+
+        (streetAddress: optionalString(customer.STREET))
+            if (optionalString(customer.STREET) != null),
+
+        (city: optionalString(customer.CITY))
+            if (optionalString(customer.CITY) != null),
+
+        (region: optionalString(customer.REGION))
+            if (optionalString(customer.REGION) != null),
+
+        (postalCode: optionalString(customer.POSTL_COD1))
+            if (optionalString(customer.POSTL_COD1) != null),
+
+        (countryCode: optionalString(customer.COUNTRY))
+            if (optionalString(customer.COUNTRY) != null),
+
+        (phoneNumber: optionalString(customer.TEL1_NUMBR))
+            if (optionalString(customer.TEL1_NUMBR) != null)
+    }
+
+var customers =
+    payload.BAPI_CUSTOMER_GETLIST.tables.ADDRESSDATA.*row
+        map (customer) -> mapCustomer(customer)
+
+---
+{
+    dateTime: now() >> "UTC",
+    httpStatus: 200,
+    status: "SUCCESS",
+    message: "Customer records retrieved successfully",
+    correlationId: correlationId,
+    data: {
+        customers: customers,
+        recordCount: sizeOf(customers)
+    }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="TRACE" doc:name="TRACE - Flow Ending" doc:id="5452bbd9-c85c-4c1b-b6fc-57aba4cb71e3" message="Flow ending" />
+	</flow>
+
+
 	<flow name="sap-ecc-create-customers-flow" doc:id="b9087950-5a1c-45a7-bca3-f38f4fe8d739" >
-		<logger level="DEBUG" doc:name="Debug - Flow Starting" doc:id="64876e07-88d0-42ac-9b53-3d1f9e083d19" message="Flow starting" />
+		<logger level="TRACE" doc:name="TRACE - Flow Starting" doc:id="64876e07-88d0-42ac-9b53-3d1f9e083d19" message="Flow starting" />
 		<ee:transform doc:name="Hardcoded Response" doc:id="91f3bd70-9028-48a7-9971-b3af0a000cc3">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
@@ -28,49 +119,59 @@ import nowUtc from modules::datetime::utils
 				<ee:set-variable variableName="httpStatus" ><![CDATA[201]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<logger level="DEBUG" doc:name="Debug - Flow Ending" doc:id="bd8e69a9-c772-4f11-af5b-4084e7418cb5" message="Flow ending" />
+		<logger level="TRACE" doc:name="TRACE - Flow Ending" doc:id="bd8e69a9-c772-4f11-af5b-4084e7418cb5" message="Flow ending" />
 	</flow>
-	<flow name="sap-ecc-get-customers-flow" doc:id="b0c599c1-6e3f-4e75-bc50-7b94d3a136f1" >
-		<logger level="DEBUG" doc:name="Debug - Flow Starting" doc:id="f05cd9d5-03fe-4397-bb29-1558a53091cc" message="Flow starting" />
-		<ee:transform doc:name="Hardcoded Response" doc:id="ee4e21f2-9b81-4910-a89c-4cb30048b444">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+	<flow name="sap-ecc-receive-customers-flow" doc:id="728918aa-989b-4d97-b0cd-b48ebae51f9d" >
+		<sap:document-listener doc:name="Customer Master (DEBMAS)" doc:id="ca5b8ae9-b542-4134-9c4b-c9aafb63f3bd" config-ref="SAP_ECC_Config" gatewayHost="${sap.gatewayHost}" gatewayService="${sap.gatewayService}" programID="${sap.programId}" idocTypeFilterRegex="DEBMAS.*"/>
+		<logger level="TRACE" doc:name="TRACE - IDoc Received" doc:id="b4f13b01-9e8c-44c4-988c-59137635eac2" message="IDoc Received" />
+		<ee:transform doc:name="To Customer Sync Envelope" doc:id="7fa8ef30-ec15-4670-b6e5-82bc173ddf19" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
-import nowUtc from modules::datetime::utils
+
+var idoc = payload.DEBMAS07.IDOC
+var control = idoc.EDI_DC40
+var customer = idoc.E1KNA1M
+
+// IDoc creation timestamp (UTC)
+var eventTimestamp =
+    (
+        (
+            (control.CREDAT default "") as String
+            ++
+            (control.CRETIM default "") as String
+        ) as LocalDateTime {format: "yyyyMMddHHmmss"}
+        ++ |Z|
+    ) as String {format: "yyyy-MM-dd'T'HH:mm:ss'Z'"}
+
 ---
 {
-  dateTime: nowUtc(),
-  httpStatus: 200,
-  status: "SUCCESS",
-  message: "Customer records retrieved successfully",
-  correlationId: "2f6c2b7b-8b1b-4f2d-9ef2-9c6a2a1b0d6a",
-  data: {
-    customers: [
-      {
-        sapCustomerNumber: "0001001001",
-        accountGroup: "Z001",
-        companyCode: "1000",
-        salesOrganization: "1000",
-        distributionChannel: "10",
-        division: "00",
-        nameLine1: "Acme Corporation",
-        city: "Seattle",
-        region: "WA",
-        postalCode: "98101",
-        countryCode: "US",
-        emailAddress: "ops@acme.example",
-        deletionFlag: false,
-        centralPostingBlock: false
-      }
-    ],
-    recordCount: 1
-  }
-} ]]></ee:set-payload>
+	eventType: "CUSTOMER_UPDATED",
+	sourceSystem: "SAP_ECC",
+	occurredAt: eventTimestamp,
+	customer: {
+	    id: customer.KUNNR as String,
+	    name: customer.NAME1 default "",
+	    customerType: "BUSINESS",
+	    status: "ACTIVE",
+		addresses: [
+			{
+				addressType: "BILLING",
+				line1: customer.STRAS default "",
+				city: customer.ORT01 default "",
+				state: customer.REGIO default "",
+				postalCode: customer.PSTLZ default "",
+				country: customer.LAND1 default ""
+			}
+		],
+		createdDate: now() as String { format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" },
+		lastModifiedDate: now() as String { format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" }
+    }
+}]]></ee:set-payload>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-			</ee:variables>
 		</ee:transform>
-		<logger level="DEBUG" doc:name="Debug - Flow Ending" doc:id="5452bbd9-c85c-4c1b-b6fc-57aba4cb71e3" message="Flow ending" />
+		<logger level="TRACE" doc:name="TRACE - Customer Sync Envelope" doc:id="ef8fe40e-2b2c-436f-88b4-27c9c374c60b" message="#[payload]"/>
+		<customer-process-api:process-customer-sync-event doc:name="Process Customer Sync Event" doc:id="68def7d7-6b43-460a-8713-2e68a7b17e49" config-ref="Customer_Process_API_Config"/>
+		<logger level="TRACE" doc:name="TRACE - IDoc Processing Completed" doc:id="6759a9be-aa25-4d96-819a-c2ce8ccb2841" message="IDoc processing completed" />
 	</flow>
 </mule>

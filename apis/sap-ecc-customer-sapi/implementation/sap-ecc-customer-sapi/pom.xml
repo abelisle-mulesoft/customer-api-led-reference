@@ -14,7 +14,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<app.runtime>4.10.0</app.runtime>
-		<mule.maven.plugin.version>4.5.3</mule.maven.plugin.version>
+		<mule.maven.plugin.version>4.10.0</mule.maven.plugin.version>
 
 		<!-- CloudHub 2.0 deployment properties. Override from Maven settings, profiles, or the command line. -->
 		<anypoint.environment>Sandbox</anypoint.environment>
@@ -39,6 +39,7 @@
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
+					<classifier>mule-application</classifier>
 					<cloudhub2Deployment>
 						<provider>MC</provider>
 						<environment>${anypoint.environment}</environment>
@@ -49,7 +50,44 @@
 						<replicas>${cloudhub2.replicas}</replicas>
 						<vCores>${cloudhub2.vcores}</vCores>
 					</cloudhub2Deployment>
+					<sharedLibraries>
+						<sharedLibrary>
+							<groupId>com.sap.conn.jco</groupId>
+							<artifactId>com.sap.conn.jco.sapjco3</artifactId>
+						</sharedLibrary>
+						<sharedLibrary>
+							<groupId>com.sap.conn.idoc</groupId>
+							<artifactId>com.sap.conn.idoc.sapidoc3</artifactId>
+						</sharedLibrary>
+						<sharedLibrary>
+							<groupId>com.sap.conn.jco</groupId>
+							<artifactId>libsapjco3</artifactId>
+						</sharedLibrary>
+					</sharedLibraries>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.6.0</version>
+				<!-- use latest version -->
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<minimizeJar>false</minimizeJar>
+							<artifactSet>
+								<includes combine.children="append">
+									<include>com.sap.conn.jco:com.sap.conn.jco.sapjco3</include>
+									<include>com.sap.conn.idoc:com.sap.conn.idoc.sapidoc3</include>
+								</includes>
+							</artifactSet>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -78,6 +116,41 @@
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-apikit-module</artifactId>
 			<version>1.12.1</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.connectors</groupId>
+			<artifactId>mule-sap-connector</artifactId>
+			<version>5.9.13</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.sap.conn.jco</groupId>
+			<artifactId>com.sap.conn.jco.sapjco3</artifactId>
+			<version>3.1.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sap.conn.idoc</groupId>
+			<artifactId>com.sap.conn.idoc.sapidoc3</artifactId>
+			<version>3.1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sap.conn.jco</groupId>
+			<artifactId>libsapjco3</artifactId>
+			<version>3.1.13</version>
+			<classifier>external-library</classifier>
+			<type>dylib</type>
+		</dependency>
+		<dependency>
+			<groupId>16339d91-3161-43b4-bef8-7e3fbf0af852</groupId>
+			<artifactId>mule-plugin-customer-papi</artifactId>
+			<version>1.0.10</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.modules</groupId>
+			<artifactId>mule-secure-configuration-property-module</artifactId>
+			<version>1.3.0</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 	</dependencies>

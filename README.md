@@ -12,6 +12,7 @@ The Customer API-led Reference Architecture is composed of the following reusabl
 
 - System APIs that align with the underlying systems.
 - A Process API that orchestrates and transforms data using a canonical model.
+- Integration components that support event-driven, scheduled, batch, and file-based integration patterns.
 - Reusable RAML fragments that standardize data models, response structures, behavior, and security.
 - Utility scripts that support development, synchronization, publication, and maintenance workflows.
 
@@ -36,6 +37,8 @@ This implementation follows an API-led connectivity model composed of three laye
 - **Process APIs** orchestrate data across systems and transform it into a canonical model.
 - **Experience APIs** consume canonical data and tailor it for specific consumers, but they are intentionally omitted from this implementation because this reference architecture focuses on system integration and canonical data orchestration rather than consumer-specific experiences.
 
+Event-driven and other integration components complement these API layers by processing data originating from external systems and delivering it to the appropriate APIs. These components support integration patterns beyond synchronous request-response interactions and may use formal specifications such as AsyncAPI when appropriate.
+
 ### Key Principles
 
 - **System-aligned data models** -- System APIs reflect the structure and constraints of the underlying system.
@@ -58,7 +61,7 @@ As a result:
 
 - Changes are always made in Git first.
 - Design Center projects are synchronized from this repository through automation.
-- Anypoint Exchange publications are produced from the synchronized Design Center assets.
+- Anypoint Exchange assets are published from the repository, either through synchronized Design Center projects or directly, depending on the asset type.
 - Drift between Git and Anypoint Platform assets is periodically detected and corrected in favor of the repository state.
 
 This repository therefore follows a Git-centric workflow where source control, rather than the Anypoint Platform, is the authoritative system of record.
@@ -68,6 +71,7 @@ This repository therefore follows a Git-centric workflow where source control, r
 - `apis/` -- API assets that comprise the reference architecture.
 - `assets/` -- Images used throughout repository documentation.
 - `docs/` -- Additional repository documentation, release notes, and technical guidance.
+- `integrations/` -- Event-driven, scheduled, batch, and file-based integration components.
 - `libraries/` -- Shared RAML fragments used throughout the reference architecture.
 - `scripts/` -- Utility scripts supporting development and synchronization workflows.
 - `standards/` -- Standards, principles, and implementation guidance.
@@ -78,12 +82,13 @@ Refer to the README file within each folder for additional details.
 
 1. System APIs expose system-specific data using system-aligned models.
 2. Process APIs orchestrate across systems and transform data into a canonical model.
-3. Shared fragments enforce consistency across:
+3. Integration components process events, files, and other integration inputs, transform data as needed, and deliver it to the appropriate APIs.
+4. Shared fragments enforce consistency across:
    - Data models
    - Response structure
    - Response behavior
    - Security
-4. Utility scripts support development, synchronization, publication, and maintenance workflows.
+5. Utility scripts support development, synchronization, publication, and maintenance workflows.
 
 Together, these components provide:
 
@@ -93,7 +98,7 @@ Together, these components provide:
 
 ## Implementation Scope
 
-This repository demonstrates API-led architecture patterns, reusable RAML fragments, and Mule implementations for the APIs included in the reference architecture.
+This repository demonstrates API-led architecture patterns, event-driven integration, reusable RAML fragments, and Mule implementations for the APIs and integration components included in the reference architecture.
 
 Standardized implementations for logging, monitoring, and enterprise error handling are not included. MuleSoft Professional Services typically provides reusable patterns for these capabilities in customer engagements. These assets are intentionally excluded from this reference architecture.
 

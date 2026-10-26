@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:customer-process-api="http://www.mulesoft.org/schema/mule/customer-process-api"
+	xmlns:sap="http://www.mulesoft.org/schema/mule/sap" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sap http://www.mulesoft.org/schema/mule/sap/current/mule-sap.xsd
+http://www.mulesoft.org/schema/mule/customer-process-api http://www.mulesoft.org/schema/mule/customer-process-api/current/mule-customer-process-api.xsd">
+	<flow name="sap-customer-idoc-listener-flow" doc:id="094e2a85-a6f2-47d8-9d91-012cd19b01f8" >
+		<sap:document-listener doc:name="Customer Master (DEBMAS)" doc:id="58152f51-472f-4dfb-a5f6-048b09c23095" config-ref="SAP_ECC_Config" gatewayHost="${sap.gatewayHost}" gatewayService="${sap.gatewayService}" programID="${sap.programId}" idocTypeFilterRegex="DEBMAS07" />
+		<flow-ref doc:name="process-customer-idoc-flow" doc:id="ea89da09-5b8a-456a-aae8-d5724976e39e" name="process-customer-idoc-flow"/>
+	</flow>
+	<flow name="process-customer-idoc-flow" doc:id="25cee323-31fb-4989-b8bf-e270545c56e9" >
+		<logger level="TRACE" doc:name="TRACE - IDoc Received" doc:id="124259ea-e934-4333-b462-14133052452a" message="IDoc Received" />
+		<ee:transform doc:name="To Customer Sync Envelope" doc:id="98afe48a-0d36-405f-b057-a4e6b4fcd0e8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+var idoc = payload.DEBMAS07.IDOC
+var control = idoc.EDI_DC40
+var customer = idoc.E1KNA1M
+
+// IDoc creation timestamp (UTC)
+var eventTimestamp =
+    (
+        (
+            (control.CREDAT default "") as String
+            ++
+            (control.CRETIM default "") as String
+        ) as LocalDateTime {format: "yyyyMMddHHmmss"}
+        ++ |Z|
+    ) as String {format: "yyyy-MM-dd'T'HH:mm:ss'Z'"}
+
+var timestamp = (now() >> "UTC") as String { format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" }
+
+---
+{
+	eventType: "CUSTOMER_UPDATED",
+	sourceSystem: "SAP_ECC",
+	occurredAt: eventTimestamp,
+	customer: {
+	    id: customer.KUNNR as String,
+	    name: customer.NAME1 default "",
+	    customerType: "BUSINESS",
+	    status: "ACTIVE",
+		addresses: [
+			{
+				addressType: "BILLING",
+				line1: customer.STRAS default "",
+				city: customer.ORT01 default "",
+				state: customer.REGIO default "",
+				postalCode: customer.PSTLZ default "",
+				country: customer.LAND1 default ""
+			}
+		],
+		createdDate: timestamp,
+		lastModifiedDate: timestamp
+    }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="TRACE" doc:name="TRACE - Customer Sync Envelope" doc:id="5b468a28-d86e-4911-bc0e-091831d9166f" message="#[payload]"/>
+		<customer-process-api:process-customer-sync-event doc:name="Process Customer Sync Event" doc:id="6bd7d5e1-7d44-44fc-aa35-d6732b95526f" config-ref="Customer_Process_API_Config"/>
+		<logger level="TRACE" doc:name="TRACE - IDoc Processing Completed" doc:id="e08db48e-af00-4c81-9fce-924a69cfaeb2" message="IDoc processing completed" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="42d74049-3bcb-4328-82c9-67c936c44357" type="ANY">
+				<logger level="ERROR" doc:name="ERROR - Customer IDoc Processing Failed" doc:id="31de8a3c-a903-4bd5-9198-d51152f0fffe" message="#['Customer IDoc processing failed. Error type: ' ++ (error.errorType as String) ++ ', Description: ' ++ (error.description default 'Unknown error')]"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>

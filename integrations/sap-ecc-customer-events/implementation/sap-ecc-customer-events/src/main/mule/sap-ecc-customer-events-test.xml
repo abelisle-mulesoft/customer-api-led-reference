@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="http-customer-idoc-test-flow" doc:id="6e3ff4cd-abf8-4bf5-b3fc-590f796f7e19" >
+		<http:listener doc:name="Customer IDoc Test" doc:id="b5729502-f87a-48f9-a3a9-7a14cb542faa" config-ref="sap-ecc-customer-events-httpListenerConfig" path="/test/customer-idoc" allowedMethods="POST"/>
+		<flow-ref doc:name="process-customer-idoc-flow" doc:id="4766dd7a-b82c-456c-ad15-b4fea40ff134" name="process-customer-idoc-flow"/>
+		<ee:transform doc:name="Create Response" doc:id="fc7df604-3f13-422d-9f7a-0519bdd7d1a6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    status: "SUCCESS",
+    message: "SAP ECC customer IDoc processed successfully.",
+    correlationId: correlationId
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

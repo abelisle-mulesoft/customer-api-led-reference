@@ -1,3 +1,4 @@
 # Exclude from language statistics
-*.raml linguist-detectable=false
 *.dwl  linguist-detectable=false
+*.raml linguist-detectable=false
+*.sh   linguist-detectable=false

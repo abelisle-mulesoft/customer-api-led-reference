@@ -1,33 +1,35 @@
 ## Overview
 
-This repository offers a Customer API-led Reference Architecture, initially developed and presented to a customer in October 2024 to demonstrate MuleSoft’s API-led connectivity and incorporate Salesforce Change Data Capture (CDC) based on specific requirements. In March 2026, the demo was revisited, refined through multiple iterations, and expanded in scope, ultimately resulting in this formalized Reference Architecture.
+This repository offers a Customer API-led Reference Architecture, initially developed and presented to a customer in October 2024 to demonstrate MuleSoft’s API-led connectivity based on specific requirements. In March 2026, the demo was revisited, refined through multiple iterations, and expanded in scope, ultimately resulting in this formalized Reference Architecture.
 
 The Customer API-led Reference Architecture demonstrates API design, structure, and standardization using an API-led connectivity approach. It currently highlights three complementary concepts:
 
-- Event-driven integration using Salesforce Change Data Capture (CDC) in Mule.
 - A comprehensive API-led connectivity implementation for customer data across systems.
+- Event-driven integration using Salesforce Change Data Capture (CDC) in Mule.
 - Automation commands that can be used to implement CI/CD pipelines.
 
 The Customer API-led Reference Architecture is composed of the following reusable assets:
 
 - System APIs that align with the underlying systems.
 - A Process API that orchestrates and transforms data using a canonical model.
-- Integration components that support event-driven, scheduled, batch, and file-based integration patterns.
+- Integration components that support event-driven integration patterns.
 - Reusable RAML fragments that standardize data models, response structures, behavior, and security.
 - Utility scripts that support development, synchronization, publication, and maintenance workflows.
 
-This repository serves as both a working implementation and a set of platform standards for reuse across projects. It provides an opinionated approach to API-led connectivity, informed by practical customer experience and established enterprise integration patterns. The conventions, structures, and standards here are designed to promote consistency, reuse, and maintainability across API portfolios.
+![Customer API Led Reference Overview](assets/customer-api-led-reference-overview.png)
+
+This repository serves as both a working implementation and a set of platform standards for reuse across projects. It provides an **opinionated approach to API-led connectivity**, informed by practical customer experience and established enterprise integration patterns. The conventions, structures, and standards here are designed to promote consistency, reuse, and maintainability across API portfolios.
 
 > [!NOTE]
 > The historical context, goals, and scope of the initial baseline are documented in [`docs/releases/release-1-baseline.md`](docs/releases/release-1-baseline.md).
 
 ## Architecture Diagram
 
-The diagram below depicts the Customer API-led Reference Architecture, highlighting System APIs, the Process API, and supporting libraries.
+The diagram below depicts the Customer API-led Reference Architecture, highlighting the relationships between the Customer Process API, System APIs, and event-driven integrations.
 
 ![Customer API-led Reference Architecture](assets/customer-api-led-reference-architecture.png)
 
-The diagram illustrates the interaction between System APIs, the Process API, and the shared libraries that enforce consistency across the architecture.
+The diagram illustrates how the Customer Process API serves as the central integration point, invoking System APIs and receiving customer data changes from event-driven integrations.
 
 ## Architecture
 
@@ -37,7 +39,7 @@ This implementation follows an API-led connectivity model composed of three laye
 - **Process APIs** orchestrate data across systems and transform it into a canonical model.
 - **Experience APIs** consume canonical data and tailor it for specific consumers, but they are intentionally omitted from this implementation because this reference architecture focuses on system integration and canonical data orchestration rather than consumer-specific experiences.
 
-Event-driven and other integration components complement these API layers by processing data originating from external systems and delivering it to the appropriate APIs. These components support integration patterns beyond synchronous request-response interactions and may use formal specifications such as AsyncAPI when appropriate.
+Event-driven integration components complement these API layers by processing changes originating from external systems and delivering them to the appropriate APIs. These components may use formal specifications such as AsyncAPI when appropriate.
 
 ### Key Principles
 
@@ -71,7 +73,7 @@ This repository therefore follows a Git-centric workflow where source control, r
 - `apis/` -- API assets that comprise the reference architecture.
 - `assets/` -- Images used throughout repository documentation.
 - `docs/` -- Additional repository documentation, release notes, and technical guidance.
-- `integrations/` -- Event-driven, scheduled, batch, and file-based integration components.
+- `integrations/` -- Event-driven integration components.
 - `libraries/` -- Shared RAML fragments used throughout the reference architecture.
 - `scripts/` -- Utility scripts supporting development and synchronization workflows.
 - `standards/` -- Standards, principles, and implementation guidance.
@@ -82,7 +84,7 @@ Refer to the README file within each folder for additional details.
 
 1. System APIs expose system-specific data using system-aligned models.
 2. Process APIs orchestrate across systems and transform data into a canonical model.
-3. Integration components process events, files, and other integration inputs, transform data as needed, and deliver it to the appropriate APIs.
+3. Event-driven integration components process changes originating from external systems, transform data as needed, and deliver it to the appropriate APIs.
 4. Shared fragments enforce consistency across:
    - Data models
    - Response structure

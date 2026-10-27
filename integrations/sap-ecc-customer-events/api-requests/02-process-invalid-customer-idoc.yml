@@ -1,0 +1,25 @@
+info:
+  name: Process Invalid Customer IDoc
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:8081/test/customer-idoc
+  headers:
+    - name: Content-Type
+      value: application/xml
+  body:
+    type: xml
+    data: |
+      <INVALID_IDOC>
+          <CUSTOMER>12345</CUSTOMER>
+      </INVALID_IDOC>
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

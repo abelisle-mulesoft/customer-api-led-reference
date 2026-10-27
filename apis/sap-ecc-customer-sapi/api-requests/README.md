@@ -21,7 +21,7 @@ This folder contains a reusable request collection for testing the SAP ECC Custo
 The `local` environment is committed to the repository and targets a locally running instance of the SAP ECC Customer System API:
 
 ```text
-http://localhost:8080
+http://localhost:8081
 ```
 
 Select `local` in Bruno when running the API from the local development environment.

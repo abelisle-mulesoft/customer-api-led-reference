@@ -14,7 +14,7 @@ This separation ensures loose coupling, reusability, and consistent data represe
 
 ## System Context
 
-This API provides access to customer data in SAP ECC using system-specific structures, identifiers, and constraints. It reflects the capabilities and limitations of the underlying system, including SAP ECC data models and common integration patterns such as BAPIs and IDocs, and does not abstract or normalize data into a canonical model.
+This API provides access to customer data in SAP ECC using system-specific structures, identifiers, and constraints. It reflects the capabilities and limitations of the underlying system, including SAP ECC data models and BAPI-based integration, and does not abstract or normalize data into a canonical model.
 
 ## Contents
 

@@ -22,7 +22,7 @@ The SAP ECC Customer System API can be consumed by applications requiring access
 ### Example: Retrieve Customers with cURL
 
 ```bash
-curl -X GET https://your-api-host/v1/customers \
+curl -X GET https://your-api-host/api/customers \
 		 -H "client_id: {client_id}" \
 		 -H "client_secret: {client_secret}"
 ```
@@ -30,7 +30,7 @@ curl -X GET https://your-api-host/v1/customers \
 ### Example: Upsert Customers with cURL
 
 ```bash
-curl -X POST https://your-api-host/v1/customers \
+curl -X POST https://your-api-host/api/customers \
 		 -H "client_id: {client_id}" \
 		 -H "client_secret: {client_secret}" \
      -H "Content-Type: application/json" \

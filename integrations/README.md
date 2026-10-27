@@ -1,6 +1,6 @@
 # Integrations
 
-This folder contains the integration components that complement the Customer API-led Reference Architecture, supporting event-driven, scheduled, batch, and file-based integration patterns.
+This folder contains the event-driven integration components that complement the Customer API-led Reference Architecture.
 
 ## Event-Driven Integrations
 
@@ -12,6 +12,7 @@ Event-driven integrations process changes originating from external systems and 
 
 Integration projects adhere to standardized folder structures to ensure consistency throughout the reference architecture. Each integration project contains the following components:
 
+- `api-requests/` -- Bruno collection for testing the integration.
 - `documentation/` -- Documentation pages published to Anypoint Exchange.
 - `implementation/` -- Mule application implementation artifacts.
 - `README.md` -- Provides an overview and usage guidance.

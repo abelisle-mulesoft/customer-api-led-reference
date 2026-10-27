@@ -7,7 +7,3 @@
 sap:
   password: "![<encrypted value>]"  # SAP ECC user password
 
-#---------------------------------------------------------------------------------------------------
-# API Client Application Configuration
-client:
-  secret:   "![<encrypted value>]"  # Client application secret

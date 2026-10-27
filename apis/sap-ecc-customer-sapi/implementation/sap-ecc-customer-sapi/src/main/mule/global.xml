@@ -16,5 +16,4 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 	<sap:sap-config name="SAP_ECC_Config" doc:name="SAP Config" doc:id="7cb149d0-865d-4433-986a-cd2161dcb9ba" >
 		<sap:simple-connection-provider-connection username="${sap.username}" password="${secure::sap.password}" systemNumber="${sap.systemNumber}" client="${sap.client}" applicationServerHost="${sap.host}"/>
 	</sap:sap-config>
-	<customer-process-api:config name="Customer_Process_API_Config" doc:name="Customer Process API Config" doc:id="ce648b8f-f849-4ff7-a284-8c3b62dc5c6e" property_host="${customer_papi.host}" property_port="${customer_papi.port}" property_basePath="${customer_papi.base_path}" property_protocol="${customer_papi.protocol}" property_client-id="${client.id}" property_client-secret="${secure::client.secret}"/>
 </mule>

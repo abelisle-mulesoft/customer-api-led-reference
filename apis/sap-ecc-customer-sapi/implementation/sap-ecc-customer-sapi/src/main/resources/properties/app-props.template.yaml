@@ -18,18 +18,4 @@ sap:
   client:         "<sap-client>"
   username:       "<sap-username>"
 
-  # RFC Server Configuration (Inbound IDocs)
-  gatewayHost:    "<sap-gateway-host>"
-  gatewayService: "<sap-gateway-service>"
-  programId:      "<sap-program-id>"
-
-#---------------------------------------------------------------------------------------------------
-# Customer Process API Smart Connector Configuration
-customer_papi:
-  # Hostname only (no protocol prefix or trailing slash).
-  # Example: customer-papi-dev-34mjq8.goajj2-1.usa-w2.cloudhub.io
-  host:           "<customer-papi-host>"
-  port:           "443"
-  protocol:       "HTTPS"
-  base_path:      "/api"
-  client_id:      "<client-id>"
+ 

@@ -142,12 +142,6 @@
 			<type>dylib</type>
 		</dependency>
 		<dependency>
-			<groupId>16339d91-3161-43b4-bef8-7e3fbf0af852</groupId>
-			<artifactId>mule-plugin-customer-papi</artifactId>
-			<version>1.0.10</version>
-			<classifier>mule-plugin</classifier>
-		</dependency>
-		<dependency>
 			<groupId>com.mulesoft.modules</groupId>
 			<artifactId>mule-secure-configuration-property-module</artifactId>
 			<version>1.3.0</version>

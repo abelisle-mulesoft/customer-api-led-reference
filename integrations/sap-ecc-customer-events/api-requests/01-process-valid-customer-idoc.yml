@@ -212,7 +212,6 @@ http:
       		</E1KNA1M>
       	</IDOC>
       </DEBMAS07>
-  auth: inherit
 
 settings:
   encodeUrl: true

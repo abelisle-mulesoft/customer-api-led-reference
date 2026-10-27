@@ -9,7 +9,6 @@ http:
   body:
     type: xml
     data: ""
-  auth: inherit
 
 settings:
   encodeUrl: true

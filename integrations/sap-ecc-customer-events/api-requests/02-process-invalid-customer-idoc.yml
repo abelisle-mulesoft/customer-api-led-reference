@@ -15,7 +15,6 @@ http:
       <INVALID_IDOC>
           <CUSTOMER>12345</CUSTOMER>
       </INVALID_IDOC>
-  auth: inherit
 
 settings:
   encodeUrl: true

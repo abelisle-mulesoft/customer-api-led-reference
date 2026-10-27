@@ -6,6 +6,8 @@ info:
 collections:
   - name: "SAP ECC Customer Events"
     path: "../integrations/sap-ecc-customer-events/api-requests"
+  - name: "SAP ECC Customer SAPI"
+    path: "../apis/sap-ecc-customer-sapi/api-requests"
 
 specs:
 

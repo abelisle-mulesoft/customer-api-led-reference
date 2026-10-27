@@ -30,5 +30,5 @@ The following diagram depicts the role of this integration within the reference 
 
 The integration incorporates an HTTP listener to facilitate local development and testing without necessitating SAP ECC to transmit an IDoc. Both the SAP IDoc listener and the HTTP test listener utilize an identical processing flow, which ensures consistent transformation and downstream delivery behavior.
 
-Further information regarding implementation and testing can be found on the Implementation and Testing documentation page.
+Further information regarding implementation and testing can be found on the **Environments and Testing** documentation page.
 

@@ -24,14 +24,11 @@ var customer = idoc.E1KNA1M
 
 // IDoc creation timestamp (UTC)
 var eventTimestamp =
-    (
-        (
-            (control.CREDAT default "") as String
-            ++
-            (control.CRETIM default "") as String
-        ) as LocalDateTime {format: "yyyyMMddHHmmss"}
-        ++ |Z|
-    ) as String {format: "yyyy-MM-dd'T'HH:mm:ss'Z'"}
+	if (isEmpty(control.CREDAT) or isEmpty(control.CRETIM)) null
+  else (
+  	( (control.CREDAT ++ control.CRETIM) 
+  		as LocalDateTime {format: "yyyyMMddHHmmss"} ) ++ |Z|
+	) as String {format: "yyyy-MM-dd'T'HH:mm:ss'Z'"}
 
 var timestamp = (now() >> "UTC") as String { format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" }
 
@@ -66,7 +63,7 @@ var timestamp = (now() >> "UTC") as String { format: "yyyy-MM-dd'T'HH:mm:ss.SSS'
 		<logger level="TRACE" doc:name="TRACE - IDoc Processing Completed" doc:id="e08db48e-af00-4c81-9fce-924a69cfaeb2" message="IDoc processing completed" />
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="42d74049-3bcb-4328-82c9-67c936c44357" type="ANY">
-				<logger level="ERROR" doc:name="ERROR - Customer IDoc Processing Failed" doc:id="31de8a3c-a903-4bd5-9198-d51152f0fffe" message="#['Customer IDoc processing failed. Error type: ' ++ (error.errorType as String) ++ ', Description: ' ++ (error.description default 'Unknown error')]"/>
+				<logger level="ERROR" doc:name="ERROR - Customer IDoc Processing Failed" doc:id="31de8a3c-a903-4bd5-9198-d51152f0fffe" message="'Customer IDoc processing failed - ' ++ (error.description default 'Unknown error')"/>
 			</on-error-propagate>
 		</error-handler>
 	</flow>

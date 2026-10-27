@@ -1,0 +1,12 @@
+opencollection: 1.0.0
+info:
+  name: "Customer API-Led Reference Architecture"
+  type: workspace
+
+collections:
+  - name: "SAP ECC Customer Events"
+    path: "../integrations/sap-ecc-customer-events/api-requests"
+
+specs:
+
+docs: ''

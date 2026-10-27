@@ -16,6 +16,7 @@ This folder contains the assets that document and implement the SAP ECC Customer
 
 - `implementation/sap-ecc-customer-events/` -- Mule application implementation containing event listeners, processing flows, configurations, and supporting resources.
 - `documentation/` -- Documentation pages published to Anypoint Exchange.
+- `api-request/` -- Bruno collection for testing the SAP ECC Customer Events integration through its local HTTP test listener.
 - `README.md` -- This document, providing an overview of the integration and its role within the reference architecture.
 
 ## Implementation Notes

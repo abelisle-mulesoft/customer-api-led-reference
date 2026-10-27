@@ -23,11 +23,7 @@ This folder contains the assets that define, document, and implement the SAP ECC
 - `design/sap-ecc-customer-sapi.raml` -- RAML specification defining the API contract.
 - `implementation/sap-ecc-customer-sapi/` -- Mule application implementation containing flows, configurations, and supporting resources.
 - `documentation/` -- Documentation pages published to Anypoint Exchange.
-  - `1-Home.md` -- Introduces the API and its role in the architecture (overrides the default `home` page).
-  - `2-How-to-Consume.md` -- Describes how to request access and successfully invoke the API.
-  - `3-Security.md` -- Describes security requirements and policies applied to the API.
-  - `4-Environments-and-Testing.md` -- Lists available environments, endpoints, and prerequisites for testing the API.
-  - `5-Getting-Help.md` -- Describes how to get support and additional information.
+- `api-requests/` -- Bruno collection for testing the SAP ECC Customer System API.
 - `README.md` -- This document, providing an overview of the API and its role within the reference architecture.
 
 ## Implementation Notes

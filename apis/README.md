@@ -19,6 +19,7 @@ System APIs expose data aligned with the underlying systems and avoid transformi
 
 API projects adhere to standardized folder structures to ensure consistency throughout the reference architecture. Each API project contains the following components:
 
+- `api-requests/` -- Bruno collection for testing the API.
 - `design/` -- RAML specifications, fragments, and Anypoint Exchange metadata.
 - `documentation/` -- Documentation pages published to Anypoint Exchange.
 - `implementation/` -- Mule application implementation artifacts.

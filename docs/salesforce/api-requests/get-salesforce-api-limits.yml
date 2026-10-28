@@ -1,0 +1,18 @@
+info:
+  name: Get Salesforce API Limits
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{sfInstanceUrl}}/services/data/v65.0/limits"
+  auth:
+    type: bearer
+    token: "{{sfAccessToken}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

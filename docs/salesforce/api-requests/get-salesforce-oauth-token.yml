@@ -1,0 +1,38 @@
+info:
+  name: Get Salesforce OAuth Token
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{sfLoginUrl}}/services/oauth2/token"
+  headers:
+    - name: Content-Type
+      value: application/x-www-form-urlencoded
+  body:
+    type: form-urlencoded
+    data:
+      - name: grant_type
+        value: client_credentials
+      - name: client_id
+        value: "{{sfClientId}}"
+      - name: client_secret
+        value: "{{sfClientSecret}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const response = res.getBody();
+
+        if (res.getStatus() === 200 && response.access_token) {
+          bru.setVar("sfAccessToken", response.access_token);
+          bru.setVar("sfInstanceUrl", response.instance_url);
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

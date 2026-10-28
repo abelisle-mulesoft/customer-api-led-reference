@@ -8,6 +8,8 @@ collections:
     path: "../integrations/sap-ecc-customer-events/api-requests"
   - name: "SAP ECC Customer SAPI"
     path: "../apis/sap-ecc-customer-sapi/api-requests"
+  - name: "Salesforce Brilliant Mule"
+    path: "../docs/salesforce/api-requests"
 
 specs:
 

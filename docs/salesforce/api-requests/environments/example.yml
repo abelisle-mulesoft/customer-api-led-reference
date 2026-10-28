@@ -1,0 +1,11 @@
+name: example
+variables:
+  - name: sfLoginUrl
+    value: https://your-domain.my.salesforce.com
+    description: Salesforce Domain URL used for OAuth authentication.
+  - name: sfClientId
+    value: <consumer-key>
+    description: Consumer Key from the Salesforce External Client App.
+  - name: sfClientSecret
+    value: <consumer-secret>
+    description: Consumer Secret from the Salesforce External Client App.

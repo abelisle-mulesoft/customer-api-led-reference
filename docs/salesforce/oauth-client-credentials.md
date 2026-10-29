@@ -9,6 +9,10 @@ Before beginning, ensure that the following requirements are met:
 - System Administrator access to the Salesforce instance.
 - An existing Salesforce user for MuleSoft integrations.
 
+## Security Considerations
+
+The process outlined in this document utilizes a user account assigned the System Administrator profile. Access tokens inherit the Salesforce permissions associated with this user, which may result in broad administrative access. This setup is designed for demonstration and reference architecture scenarios. For production environments, adhere to the principle of least privilege by using a dedicated integration user with only the necessary permissions.
+
 ## Configuration Steps
 
 ### Step 1 — Create and Assign a Permission Set
@@ -31,6 +35,8 @@ Before beginning, ensure that the following requirements are met:
 9. Click **Add Assignments**.
 
 10. Select the existing Salesforce user for MuleSoft integrations.
+
+![Assigning the Salesforce integration user to the MuleSoft Customer Integration Access permission set](images/permission-set-manage-assignment.png)
 
 11. Click **Next**, then **Assign**.
 
@@ -57,6 +63,8 @@ Before beginning, ensure that the following requirements are met:
     - **Flow Enablement**
         - Select **Enable Client Credentials Flow**.
 
+![Salesforce External Client App OAuth configuration](images/external-client-app-oauth-settings.png)
+
 7. Click **Create**.
 
 Do not leave this page as the next step resumes from this point.
@@ -64,19 +72,27 @@ Do not leave this page as the next step resumes from this point.
 ### Step 3 — Configure OAuth Policies
 
 1. On the **Policies** tab, click **Edit**.
-2. Configure the **App Policies** section as follows:
+
+2. Expand the **OAuth Policies** section.
+
+3. Change **Permitted Users** to `Admin approved users are pre-authorized` under **Plugin Policies**. This reveals additional configuration options.
+
+4. Configure the **App Policies** section as follows:
    - **Start Page:** None
    - **Select Profiles:** No selected profiles.
    - **Select Permission Sets:** Select the permission set created earlier - e.g., `MuleSoft Customer Integration Access`.
-3. Expand the **OAuth Policies** section, and configure it as follows:
 
-   - **Plugin Policies**
-     - **Permitted Users:** `Admin approved users are pre-authorized`.
-   - **OAuth Flows and External Client App Enhancements**
+![Salesforce External Client App policies and permission set configuration](images/external-client-app-policies.png)
+
+5. Configure the **OAuth Policies** section as follows:
+
+   - Under **OAuth Flows and External Client App Enhancements**:
      - Select **Enable Client Credentials Flow**.
      - **Run As (Username)**: Enter the existing Salesforce user for MuleSoft integrations.
 
-4. Click **Save**.
+![Salesforce External Client App OAuth policies and Client Credentials Flow configuration](images/external-client-app-oauth-policies.png)
+
+6. Click **Save**.
 
 Do not leave this page as the next step resumes from this point.
 
@@ -103,6 +119,8 @@ Do not leave this page as the next step resumes from this point.
 4. Execute **Get Salesforce OAuth Token** and verify that Salesforce returns HTTP `200 OK`. The request automatically stores the access token and Salesforce instance URL in the runtime variables `sfAccessToken` and `sfInstanceUrl`.
 
 5. Execute **Get Salesforce API Limits** and verify that Salesforce returns HTTP `200 OK`, confirming successful authentication and API access.
+
+![Bruno showing the selected environment and a successful Salesforce API request (HTTP 200 OK)](images/bruno-oauth-validation.png)
 
 ## Conclusion
 

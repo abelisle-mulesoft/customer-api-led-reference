@@ -58,6 +58,12 @@ dependency-reduced-pom.xml
 !**/src/main/resources/properties/app-props.template.yaml
 !**/src/main/resources/properties/secure-props.template.yaml
 
+# Ignore local Bruno environments containing credentials
+**/api-requests/environments/*.yml
+
+# Preserve example environments
+!**/api-requests/environments/example.yml
+
 # --------------------------------------
 # Logs
 # --------------------------------------

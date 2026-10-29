@@ -1,0 +1,66 @@
+info:
+  name: Create Customers
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/customers"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      [
+        {
+          "salesforceAccountId": "001bm000021IDhxAAG",
+          "externalId": "CUST-10001",
+          "accountName": "Acme Corporation",
+          "accountNumber": "A-10001",
+          "website": "https://www.acme.example",
+          "phoneNumber": "+1-206-555-0100",
+          "billingStreet": "100 Main Street",
+          "billingCity": "Seattle",
+          "billingState": "WA",
+          "billingPostalCode": "98101",
+          "billingCountry": "USA",
+          "shippingStreet": "100 Main Street",
+          "shippingCity": "Seattle",
+          "shippingState": "WA",
+          "shippingPostalCode": "98101",
+          "shippingCountry": "USA",
+          "industry": "Manufacturing",
+          "accountType": "Customer",
+          "ownerId": "005bm00000DPojiAAD",
+          "activeFlag": true,
+          "createdDate": "2026-03-12T18:25:43.000Z",
+          "lastModifiedDate": "2026-03-16T09:42:10.000Z"
+        },
+        {
+          "salesforceAccountId": "001bm000021IDhyAAG",
+          "externalId": "SAP:0009876543",
+          "accountName": "Globex Corporation",
+          "accountNumber": "A-10002",
+          "website": "https://www.globex.example",
+          "phoneNumber": "+1-425-555-0199",
+          "billingStreet": "500 Market Street",
+          "billingCity": "Bellevue",
+          "billingState": "WA",
+          "billingPostalCode": "98004",
+          "billingCountry": "USA",
+          "industry": "Technology",
+          "accountType": "Prospect",
+          "ownerId": "005bm00000DPojiAAD",
+          "activeFlag": true,
+          "createdDate": "2026-03-10T09:00:00.000Z",
+          "lastModifiedDate": "2026-03-12T16:45:00.000Z"
+        }
+      ]
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

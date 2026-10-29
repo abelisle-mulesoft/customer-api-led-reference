@@ -16,10 +16,6 @@ The Salesforce Brilliant Mule Customer System API currently offers the following
 
 All responses conform to a system-aligned customer model and are standardized using a shared response envelope defined by the Common Response Types Library and API Response Traits Library.
 
-### Event-Driven Change Detection
-
-The System API functions primarily as a request-response interface for retrieving and synchronizing customer data with the Salesforce Brilliant Mule instance over HTTPS. In the current implementation, the Mule application also listens for and consumes Salesforce Change Data Capture (CDC) events related to Account changes in near real time. While this event consumption facilitates synchronization and internal processing scenarios, it remains an implementation detail rather than a client-facing feature of the API. Consequently, this specification models only the HTTP resources and payloads available to consumers, with CDC behavior included solely for architectural context.
-
 ## Data Model
 
 Customer data exchanged through this API follows a system-aligned customer model derived from the Salesforce Brilliant Mule instance customer account concepts and structures. This System API is intentionally system-aligned rather than canonical. Canonical transformation and cross-system normalization belong in the Process API layer.

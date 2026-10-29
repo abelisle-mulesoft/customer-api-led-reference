@@ -5,10 +5,6 @@ description: |
   instance. This API abstracts Salesforce technical complexity while preserving alignment with
   Salesforce account concepts and structures. It exposes Salesforce customer data using readable,
   Salesforce-aligned field names rather than the enterprise canonical customer model.
-
-  In the implementation, customer data changes are detected via Salesforce Change Data Capture (CDC)
-  events, enabling near real-time synchronization. CDC consumption is an implementation detail and
-  is not exposed to clients in this API contract.
 version: v1
 mediaType:
   - application/json

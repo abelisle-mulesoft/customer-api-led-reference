@@ -1,0 +1,18 @@
+#===================================================================================================
+# Mule Application Properties Template
+#===================================================================================================
+
+#---------------------------------------------------------------------------------------------------
+# HTTP Listener Config (CloudHub 2.0)
+# - Applications must listen on host 0.0.0.0; no need to override here.
+# - CloudHub 2.0 injects the reserved property ${http.port}; it is defined here to support unit
+#   testing outside of CloudHub 2.0 (e.g. Anypoint Studio).
+http:
+  port: "8081"
+
+#---------------------------------------------------------------------------------------------------
+# Salesforce Connector Config (OAuth 2.0 Client Credentials)
+salesforce:
+  brilm:
+    token_url:    "<token-url>"                  # Salesforce OAuth 2.0 Token Endpoint URL
+    consumer_key: "<external-app-consumer-key>"  # Salesforce External App Consumer Key (Client ID)

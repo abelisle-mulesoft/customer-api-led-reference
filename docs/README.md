@@ -12,4 +12,5 @@ This folder contains supplementary documentation that supports the design, imple
 ## Contents
 
 - `releases/` -- Release notes and milestone documentation.
-
+- `salesforce/` -- Salesforce integration guidance and supporting resources.
+  - [OAuth 2.0 Client Credentials](salesforce/oauth-client-credentials.md) -- Configuration guide for authenticating MuleSoft integrations with Salesforce using OAuth 2.0 Client Credentials, including a reusable Bruno collection for validation.

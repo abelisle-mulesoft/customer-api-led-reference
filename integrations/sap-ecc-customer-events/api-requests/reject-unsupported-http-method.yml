@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8081/test/customer-idoc
+  url: "{{baseUrl}}/test/customer-idoc"
   body:
     type: xml
     data: ""

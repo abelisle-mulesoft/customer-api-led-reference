@@ -1,0 +1,48 @@
+info:
+  name: Update Account Event
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/test/account-event"
+  body:
+    type: json
+    data: |
+      {
+        "data": {
+          "schema": "HzGjMuEDiqQ2XSF7kWaFYw",
+          "payload": {
+            "LastModifiedDate": "2026-11-10T22:02:35.000Z",
+            "Phone": "+1-425-555-0100",
+            "ChangeEventHeader": {
+              "commitNumber": 1794348155557994497,
+              "commitUser": "005bm000004PQrRAAW",
+              "sequenceNumber": 1,
+              "entityName": "Account",
+              "changeType": "UPDATE",
+              "changedFields": [
+                "Phone",
+                "LastModifiedDate"
+              ],
+              "changeOrigin": "com/salesforce/api/soap/68.0;client=SfdcInternalAPI/",
+              "transactionKey": "000070ae-684b-292d-7da9-446cfd7ee5b4",
+              "commitTimestamp": 1794348155000,
+              "recordIds": [
+                "001bm000039np2fAAA"
+              ]
+            }
+          },
+          "event": {
+            "replayId": 4213993
+          }
+        },
+        "channel": "/data/AccountChangeEvent"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

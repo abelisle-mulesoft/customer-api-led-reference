@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="http-customer-event-test-flow" doc:id="46c67a9d-febd-4167-9c2e-9c8ba8bc961e" >
+		<http:listener doc:name="Customer Event Test" doc:id="0be57fcf-53ff-4076-a267-cac40ac0c903" config-ref="sf-brilm-customer-events-httpListenerConfig" path="/test/account-event" allowedMethods="POST"/>
+		<flow-ref doc:name="process-customer-event-flow" doc:id="30d42283-96ec-44dd-9a45-e08bf4bea2be" name="process-customer-event-flow"/>
+		<ee:transform doc:name="Create Response" doc:id="9f270c17-82b8-4835-8be4-23347e8345be" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    status: "SUCCESS",
+    message: "Salesforce customer CDC event processed successfully.",
+    correlationId: correlationId
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

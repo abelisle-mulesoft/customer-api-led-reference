@@ -1,0 +1,62 @@
+info:
+  name: Integration User Event
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}/test/account-event"
+  body:
+    type: json
+    data: |
+      {
+        "data": {
+          "schema": "HzGjMuEDiqQ2XSF7kWaFYw",
+          "payload": {
+            "LastModifiedDate": "2026-11-10T22:04:59.000Z",
+            "Name": "Morgan Solar",
+            "BillingAddress": {
+              "State": "FL",
+              "Street": "73183 New Castle Point",
+              "PostalCode": "32225",
+              "Country": "US",
+              "City": "Jacksonville"
+            },
+            "OwnerId": "005bm00000DPojiAAD",
+            "CreatedById": "005bm00000DPojiAAD",
+            "External_Id__c": "0000000021",
+            "Type": "BUSINESS",
+            "CleanStatus": "Pending",
+            "ChangeEventHeader": {
+              "commitNumber": 1794348299681128451,
+              "commitUser": "005bm00000DPojiAAD",
+              "sequenceNumber": 1,
+              "entityName": "Account",
+              "changeType": "UPDATE",
+              "changedFields": [
+
+              ],
+              "changeOrigin": "com/salesforce/api/soap/68.0;client=SfdcInternalAPI/",
+              "transactionKey": "0000710b-5e06-a798-49d4-64d66cc1a5de",
+              "commitTimestamp": 1794348299000,
+              "recordIds": [
+                "001bm00003A5FOwAAN"
+              ]
+            },
+            "CreatedDate": "2026-10-23T14:42:48.000Z",
+            "LastModifiedById": "005bm00000DPojiAAD",
+            "Active__c": "true"
+          },
+          "event": {
+            "replayId": 4213995
+          }
+        },
+        "channel": "/data/AccountChangeEvent"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

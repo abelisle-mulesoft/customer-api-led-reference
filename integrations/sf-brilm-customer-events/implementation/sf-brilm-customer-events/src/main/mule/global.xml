@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:customer-process-api="http://www.mulesoft.org/schema/mule/customer-process-api" xmlns:salesforce-brilliant-mule-customer-system-api="http://www.mulesoft.org/schema/mule/salesforce-brilliant-mule-customer-system-api"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/salesforce-brilliant-mule-customer-system-api http://www.mulesoft.org/schema/mule/salesforce-brilliant-mule-customer-system-api/current/mule-salesforce-brilliant-mule-customer-system-api.xsd
+http://www.mulesoft.org/schema/mule/customer-process-api http://www.mulesoft.org/schema/mule/customer-process-api/current/mule-customer-process-api.xsd">
+	<global-property doc:name="Global Property" name="env" value="dev" />
+	<global-property doc:name="Global Property" name="SECURE_PROPERTIES_KEY" value="PLACEHOLDER_ONLY__OVERRIDE_AT_RUNTIME" />
+	<configuration-properties doc:name="Configuration properties" file="properties/app-props-${env}.yaml" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" file="properties/secure-props-${env}.yaml" key="${SECURE_PROPERTIES_KEY}" />
+	<http:listener-config name="sf-brilm-customer-events-httpListenerConfig">
+		<http:listener-connection host="0.0.0.0" port="${http.port}"/>
+	</http:listener-config>
+	<salesforce:sfdc-config name="Salesforce_BrilliantMule_Config" doc:name="Salesforce Config" doc:id="b6c8941e-0ec3-4813-aefc-4e9313f53cab">
+		<salesforce:oauth-client-credentials-connection>
+			<salesforce:oauth-client-credentials clientId="${salesforce.brilm.consumer_key}" clientSecret="${secure::salesforce.brilm.consumer_secret}" tokenUrl="${salesforce.brilm.token_url}" />
+		</salesforce:oauth-client-credentials-connection>
+	</salesforce:sfdc-config>
+	<salesforce-brilliant-mule-customer-system-api:config name="SF_BRILM_Customer_SAPI_Config" doc:name="Salesforce Brilliant Mule Customer System API Config" doc:id="654b0208-8ffe-47b5-b7fa-2972f3e61ddf" property_host="${sf_brilm_customer_sapi.host}" property_port="${sf_brilm_customer_sapi.port}" property_basePath="${sf_brilm_customer_sapi.base_path}" property_protocol="${sf_brilm_customer_sapi.protocol}" property_client-id="${client.id}" property_client-secret="${secure::client.secret}"/>
+	<customer-process-api:config name="Customer_Process_API_Config" doc:name="Customer Process API Config" doc:id="1bc4278f-f106-4757-aac6-f584f566189b" property_host="${customer_papi.host}" property_port="${customer_papi.port}" property_basePath="${customer_papi.base_path}" property_protocol="${customer_papi.protocol}" property_client-id="${client.id}" property_client-secret="${secure::client.secret}"/>
+</mule>

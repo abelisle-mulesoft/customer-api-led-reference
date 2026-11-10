@@ -7,6 +7,7 @@ This folder contains the event-driven integration components that complement the
 Event-driven integrations process changes originating from external systems and deliver the resulting data to the appropriate APIs.
 
 - `sap-ecc-customer-events` -- Receives SAP ECC customer master data changes through DEBMAS07 IDocs, transforms them into the canonical customer model, and delivers the resulting data to the Customer Process API.
+- `sf-brilm-customer-events` -- Receives Salesforce Change Data Capture (CDC) events when account records are created, updated, deleted, or undeleted in the Brilliant Mule organization, and delivers the resulting data to the Customer Process API.
 
 ## Folder Structure
 

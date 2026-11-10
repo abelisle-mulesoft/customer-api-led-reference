@@ -1,0 +1,16 @@
+#===================================================================================================
+# Mule Secure Properties Template
+#===================================================================================================
+
+#---------------------------------------------------------------------------------------------------
+# Salesforce Connector Configuration (OAuth 2.0 Client Credentials)
+# Refer to MuleSoft Secure Properties documentation for encryption details:
+# https://docs.mulesoft.com/mule-runtime/latest/secure-configuration-properties#secure_props_tool
+salesforce:
+  brilm:
+    consumer_secret: "![<encrypted value>]"  # Salesforce External App Consumer Secret (Client Secret)
+
+#---------------------------------------------------------------------------------------------------
+# Customer Process API Smart Connector Configuration
+client:
+  secret:   "![<encrypted value>]"  # Registered Client Application Secret

@@ -24,7 +24,7 @@ The SAP ECC Customer Events integration operates in the System layer of the Cust
 
 The following diagram depicts the role of this integration within the reference architecture.
 
-![SAP ECC Customer Events integration in Customer API-Led Reference Architecture](resources/sap-ecc-customer-events-diagram-3987af78-7ded-48f0-849e-a98aaffbd189.png)
+![SAP ECC Customer Events integration in Customer API-Led Reference Architecture](resources/sap-ecc-customer-events-diagram-9c5ea318-b3f2-49fa-8592-51f352dedd5a.png)
 
 ## Testing
 
